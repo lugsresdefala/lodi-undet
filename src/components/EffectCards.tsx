@@ -120,7 +120,7 @@ export function EffectCards() {
                     </div>
                     <div>
                       <dt className="text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
-                        Plateau
+                        Platô
                       </dt>
                       <dd className="tabular-nums text-foreground">
                         {e.maxMonths[0]}–{e.maxMonths[1]} m
