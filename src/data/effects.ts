@@ -1,7 +1,7 @@
 // Expected masculinizing effects of testosterone therapy.
-// Onset/maximum windows are approximate, derived from WPATH SOC-8 and
-// Endocrine Society 2017 clinical practice guidelines. Individual variation
-// is large. Not all changes are reversible.
+// Onset/maximum windows derived from the Endocrine Society 2017 Clinical
+// Practice Guideline (Hembree et al., JCEM 2017, Table 13) and WPATH SOC-8.
+// Individual variation is large; not all changes are reversible.
 
 export type System = "endocrine" | "skin" | "body" | "mind" | "repro" | "voice";
 
@@ -32,27 +32,30 @@ export const EFFECTS: EffectEntry[] = [
     title: "Pele mais oleosa, possível acne",
     system: "skin",
     onsetMonths: [1, 6],
-    maxMonths: [1, 24],
+    maxMonths: [12, 24],
     reversible: true,
-    notes: "Mais marcado nos primeiros meses; tende a estabilizar.",
+    notes:
+      "Mais marcado no primeiro ano; tende a estabilizar. (Endocrine Society 2017)",
   },
   {
     id: "facial-body-hair",
     title: "Pelo facial e corporal",
     system: "skin",
-    onsetMonths: [3, 6],
-    maxMonths: [36, 60],
+    onsetMonths: [6, 12],
+    maxMonths: [48, 60],
     reversible: false,
-    notes: "Distribuição e densidade dependem fortemente da genética.",
+    notes:
+      "Início típico 6–12 meses; densidade máxima pode levar 4–5 anos. Distribuição depende fortemente da genética. (Endocrine Society 2017)",
   },
   {
     id: "scalp-loss",
     title: "Calvície de padrão masculino",
     system: "skin",
-    onsetMonths: [12, 60],
+    onsetMonths: [12, 24],
     maxMonths: [60, 120],
     reversible: false,
-    notes: "Surge se houver predisposição genética.",
+    notes:
+      "Surge apenas com predisposição genética. Variável; pode iniciar-se mais cedo nalguns indivíduos.",
   },
   {
     id: "muscle-mass",
@@ -61,52 +64,58 @@ export const EFFECTS: EffectEntry[] = [
     onsetMonths: [6, 12],
     maxMonths: [24, 60],
     reversible: false,
-    notes: "Potenciado por treino de resistência e nutrição adequada.",
+    notes:
+      "Potenciado por treino de resistência e nutrição adequada. Reverte parcialmente se a terapia for interrompida.",
   },
   {
     id: "fat-redist",
     title: "Redistribuição de gordura",
     system: "body",
-    onsetMonths: [3, 6],
+    onsetMonths: [1, 6],
     maxMonths: [24, 60],
     reversible: true,
-    notes: "Diminuição em ancas/coxas, aumento abdominal.",
+    notes:
+      "Diminuição em ancas/coxas, aumento abdominal. Reversível com interrupção da terapia. (Endocrine Society 2017)",
   },
   {
     id: "menses-stop",
     title: "Cessação da menstruação",
     system: "repro",
     onsetMonths: [1, 6],
-    maxMonths: [2, 6],
+    maxMonths: [1, 6],
     reversible: true,
-    notes: "Pode haver spotting nos primeiros meses.",
+    notes:
+      "Habitualmente nos primeiros 6 meses. Pode haver spotting; ausência de menstruação NÃO indica infertilidade.",
   },
   {
     id: "clitoral",
     title: "Crescimento clitoriano",
     system: "repro",
-    onsetMonths: [3, 6],
+    onsetMonths: [1, 6],
     maxMonths: [12, 24],
     reversible: false,
-    notes: "Crescimento típico de 1–3 cm, com variação individual.",
+    notes:
+      "Crescimento típico de 1–3 cm, com variação individual. Considerado irreversível. (Endocrine Society 2017)",
   },
   {
     id: "vaginal-atrophy",
     title: "Atrofia vaginal",
     system: "repro",
-    onsetMonths: [3, 6],
+    onsetMonths: [1, 6],
     maxMonths: [12, 24],
     reversible: true,
-    notes: "Hidratantes/estrogénio tópico podem aliviar desconforto.",
+    notes:
+      "Pode causar secura, desconforto e maior fragilidade da mucosa. Hidratantes ou estrogénio tópico em baixa dose aliviam sem comprometer a masculinização.",
   },
   {
     id: "voice",
-    title: "Mudança de voz",
+    title: "Mudança de voz (gravamento)",
     system: "voice",
-    onsetMonths: [3, 12],
+    onsetMonths: [6, 12],
     maxMonths: [12, 24],
     reversible: false,
-    notes: "Trabalho com fonoaudiologia pode otimizar projeção.",
+    notes:
+      "Início típico aos 6–12 meses, não nos primeiros meses. Mudança permanente das pregas vocais. Terapia da fala pode otimizar projeção e ressonância. (Endocrine Society 2017)",
   },
   {
     id: "libido",
@@ -115,16 +124,18 @@ export const EFFECTS: EffectEntry[] = [
     onsetMonths: [0.25, 3],
     maxMonths: [3, 6],
     reversible: true,
-    notes: "Variações de humor frequentes nas primeiras semanas.",
+    notes:
+      "Frequentemente nas primeiras semanas. Pode acompanhar-se de oscilações de humor iniciais que tendem a estabilizar.",
   },
   {
     id: "mood",
-    title: "Estabilização emocional",
+    title: "Alterações de humor e bem-estar",
     system: "mind",
-    onsetMonths: [0.5, 6],
-    maxMonths: [6, 24],
+    onsetMonths: [0.5, 3],
+    maxMonths: [3, 12],
     reversible: true,
-    notes: "Acompanhamento psicológico recomendado nos primeiros meses.",
+    notes:
+      "Muitas pessoas relatam melhoria do bem-estar e redução da disforia. Oscilações possíveis nos primeiros meses; acompanhamento psicológico recomendado. Não há evidência de que a testosterona cause patologia psiquiátrica.",
   },
   {
     id: "fertility",
@@ -134,6 +145,6 @@ export const EFFECTS: EffectEntry[] = [
     maxMonths: [3, 12],
     reversible: false,
     notes:
-      "Reversibilidade incerta e variável após interrupção; pode haver perda permanente de fertilidade. A testosterona NÃO é contraceptivo — gravidez é possível mesmo sem menstruação. Preservação de oócitos antes do início é fortemente recomendada.",
+      "Reversibilidade incerta e variável após interrupção; pode haver perda permanente de fertilidade. A testosterona NÃO é contraceptivo — gravidez é possível mesmo sem menstruação. Preservação de oócitos antes do início é fortemente recomendada. (WPATH SOC-8)",
   },
 ];
