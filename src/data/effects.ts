@@ -128,11 +128,12 @@ export const EFFECTS: EffectEntry[] = [
   },
   {
     id: "fertility",
-    title: "Redução da fertilidade",
-    system: "endocrine",
-    onsetMonths: [3, 6],
-    maxMonths: [6, 24],
-    reversible: true,
-    notes: "Não substitui contraceção; preservação prévia recomendada.",
+    title: "Supressão da fertilidade",
+    system: "repro",
+    onsetMonths: [1, 6],
+    maxMonths: [3, 12],
+    reversible: false,
+    notes:
+      "Reversibilidade incerta e variável após interrupção; pode haver perda permanente de fertilidade. A testosterona NÃO é contraceptivo — gravidez é possível mesmo sem menstruação. Preservação de oócitos antes do início é fortemente recomendada.",
   },
 ];
