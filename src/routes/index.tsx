@@ -88,26 +88,17 @@ function Index() {
         />
         <div className="relative mx-auto max-w-6xl px-4 py-16 md:px-8 md:py-24">
           <div className="max-w-3xl">
-            <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-clay">
-              Recurso clínico aberto
+            <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+              Hormonização com testosterona
             </span>
-            <h1 className="mt-4 font-serif text-4xl font-medium leading-[1.05] tracking-tight md:text-6xl">
-              Hormonização masculinizante,
-              <br />
-              <span className="italic text-clay">explicada com rigor</span>.
+            <h1 className="mt-4 font-serif text-4xl font-medium leading-[1.1] tracking-tight md:text-5xl">
+              Notas, cronologia e farmacocinética.
             </h1>
-            <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
-              Uma referência visual para pessoas trans, profissionais de saúde e familiares.
-              Combina modelação farmacocinética da testosterona, cronologia esperada de
-              efeitos e uma rede curada de apoio em Portugal.
+            <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground">
+              Página de referência. Inclui um modelo farmacocinético da testosterona,
+              janelas temporais de efeitos descritas na literatura (Endocrine Society
+              2017, WPATH SOC-8) e contactos de apoio em Portugal.
             </p>
-
-            <dl className="mt-10 grid grid-cols-2 gap-6 border-t border-border pt-6 sm:grid-cols-4">
-              <Stat label="Efeitos catalogados" value="12" />
-              <Stat label="Sistemas corporais" value="6" />
-              <Stat label="Organizações" value="6" />
-              <Stat label="Modelo PK" value="Bateman" />
-            </dl>
           </div>
         </div>
       </section>
@@ -134,10 +125,7 @@ function Index() {
 
       <footer className="border-t border-border/70">
         <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-8 text-xs text-muted-foreground md:flex-row md:items-center md:justify-between md:px-8">
-          <p>
-            <span className="font-serif italic">lodi-t</span> · ferramenta educativa, não
-            dosimétrica.
-          </p>
+          <p>lodi-t · página de referência, sem fim comercial.</p>
           <p className="font-mono uppercase tracking-[0.18em]">
             WPATH SOC-8 · Endocrine Society 2017
           </p>
@@ -147,15 +135,3 @@ function Index() {
   );
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <dt className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-        {label}
-      </dt>
-      <dd className="mt-1 font-serif text-2xl font-medium tabular-nums text-foreground">
-        {value}
-      </dd>
-    </div>
-  );
-}
