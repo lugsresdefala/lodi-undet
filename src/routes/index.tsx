@@ -13,7 +13,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Calculadora farmacocinética de testosterona, cronologia de efeitos esperados e rede de apoio para pessoas trans em Portugal.",
+          "Modelo farmacocinético da testosterona, cronologia de efeitos descritos na literatura e contactos de apoio.",
       },
       {
         property: "og:title",
@@ -97,7 +97,7 @@ function Index() {
             <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground">
               Página de referência. Inclui um modelo farmacocinético da testosterona,
               janelas temporais de efeitos descritas na literatura (Endocrine Society
-              2017, WPATH SOC-8) e contactos de apoio em Portugal.
+              2017, WPATH SOC-8) e alguns contactos de apoio.
             </p>
           </div>
         </div>

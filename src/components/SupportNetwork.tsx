@@ -9,8 +9,9 @@ export function SupportNetwork() {
           Rede de apoio
         </h2>
         <p className="mt-1 max-w-xl text-sm text-muted-foreground">
-          Organizações comunitárias, linhas de escuta e serviços de saúde em Portugal.
-          Confirma sempre os contactos antes de procurar atendimento.
+          Lista parcial de organizações comunitárias, linhas de escuta e serviços de
+          saúde sediados em Portugal. Confirma sempre os contactos antes de procurar
+          atendimento.
         </p>
       </div>
 
