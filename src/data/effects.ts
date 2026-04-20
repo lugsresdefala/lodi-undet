@@ -65,7 +65,7 @@ export const EFFECTS: EffectEntry[] = [
     maxMonths: [24, 60],
     reversible: false,
     notes:
-      "Potenciado por treino de resistência e nutrição adequada. Reverte parcialmente se a terapia for interrompida.",
+      "Potenciado por treino de resistência e nutrição adequada. Reverte parcialmente se a hormonização for interrompida.",
   },
   {
     id: "fat-redist",
@@ -75,7 +75,7 @@ export const EFFECTS: EffectEntry[] = [
     maxMonths: [24, 60],
     reversible: true,
     notes:
-      "Diminuição em ancas/coxas, aumento abdominal. Reversível com interrupção da terapia. (Endocrine Society 2017)",
+      "Diminuição em ancas/coxas, aumento abdominal. Reversível com interrupção da hormonização. (Endocrine Society 2017)",
   },
   {
     id: "menses-stop",
@@ -115,7 +115,7 @@ export const EFFECTS: EffectEntry[] = [
     maxMonths: [12, 24],
     reversible: false,
     notes:
-      "Início típico aos 6–12 meses, não nos primeiros meses. Mudança permanente das pregas vocais. Terapia da fala pode otimizar projeção e ressonância. (Endocrine Society 2017)",
+      "Início típico aos 6–12 meses, não nos primeiros meses. Mudança permanente das pregas vocais. Acompanhamento por terapeuta da fala pode otimizar projeção e ressonância. (Endocrine Society 2017)",
   },
   {
     id: "libido",

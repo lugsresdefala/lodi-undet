@@ -9,7 +9,7 @@ import { SupportNetwork } from "@/components/SupportNetwork";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "lodi-t — Referência clínica para terapia hormonal masculinizante" },
+      { title: "lodi-t — Referência para hormonização masculinizante" },
       {
         name: "description",
         content:
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/")({
       },
       {
         property: "og:title",
-        content: "lodi-t — Referência clínica para terapia hormonal masculinizante",
+        content: "lodi-t — Referência para hormonização masculinizante",
       },
       {
         property: "og:description",
@@ -92,7 +92,7 @@ function Index() {
               Recurso clínico aberto
             </span>
             <h1 className="mt-4 font-serif text-4xl font-medium leading-[1.05] tracking-tight md:text-6xl">
-              Terapia hormonal masculinizante,
+              Hormonização masculinizante,
               <br />
               <span className="italic text-clay">explicada com rigor</span>.
             </h1>
