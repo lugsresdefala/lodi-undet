@@ -76,7 +76,7 @@ export function PkCalculator() {
             </CardTitle>
             <CardDescription className="mt-1 text-sm">
               Estimativa visual da concentração sérica de testosterona após undecanoato IM,
-              com base num modelo Bateman de um compartimento.
+              com base em um modelo Bateman de um compartimento.
             </CardDescription>
           </div>
           <span
