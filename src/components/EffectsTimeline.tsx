@@ -20,7 +20,7 @@ export function EffectsTimeline() {
             Cronologia clínica esperada
           </h2>
           <p className="mt-1 max-w-xl text-sm text-muted-foreground">
-            Janelas aproximadas de início e estabilização. Variação individual significativa.
+            Janelas aproximadas de início e estabilização. A variação individual é grande.
           </p>
         </div>
 

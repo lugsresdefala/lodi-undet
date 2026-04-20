@@ -27,7 +27,7 @@ export function EffectCards() {
             Efeitos por sistema
           </h2>
           <p className="mt-1 max-w-xl text-sm text-muted-foreground">
-            Cada cartão resume o efeito esperado, a janela temporal e a reversibilidade.
+            Cada card resume o efeito esperado, a janela temporal e a reversibilidade.
           </p>
         </div>
 
@@ -120,7 +120,7 @@ export function EffectCards() {
                     </div>
                     <div>
                       <dt className="text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
-                        Plateau
+                        Platô
                       </dt>
                       <dd className="tabular-nums text-foreground">
                         {e.maxMonths[0]}–{e.maxMonths[1]} m

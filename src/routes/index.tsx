@@ -4,25 +4,24 @@ import { EffectCards } from "@/components/EffectCards";
 import { EffectsTimeline } from "@/components/EffectsTimeline";
 import { MedicalDisclaimer } from "@/components/MedicalDisclaimer";
 import { PkCalculator } from "@/components/PkCalculator";
-import { SupportNetwork } from "@/components/SupportNetwork";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "lodi-t — Referência para hormonização masculinizante" },
+      { title: "lodi-t — Referência sobre hormonização com testosterona" },
       {
         name: "description",
         content:
-          "Modelo farmacocinético da testosterona, cronologia de efeitos descritos na literatura e contactos de apoio.",
+          "Modelo farmacocinético da testosterona e cronologia de efeitos descritos na literatura (Endocrine Society 2017, WPATH SOC-8).",
       },
       {
         property: "og:title",
-        content: "lodi-t — Referência para hormonização masculinizante",
+        content: "lodi-t — Referência sobre hormonização com testosterona",
       },
       {
         property: "og:description",
         content:
-          "Calculadora PK de testosterona, cronologia de efeitos e rede de apoio. Ferramenta educativa, não dosimétrica.",
+          "Calculadora PK de testosterona e cronologia de efeitos. Página educativa, não dosimétrica.",
       },
     ],
     links: [
@@ -66,9 +65,6 @@ function Index() {
             <a href="#efeitos" className="transition-colors hover:text-foreground">
               Efeitos
             </a>
-            <a href="#apoio" className="transition-colors hover:text-foreground">
-              Apoio
-            </a>
           </nav>
         </div>
       </header>
@@ -95,9 +91,9 @@ function Index() {
               Notas, cronologia e farmacocinética.
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground">
-              Página de referência. Inclui um modelo farmacocinético da testosterona,
+              Página de referência. Inclui um modelo farmacocinético da testosterona e
               janelas temporais de efeitos descritas na literatura (Endocrine Society
-              2017, WPATH SOC-8) e alguns contactos de apoio.
+              2017, WPATH SOC-8).
             </p>
           </div>
         </div>
@@ -117,10 +113,6 @@ function Index() {
         <section id="efeitos" className="scroll-mt-24">
           <EffectCards />
         </section>
-
-        <section id="apoio" className="scroll-mt-24">
-          <SupportNetwork />
-        </section>
       </main>
 
       <footer className="border-t border-border/70">
@@ -134,4 +126,3 @@ function Index() {
     </div>
   );
 }
-
