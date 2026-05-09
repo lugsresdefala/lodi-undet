@@ -102,7 +102,7 @@ export function PkCalculator() {
         </div>
       </CardHeader>
 
-      <CardContent className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_1.6fr]">
+      <CardContent className="grid gap-8 px-4 pb-6 md:px-6 lg:grid-cols-[minmax(0,1fr)_1.6fr]">
         {/* Inputs */}
         <div className="space-y-5">
           <Control
