@@ -189,7 +189,7 @@ export function PkCalculator() {
         </div>
 
         {/* Chart */}
-        <div className="h-[360px] w-full">
+        <div className="h-[260px] w-full sm:h-[320px] md:h-[360px]">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={series} margin={{ top: 10, right: 16, left: 0, bottom: 0 }}>
               <defs>
