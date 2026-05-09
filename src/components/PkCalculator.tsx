@@ -104,7 +104,7 @@ export function PkCalculator() {
 
       <CardContent className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_1.6fr]">
         {/* Inputs */}
-        <div className="space-y-6">
+        <div className="space-y-5">
           <Control
             label="Dose"
             unit="mg TU"
@@ -112,6 +112,8 @@ export function PkCalculator() {
             min={250}
             max={1500}
             step={50}
+            hint="Quantidade de undecilato de testosterona (TU) administrada por injeção IM. Padrão: 1000 mg em 4 mL de óleo de rícino."
+            source="SmPC Nebido / Reandron"
             onChange={(v) => update({ doseMg: v })}
           />
           <Control
@@ -121,6 +123,8 @@ export function PkCalculator() {
             min={56}
             max={126}
             step={7}
+            hint="Tempo entre doses de manutenção. Ajustável individualmente conforme níveis séricos — tipicamente 70–98 d (10–14 semanas)."
+            source="Endocrine Society 2017"
             onChange={(v) => update({ intervalDays: v })}
           />
           <Control
@@ -130,6 +134,7 @@ export function PkCalculator() {
             min={45}
             max={130}
             step={1}
+            hint="Peso corporal — escala a clearance metabólica total (Cl total = Cl/kg × peso)."
             onChange={(v) => update({ weightKg: v })}
           />
           <Control
@@ -139,6 +144,8 @@ export function PkCalculator() {
             min={2}
             max={10}
             step={0.5}
+            hint="Meia-vida de absorção: rapidez com que o TU é libertado do depósito IM. Determina a fase ascendente e o Tmax (~7–14 d)."
+            source="Schubert 2004"
             onChange={(v) => update({ absorptionHalfLifeD: v })}
           />
           <Control
@@ -148,6 +155,8 @@ export function PkCalculator() {
             min={20}
             max={50}
             step={1}
+            hint="Meia-vida aparente da fase descendente. Em cinética flip-flop reflecte a libertação lenta do depósito, não a eliminação intrínseca da T (~33 d)."
+            source="Schubert 2004 / Behre 1999"
             onChange={(v) => update({ eliminationHalfLifeD: v })}
           />
           <Control
@@ -157,13 +166,25 @@ export function PkCalculator() {
             min={12}
             max={32}
             step={1}
+            hint="Clearance metabólica da testosterona — volume de plasma depurado por dia por kg. Define a concentração média em estado estacionário."
+            source="Wang 2004 (~21 L/kg/d)"
             onChange={(v) => update({ clearanceLPerKgPerDay: v })}
           />
 
           <div className="grid grid-cols-3 gap-2 border-t border-border pt-5">
-            <Metric label="Cmax" value={metrics.cmax} unit="ng/dL" />
-            <Metric label="Cmédia" value={metrics.cmean} unit="ng/dL" />
-            <Metric label="Cmin" value={metrics.ctrough} unit="ng/dL" />
+            <Metric label="Cmax" value={metrics.cmax} unit="ng/dL" hint="Concentração máxima no último intervalo" />
+            <Metric label="Cmédia" value={metrics.cmean} unit="ng/dL" hint="Exposição média (proxy de AUC/τ)" />
+            <Metric label="Cmin" value={metrics.ctrough} unit="ng/dL" hint="Vale antes da próxima dose" />
+          </div>
+
+          <div className="rounded-md border border-border/60 bg-muted/30 p-3 text-[11px] leading-relaxed text-muted-foreground">
+            <span className="font-mono uppercase tracking-[0.16em] text-foreground/70">
+              Faixa de referência
+            </span>
+            <p className="mt-1">
+              264–916 ng/dL — intervalo harmonizado em adultos saudáveis (19–39 a),
+              Travison et al., <em>JCEM</em> 2017. Contexto, não alvo terapêutico individual.
+            </p>
           </div>
         </div>
 
