@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+import lodiLogo from "@/assets/lodi-logo.png";
 import { EffectCards } from "@/components/EffectCards";
 import { EffectsTimeline } from "@/components/EffectsTimeline";
 import { MedicalDisclaimer } from "@/components/MedicalDisclaimer";
@@ -70,31 +71,30 @@ function Index() {
       </header>
 
       {/* Hero */}
-      <section
-        id="top"
-        className="relative overflow-hidden border-b border-border/70"
-      >
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-[0.06]"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 20% 30%, var(--color-trans-pink) 0px, transparent 40%), radial-gradient(circle at 80% 70%, var(--color-trans-blue) 0px, transparent 40%)",
-          }}
-        />
+      <section id="top" className="relative overflow-hidden border-b border-border/70">
         <div className="relative mx-auto max-w-6xl px-4 py-16 md:px-8 md:py-24">
-          <div className="max-w-3xl">
-            <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-              Hormonização com testosterona
-            </span>
-            <h1 className="mt-4 font-serif text-4xl font-medium leading-[1.1] tracking-tight md:text-5xl">
-              Notas, cronologia e farmacocinética.
-            </h1>
-            <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground">
-              Página de referência. Inclui um modelo farmacocinético da testosterona e
-              janelas temporais de efeitos descritas na literatura (Endocrine Society
-              2017, WPATH SOC-8).
-            </p>
+          <div className="grid items-center gap-10 md:grid-cols-[1.1fr_1fr]">
+            <div>
+              <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                Hormonização com testosterona — referência clínica
+              </span>
+              <h1 className="mt-4 font-serif text-4xl font-medium leading-[1.1] tracking-tight md:text-5xl">
+                Notas, cronologia e farmacocinética.
+              </h1>
+              <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground">
+                Modelo farmacocinético da testosterona e janelas temporais de efeitos
+                descritas na literatura (Endocrine Society 2017, WPATH SOC-8). Página
+                educativa, não dosimétrica.
+              </p>
+            </div>
+            <div className="relative mx-auto w-full max-w-sm">
+              <img
+                src={lodiLogo}
+                alt="L.O.D.I — emblema instrumental"
+                className="h-auto w-full select-none"
+                draggable={false}
+              />
+            </div>
           </div>
         </div>
       </section>

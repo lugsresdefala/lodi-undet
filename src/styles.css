@@ -71,55 +71,56 @@
 :root {
   --radius: 0.5rem;
 
-  /* Warm parchment & ink palette */
-  --background: oklch(0.972 0.014 80);
-  --foreground: oklch(0.22 0.025 50);
-  --ink: oklch(0.22 0.025 50);
-  --parchment: oklch(0.972 0.014 80);
-  --clay: oklch(0.55 0.09 35);
+  /* Soft instrument palette — inspired by L.O.D.I logo:
+     warm off-white, slate ink, washed pastel accents. */
+  --background: oklch(0.985 0.004 95);
+  --foreground: oklch(0.32 0.028 250);
+  --ink: oklch(0.32 0.028 250);
+  --parchment: oklch(0.985 0.004 95);
+  --clay: oklch(0.78 0.07 40);
 
-  --card: oklch(0.985 0.01 80);
-  --card-foreground: oklch(0.22 0.025 50);
-  --popover: oklch(0.985 0.01 80);
-  --popover-foreground: oklch(0.22 0.025 50);
+  --card: oklch(0.995 0.003 95);
+  --card-foreground: oklch(0.32 0.028 250);
+  --popover: oklch(0.995 0.003 95);
+  --popover-foreground: oklch(0.32 0.028 250);
 
-  --primary: oklch(0.42 0.08 35);
-  --primary-foreground: oklch(0.98 0.01 80);
+  --primary: oklch(0.45 0.04 250);
+  --primary-foreground: oklch(0.985 0.004 95);
 
-  --secondary: oklch(0.92 0.02 75);
-  --secondary-foreground: oklch(0.3 0.03 50);
+  --secondary: oklch(0.95 0.01 240);
+  --secondary-foreground: oklch(0.35 0.03 250);
 
-  --muted: oklch(0.93 0.015 75);
-  --muted-foreground: oklch(0.48 0.025 55);
+  --muted: oklch(0.955 0.008 230);
+  --muted-foreground: oklch(0.55 0.02 240);
 
-  --accent: oklch(0.88 0.04 60);
-  --accent-foreground: oklch(0.25 0.03 50);
+  --accent: oklch(0.9 0.04 35);
+  --accent-foreground: oklch(0.35 0.04 30);
 
-  --destructive: oklch(0.55 0.22 25);
-  --destructive-foreground: oklch(0.98 0.01 80);
+  --destructive: oklch(0.62 0.14 28);
+  --destructive-foreground: oklch(0.985 0.004 95);
 
-  --border: oklch(0.88 0.018 70);
-  --input: oklch(0.88 0.018 70);
-  --ring: oklch(0.55 0.09 35);
+  --border: oklch(0.9 0.012 240);
+  --input: oklch(0.9 0.012 240);
+  --ring: oklch(0.7 0.05 230);
 
-  /* Trans flag accents — reserved for highlights/badges */
-  --trans-blue: oklch(0.78 0.09 230);
-  --trans-pink: oklch(0.82 0.08 5);
+  /* Logo accents — washed, watercolour */
+  --trans-blue: oklch(0.84 0.05 235);
+  --trans-pink: oklch(0.86 0.06 30);
 
-  /* Chart series */
-  --chart-1: oklch(0.55 0.15 35);
-  --chart-2: oklch(0.65 0.12 230);
-  --chart-3: oklch(0.7 0.13 5);
-  --chart-4: oklch(0.6 0.12 145);
-  --chart-5: oklch(0.55 0.1 280);
+  /* Chart series — pulled from logo blobs */
+  --chart-1: oklch(0.78 0.08 35);   /* peach */
+  --chart-2: oklch(0.78 0.07 235);  /* sky */
+  --chart-3: oklch(0.82 0.06 145);  /* sage */
+  --chart-4: oklch(0.78 0.06 20);   /* dusty rose */
+  --chart-5: oklch(0.65 0.04 260);  /* slate */
 
-  /* Body system tags */
-  --system-endocrine: oklch(0.6 0.15 35);
-  --system-skin: oklch(0.7 0.13 60);
-  --system-body: oklch(0.6 0.12 145);
-  --system-mind: oklch(0.55 0.12 280);
-  --system-repro: oklch(0.65 0.13 5);
-  --system-voice: oklch(0.55 0.13 230);
+  /* Body system tags — same washed family */
+  --system-endocrine: oklch(0.72 0.09 35);
+  --system-skin: oklch(0.78 0.07 60);
+  --system-body: oklch(0.75 0.07 145);
+  --system-mind: oklch(0.65 0.06 270);
+  --system-repro: oklch(0.78 0.07 15);
+  --system-voice: oklch(0.7 0.08 235);
 }
 
 .dark {
