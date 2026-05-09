@@ -74,6 +74,8 @@ export function PkCalculator() {
 
   const series = useMemo(() => generatePkSeries(params, { stepDays: 1 }), [params]);
   const metrics = useMemo(() => computeMetrics(series, params), [series, params]);
+  const tmax = useMemo(() => singleDoseTmax(params), [params]);
+  const cssExpected = useMemo(() => steadyStateMean(params), [params]);
 
   const update = (patch: Partial<PkParams>) => setParams((p) => ({ ...p, ...patch }));
 
