@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+import lodiLogo from "@/assets/lodi-logo.png";
 import { EffectCards } from "@/components/EffectCards";
 import { EffectsTimeline } from "@/components/EffectsTimeline";
 import { MedicalDisclaimer } from "@/components/MedicalDisclaimer";
