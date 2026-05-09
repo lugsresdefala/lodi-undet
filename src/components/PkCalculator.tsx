@@ -177,18 +177,43 @@ export function PkCalculator() {
           />
 
           <div className="grid grid-cols-3 gap-2 border-t border-border pt-5">
-            <Metric label="Cmax" value={metrics.cmax} unit="ng/dL" hint="Concentração máxima no último intervalo" />
-            <Metric label="Cmédia" value={metrics.cmean} unit="ng/dL" hint="Exposição média (proxy de AUC/τ)" />
-            <Metric label="Cmin" value={metrics.ctrough} unit="ng/dL" hint="Vale antes da próxima dose" />
+            <Metric
+              label="Cmax"
+              value={metrics.cmax}
+              unit="ng/dL"
+              secondary={`${ngdlToNmol(metrics.cmax).toFixed(1)} nmol/L`}
+              hint={`Pico no último intervalo (dia ${metrics.cmaxDay})`}
+            />
+            <Metric
+              label="Cmédia"
+              value={metrics.cmean}
+              unit="ng/dL"
+              secondary={`${ngdlToNmol(metrics.cmean).toFixed(1)} nmol/L`}
+              hint="Exposição média (proxy AUC/τ)"
+            />
+            <Metric
+              label="Cmin"
+              value={metrics.ctrough}
+              unit="ng/dL"
+              secondary={`${ngdlToNmol(metrics.ctrough).toFixed(1)} nmol/L`}
+              hint={`Vale (dia ${metrics.ctroughDay})`}
+            />
           </div>
 
           <div className="rounded-md border border-border/60 bg-muted/30 p-3 text-[11px] leading-relaxed text-muted-foreground">
-            <span className="font-mono uppercase tracking-[0.16em] text-foreground/70">
-              Faixa de referência
-            </span>
-            <p className="mt-1">
-              264–916 ng/dL — intervalo harmonizado em adultos saudáveis (19–39 a),
-              Travison et al., <em>JCEM</em> 2017. Contexto, não alvo terapêutico individual.
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <span className="font-mono uppercase tracking-[0.16em] text-foreground/70">
+                Verificação analítica
+              </span>
+              <span className="font-mono text-[10px] text-foreground/60">
+                Tmax ≈ {tmax.toFixed(1)} d · Css,avg ≈ {Math.round(cssExpected)} ng/dL
+              </span>
+            </div>
+            <p className="mt-1.5">
+              Css,avg = F·D<sub>T</sub>/(Cl·τ), com D<sub>T</sub> = dose<sub>TU</sub>×0,6315
+              (razão MW T/TU). Tmax dose-única = ln(ka/ke)/(ka−ke). Valores devem
+              cair em 264–916 ng/dL (Travison <em>JCEM</em> 2017) e Tmax em 7–14 d
+              (Schubert <em>JCEM</em> 2004) com parâmetros típicos.
             </p>
           </div>
         </div>
