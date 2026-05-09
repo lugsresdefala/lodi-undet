@@ -331,11 +331,13 @@ function Metric({
   label,
   value,
   unit,
+  secondary,
   hint,
 }: {
   label: string;
   value: number;
   unit: string;
+  secondary?: string;
   hint?: string;
 }) {
   return (
@@ -343,6 +345,9 @@ function Metric({
       <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{label}</div>
       <div className="font-mono text-lg tabular-nums text-foreground">{Math.round(value)}</div>
       <div className="text-[10px] text-muted-foreground">{unit}</div>
+      {secondary ? (
+        <div className="font-mono text-[10px] text-foreground/60">{secondary}</div>
+      ) : null}
       {hint ? <div className="mt-1 text-[10px] leading-tight text-muted-foreground/80">{hint}</div> : null}
     </div>
   );
