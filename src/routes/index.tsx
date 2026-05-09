@@ -82,7 +82,8 @@ function Index() {
                 Notas, cronologia e farmacocinética.
               </h1>
               <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground">
-                Modelo farmacocinético da testosterona e janelas temporais de efeitos
+                Modelo farmacocinético do undecilato de testosteronapara ajuste
+                indiidualizado dos intervalos posológocos. Janelas temporais de efeitos
                 descritas na literatura (Endocrine Society 2017, WPATH SOC-8). Página
                 educativa, não dosimétrica.
               </p>
