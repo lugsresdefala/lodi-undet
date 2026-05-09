@@ -79,7 +79,7 @@ function Index() {
                 Hormonização com testosterona — referência clínica
               </span>
               <h1 className="mt-4 font-serif text-4xl font-medium leading-[1.1] tracking-tight md:text-5xl">
-                Notas, cronologia e farmacocinética.
+                Lógica para Dose Individualizada - Notas, cronologia e farmacocinética.
               </h1>
               <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground">
                 Modelo farmacocinético do undecilato de testosteronapara ajuste
