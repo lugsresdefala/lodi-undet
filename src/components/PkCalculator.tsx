@@ -32,19 +32,21 @@ interface ControlProps {
   max: number;
   step: number;
   unit: string;
+  hint: string;
+  source?: string;
   onChange: (v: number) => void;
 }
 
-function Control({ label, value, min, max, step, unit, onChange }: ControlProps) {
+function Control({ label, value, min, max, step, unit, hint, source, onChange }: ControlProps) {
   return (
     <div className="space-y-2">
-      <div className="flex items-baseline justify-between">
-        <Label className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+      <div className="flex items-baseline justify-between gap-2">
+        <Label className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
           {label}
         </Label>
         <span className="font-mono text-sm tabular-nums text-foreground">
           {value}
-          <span className="ml-1 text-xs text-muted-foreground">{unit}</span>
+          <span className="ml-1 text-[10px] text-muted-foreground">{unit}</span>
         </span>
       </div>
       <Slider
@@ -54,6 +56,12 @@ function Control({ label, value, min, max, step, unit, onChange }: ControlProps)
         step={step}
         onValueChange={(v) => onChange(v[0])}
       />
+      <p className="text-[11px] leading-snug text-muted-foreground">
+        {hint}
+        {source ? (
+          <span className="ml-1 font-mono text-[10px] text-foreground/60">— {source}</span>
+        ) : null}
+      </p>
     </div>
   );
 }
