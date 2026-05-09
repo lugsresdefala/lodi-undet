@@ -75,8 +75,11 @@ export function PkCalculator() {
               Modelação farmacocinética
             </CardTitle>
             <CardDescription className="mt-1 text-sm">
-              Estimativa visual da concentração sérica de testosterona após undecanoato IM,
-              com base em um modelo Bateman de um compartimento.
+              Concentração sérica de testosterona após undecilato IM em óleo de rícino
+              (1000 mg / 4 mL). Modelo Bateman de um compartimento em forma de
+              clearance, calibrado para cinética flip-flop conforme Schubert et al.
+              (JCEM 2004): t½ aparente terminal ≈ 33 d, Tmax ≈ 7–14 d. Esquema de
+              loading 0 + 6 sem (Endocrine Society 2017 / SmPC Nebido).
             </CardDescription>
           </div>
           <span
@@ -96,7 +99,7 @@ export function PkCalculator() {
         <div className="space-y-6">
           <Control
             label="Dose"
-            unit="mg"
+            unit="mg TU"
             value={params.doseMg}
             min={250}
             max={1500}
@@ -104,11 +107,11 @@ export function PkCalculator() {
             onChange={(v) => update({ doseMg: v })}
           />
           <Control
-            label="Intervalo"
+            label="Intervalo (manutenção)"
             unit="dias"
             value={params.intervalDays}
-            min={28}
-            max={140}
+            min={56}
+            max={126}
             step={7}
             onChange={(v) => update({ intervalDays: v })}
           />
@@ -122,22 +125,31 @@ export function PkCalculator() {
             onChange={(v) => update({ weightKg: v })}
           />
           <Control
-            label="t½ absorção"
+            label="t½ subida (libertação)"
             unit="d"
             value={params.absorptionHalfLifeD}
-            min={10}
-            max={40}
-            step={1}
+            min={2}
+            max={10}
+            step={0.5}
             onChange={(v) => update({ absorptionHalfLifeD: v })}
           />
           <Control
-            label="t½ eliminação"
+            label="t½ aparente terminal"
             unit="d"
             value={params.eliminationHalfLifeD}
-            min={1}
-            max={6}
-            step={0.5}
+            min={20}
+            max={50}
+            step={1}
             onChange={(v) => update({ eliminationHalfLifeD: v })}
+          />
+          <Control
+            label="Clearance"
+            unit="L/kg/d"
+            value={params.clearanceLPerKgPerDay}
+            min={12}
+            max={32}
+            step={1}
+            onChange={(v) => update({ clearanceLPerKgPerDay: v })}
           />
 
           <div className="grid grid-cols-3 gap-2 border-t border-border pt-5">
