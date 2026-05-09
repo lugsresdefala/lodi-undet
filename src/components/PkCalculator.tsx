@@ -297,12 +297,23 @@ export function PkCalculator() {
   );
 }
 
-function Metric({ label, value, unit }: { label: string; value: number; unit: string }) {
+function Metric({
+  label,
+  value,
+  unit,
+  hint,
+}: {
+  label: string;
+  value: number;
+  unit: string;
+  hint?: string;
+}) {
   return (
     <div>
       <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{label}</div>
       <div className="font-mono text-lg tabular-nums text-foreground">{Math.round(value)}</div>
       <div className="text-[10px] text-muted-foreground">{unit}</div>
+      {hint ? <div className="mt-1 text-[10px] leading-tight text-muted-foreground/80">{hint}</div> : null}
     </div>
   );
 }
