@@ -76,10 +76,10 @@ export function PkCalculator() {
 
   return (
     <Card className="border-border/70 bg-card/80 shadow-sm backdrop-blur">
-      <CardHeader>
+      <CardHeader className="px-4 pt-5 md:px-6 md:pt-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <CardTitle className="font-serif text-2xl font-medium tracking-tight md:text-3xl">
+          <div className="min-w-0">
+            <CardTitle className="font-serif text-xl font-medium tracking-tight sm:text-2xl md:text-3xl">
               Modelação farmacocinética
             </CardTitle>
             <CardDescription className="mt-1 text-sm">
