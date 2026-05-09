@@ -138,14 +138,14 @@ export function PkCalculator() {
             onChange={(v) => update({ weightKg: v })}
           />
           <Control
-            label="t½ subida (libertação)"
+            label="t½ subida (absorção)"
             unit="d"
             value={params.absorptionHalfLifeD}
             min={2}
-            max={10}
+            max={20}
             step={0.5}
-            hint="Meia-vida de absorção: rapidez com que o TU é libertado do depósito IM. Determina a fase ascendente e o Tmax (~7–14 d)."
-            source="Schubert 2004"
+            hint="Meia-vida de absorção (ka): rapidez com que o TU é libertado do depósito IM. Não confundir com Tmax — o Tmax (7–14 d, Schubert 2004) emerge da combinação de ka e ke; tipicamente ka corresponde a t½ ~3–6 d."
+            source="Schubert 2004 (Tmax 7–14 d)"
             onChange={(v) => update({ absorptionHalfLifeD: v })}
           />
           <Control
