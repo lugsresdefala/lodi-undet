@@ -2,18 +2,19 @@ export function MedicalDisclaimer() {
   return (
     <aside
       role="note"
-      aria-label="Aviso"
-      className="rounded-xl border border-destructive/30 bg-destructive/5 p-5 text-sm leading-relaxed text-foreground"
+      aria-label="Nota"
+      className="rounded-xl border border-border bg-muted/40 p-5 text-sm leading-relaxed text-foreground"
     >
-      <div className="mb-2 flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-destructive">
-        <span aria-hidden>●</span> Aviso
+      <div className="mb-2 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+        <span aria-hidden>●</span> Nota
       </div>
       <p>
-        Esta página é uma <strong>referência educativa</strong>. Não substitui avaliação,
-        prescrição ou acompanhamento por profissionais de saúde com experiência em
-        cuidados a pessoas trans. O modelo farmacocinético e as janelas temporais aqui
-        apresentados são aproximações baseadas em literatura agregada (WPATH SOC-8,
-        Endocrine Society 2017) e ignoram variações individuais significativas.
+        Página de <strong>referência educativa</strong>, complementar — e não substituta — do
+        acompanhamento clínico. As janelas temporais e o modelo farmacocinético são
+        aproximações baseadas em literatura agregada (WPATH SOC-8, Endocrine Society
+        2017); a variação individual é grande. Os efeitos descritos não são
+        intrinsecamente bons ou maus: o significado de cada um depende dos objectivos
+        e expectativas de cada pessoa.
       </p>
     </aside>
   );
