@@ -255,6 +255,15 @@ export function PkCalculator() {
           </ResponsiveContainer>
         </div>
       </CardContent>
+
+      <div className="border-t border-border/60 px-6 py-4 text-[11px] leading-relaxed text-muted-foreground">
+        <span className="font-mono uppercase tracking-[0.16em] text-foreground/70">Fontes —</span>{" "}
+        Schubert M et al. <em>JCEM</em> 2004;89:5429–34 (PK do TU 1000 mg IM, t½ aparente
+        33,9 d). Behre HM, Nieschlag E. <em>Eur J Endocrinol</em> 1999. Wang C et al.{" "}
+        <em>JCEM</em> 2004 (Cl ≈ 1500 L/d). Endocrine Society Clinical Practice Guideline
+        2017. Travison TG et al. <em>JCEM</em> 2017 (intervalo 264–916 ng/dL).{" "}
+        <span className="italic">Página educativa; não constitui orientação posológica.</span>
+      </div>
     </Card>
   );
 }
