@@ -1,59 +1,113 @@
-// Pharmacokinetic model — Bateman one-compartment with first-order absorption.
-// Used to estimate serum testosterone after intramuscular testosterone undecanoate (TU).
+// Modelo farmacocinético do undecilato de testosterona (TU) IM em óleo de rícino
+// (formulação tipo Nebido/Reandron 1000 mg / 4 mL).
 //
-// IMPORTANT: This is an educational model. Real-world TU PK shows wide
-// inter-individual variability. Use only as a visual reference, not a dosing tool.
+// Base na literatura:
+//   • Schubert M et al. JCEM 2004 — perfil PK após 1000 mg IM TU em castor oil:
+//     Tmax ≈ 7 d, t½ aparente terminal ≈ 33,9 d, Cmax ≈ 23–37 nmol/L (≈660–1070 ng/dL).
+//   • Behre HM, Nieschlag E. Eur J Endocrinol 1999 — TU IM long-acting; cinética
+//     de tipo "flip-flop" (a libertação a partir do depósito é a etapa limitante;
+//     o t½ aparente reflecte a libertação, não a eliminação intrínseca da T).
+//   • Wang C et al. JCEM 2004 — clearance metabólica da testosterona ≈ 1500 L/dia.
+//   • Endocrine Society Guideline 2017 / Nebido SmPC — esquema posológico:
+//     1000 mg em t = 0, repetir a 6 semanas, depois a cada 10–14 semanas.
+//   • Travison TG et al. JCEM 2017 — intervalo harmonizado de testosterona total
+//     em adultos saudáveis (19–39 anos): 264–916 ng/dL.
+//
+// IMPLEMENTAÇÃO. Modelo Bateman de um compartimento, expresso em forma de
+// clearance (Cl) em vez de volume de distribuição. Esta forma é numericamente
+// estável em cinética flip-flop, onde o Vd aparente perde significado físico:
+//
+//   C(t) = (F · D_T · ka · ke) / (Cl · (ka − ke)) · (e^(−ke·t) − e^(−ka·t))
+//
+// onde:
+//   D_T  = dose efectiva de testosterona (mg) = dose_TU × 0,6315 (razão MW T/TU)
+//   ka   = constante de subida (libertação rápida inicial do depósito)
+//   ke   = constante aparente terminal (limite por libertação do depósito)
+//   F    = biodisponibilidade (IM ≈ 1,0)
+//   Cl   = clearance metabólica da testosterona (L/dia)
+//
+// Em flip-flop convencional, a menor das duas constantes domina a cauda. Aqui
+// definimos ka > ke, tal que ke é o rate-limit (t½ aparente ≈ 33 d) e ka modela
+// a fase ascendente (Tmax ≈ 7–14 d).
+//
+// AVISO: ferramenta educativa; não substitui monitorização sérica nem ajuste
+// clínico individual. Variabilidade interindividual é elevada (CV 30–50%).
 
 export interface PkParams {
-  /** Dose in mg (e.g. 1000 mg TU = 631.5 mg testosterone after de-esterification) */
+  /** Dose de undecilato de testosterona em mg (Nebido/Reandron padrão = 1000 mg). */
   doseMg: number;
-  /** Dosing interval in days (typical: 84 = 12 weeks) */
+  /** Intervalo posológico em dias (Endocrine Society 2017: 70–98 d em manutenção). */
   intervalDays: number;
-  /** Body weight in kg — affects volume of distribution */
+  /** Peso corporal em kg — escala a clearance metabólica. */
   weightKg: number;
-  /** Absorption half-life in days (TU depot release; ~20–25 d typical) */
+  /** t½ de subida (libertação rápida do depósito IM); típico 3–6 d. */
   absorptionHalfLifeD: number;
-  /** Elimination half-life in days (testosterone after release; ~2–3 d) */
+  /** t½ aparente terminal (flip-flop); Schubert 2004 ≈ 33,9 d. */
   eliminationHalfLifeD: number;
-  /** Bioavailability fraction (0–1). TU IM ~ 0.85 */
+  /** Biodisponibilidade (IM ≈ 1,0). */
   bioavailability: number;
-  /** Number of doses simulated in the build-up */
+  /** Clearance metabólica da testosterona em L/kg/dia; Wang 2004 ≈ 21 L/kg/d. */
+  clearanceLPerKgPerDay: number;
+  /** Número de doses simuladas (incluindo loading). */
   doses?: number;
+  /** Esquema de loading (Endocrine Society / Nebido): 0, 6w, depois intervalo. */
+  loading?: boolean;
 }
 
 export const DEFAULT_PK: PkParams = {
   doseMg: 1000,
-  intervalDays: 84,
+  intervalDays: 84, // 12 semanas
   weightKg: 70,
-  absorptionHalfLifeD: 22,
-  eliminationHalfLifeD: 2.5,
-  bioavailability: 0.85,
+  absorptionHalfLifeD: 4,
+  eliminationHalfLifeD: 33,
+  bioavailability: 1.0,
+  clearanceLPerKgPerDay: 21,
   doses: 6,
+  loading: true,
 };
 
 const LN2 = Math.LN2;
+/** Razão de peso molecular: testosterona (288,4) / undecilato (456,7). */
+const MW_RATIO_T_TU = 0.6315;
 
-/** Single-dose Bateman equation in ng/dL units. */
+/** Tempos das doses, em dias, considerando esquema de loading. */
+export function doseTimes(p: PkParams): number[] {
+  const n = p.doses ?? 6;
+  const times: number[] = [0];
+  if (p.loading) {
+    // Endocrine Society 2017 / Nebido SmPC: segunda dose às 6 semanas (42 d).
+    times.push(42);
+    for (let i = 2; i < n; i++) {
+      times.push(times[i - 1] + p.intervalDays);
+    }
+  } else {
+    for (let i = 1; i < n; i++) {
+      times.push(i * p.intervalDays);
+    }
+  }
+  return times;
+}
+
+/** Concentração após uma única dose, em ng/dL. */
 export function singleDoseConcentration(t: number, p: PkParams): number {
   if (t <= 0) return 0;
   const ka = LN2 / p.absorptionHalfLifeD;
   const ke = LN2 / p.eliminationHalfLifeD;
-  // Volume of distribution ~ 1.0 L/kg for testosterone
-  const Vd_L = 1.0 * p.weightKg;
-  // TU 1000 mg ≈ 631.5 mg testosterone; we approximate via molecular ratio
-  const testosteroneMg = p.doseMg * 0.6315;
+  if (Math.abs(ka - ke) < 1e-9) return 0;
+  const Cl = p.clearanceLPerKgPerDay * p.weightKg; // L/dia
+  const D_T = p.doseMg * MW_RATIO_T_TU; // mg testosterona equivalente
   const F = p.bioavailability;
-  // Convert mg / L → ng/dL : 1 mg/L = 100,000 ng/dL
-  const factor = (F * testosteroneMg * ka) / (Vd_L * (ka - ke)) * 100_000;
+  // Conversão: mg/L → ng/dL  (×100 000)
+  const factor = (F * D_T * ka * ke) / (Cl * (ka - ke)) * 100_000;
   return factor * (Math.exp(-ke * t) - Math.exp(-ka * t));
 }
 
-/** Superposition of repeated doses spaced `intervalDays` apart. */
+/** Sobreposição linear (princípio da superposição) das doses do esquema. */
 export function steadyStateConcentration(t: number, p: PkParams): number {
-  const n = p.doses ?? 6;
+  const times = doseTimes(p);
   let sum = 0;
-  for (let i = 0; i < n; i++) {
-    const tau = t - i * p.intervalDays;
+  for (const t0 of times) {
+    const tau = t - t0;
     if (tau > 0) sum += singleDoseConcentration(tau, p);
   }
   return sum;
@@ -67,13 +121,16 @@ export interface PkSeriesPoint {
 
 export function generatePkSeries(p: PkParams, opts?: { stepDays?: number }): PkSeriesPoint[] {
   const step = opts?.stepDays ?? 1;
-  const totalDays = (p.doses ?? 6) * p.intervalDays + 30;
+  const times = doseTimes(p);
+  const lastDose = times[times.length - 1];
+  const totalDays = lastDose + p.intervalDays;
+  const markerSet = new Set(times);
   const series: PkSeriesPoint[] = [];
   for (let t = 0; t <= totalDays; t += step) {
     series.push({
       day: t,
       concentration: Math.max(0, steadyStateConcentration(t, p)),
-      doseMarker: t > 0 && t % p.intervalDays === 0,
+      doseMarker: markerSet.has(t),
     });
   }
   return series;
@@ -88,11 +145,11 @@ export interface PkMetrics {
   inRange: boolean;
 }
 
-/** Compute PK metrics over the final dosing interval (steady state proxy). */
+/** Métricas no último intervalo posológico (proxy de estado estacionário). */
 export function computeMetrics(series: PkSeriesPoint[], p: PkParams): PkMetrics {
-  const n = p.doses ?? 6;
-  const startDay = (n - 1) * p.intervalDays;
-  const endDay = n * p.intervalDays;
+  const times = doseTimes(p);
+  const startDay = times[times.length - 1];
+  const endDay = startDay + p.intervalDays;
   const window = series.filter((pt) => pt.day >= startDay && pt.day <= endDay);
   if (window.length === 0) {
     return { cmax: 0, cmaxDay: 0, ctrough: 0, ctroughDay: 0, cmean: 0, inRange: false };
@@ -114,7 +171,12 @@ export function computeMetrics(series: PkSeriesPoint[], p: PkParams): PkMetrics 
     sum += pt.concentration;
   }
   const cmean = sum / window.length;
-  // Adult male reference range ≈ 264–916 ng/dL
+  // Intervalo harmonizado adulto (Travison 2017): 264–916 ng/dL.
   const inRange = cmean >= 264 && cmean <= 916;
   return { cmax, cmaxDay, ctrough, ctroughDay, cmean, inRange };
+}
+
+/** Conversão ng/dL → nmol/L (factor 0,03467 para testosterona). */
+export function ngdlToNmol(ngdl: number): number {
+  return ngdl * 0.03467;
 }
