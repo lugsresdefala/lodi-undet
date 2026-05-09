@@ -285,7 +285,7 @@ export function PkCalculator() {
         </div>
       </CardContent>
 
-      <div className="border-t border-border/60 px-6 py-4 text-[11px] leading-relaxed text-muted-foreground">
+      <div className="border-t border-border/60 px-4 py-4 text-[11px] leading-relaxed text-muted-foreground md:px-6">
         <span className="font-mono uppercase tracking-[0.16em] text-foreground/70">Fontes —</span>{" "}
         Schubert M et al. <em>JCEM</em> 2004;89:5429–34 (PK do TU 1000 mg IM, t½ aparente
         33,9 d). Behre HM, Nieschlag E. <em>Eur J Endocrinol</em> 1999. Wang C et al.{" "}
