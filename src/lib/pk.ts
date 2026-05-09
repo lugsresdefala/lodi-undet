@@ -93,13 +93,32 @@ export function singleDoseConcentration(t: number, p: PkParams): number {
   if (t <= 0) return 0;
   const ka = LN2 / p.absorptionHalfLifeD;
   const ke = LN2 / p.eliminationHalfLifeD;
-  if (Math.abs(ka - ke) < 1e-9) return 0;
   const Cl = p.clearanceLPerKgPerDay * p.weightKg; // L/dia
   const D_T = p.doseMg * MW_RATIO_T_TU; // mg testosterona equivalente
   const F = p.bioavailability;
   // Conversão: mg/L → ng/dL  (×100 000)
-  const factor = (F * D_T * ka * ke) / (Cl * (ka - ke)) * 100_000;
-  return factor * (Math.exp(-ke * t) - Math.exp(-ka * t));
+  const base = (F * D_T) / Cl * 100_000;
+  // Caso degenerado ka ≈ ke: limite analítico C(t) = base·k²·t·e^(−k·t).
+  if (Math.abs(ka - ke) < 1e-6) {
+    const k = (ka + ke) / 2;
+    return base * k * k * t * Math.exp(-k * t);
+  }
+  return (base * ka * ke) / (ka - ke) * (Math.exp(-ke * t) - Math.exp(-ka * t));
+}
+
+/** Tmax analítico de dose única (dias). */
+export function singleDoseTmax(p: PkParams): number {
+  const ka = LN2 / p.absorptionHalfLifeD;
+  const ke = LN2 / p.eliminationHalfLifeD;
+  if (Math.abs(ka - ke) < 1e-6) return 1 / ((ka + ke) / 2);
+  return Math.log(ka / ke) / (ka - ke);
+}
+
+/** Css média esperada em estado estacionário (ng/dL). */
+export function steadyStateMean(p: PkParams): number {
+  const Cl = p.clearanceLPerKgPerDay * p.weightKg;
+  const D_T = p.doseMg * MW_RATIO_T_TU;
+  return (p.bioavailability * D_T) / (Cl * p.intervalDays) * 100_000;
 }
 
 /** Sobreposição linear (princípio da superposição) das doses do esquema. */
