@@ -577,9 +577,38 @@ export function PkCalculator() {
                 labelFormatter={(v) => `Dia ${v}`}
               />
 
+              {showBand ? (
+                <>
+                  <Area
+                    type="monotone"
+                    dataKey={(d: Record<string, number>) => [d[bandLow], d[bandHigh]]}
+                    name={bandRange === "p5-p95" ? "P5–P95" : "P25–P75"}
+                    stroke="var(--color-chart-3)"
+                    strokeOpacity={0.35}
+                    strokeWidth={1}
+                    fill="var(--color-chart-3)"
+                    fillOpacity={0.14}
+                    isAnimationActive={false}
+                    activeDot={false}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="p50"
+                    name="Mediana populacional"
+                    stroke="var(--color-chart-4)"
+                    strokeWidth={1.5}
+                    strokeDasharray="4 3"
+                    fill="none"
+                    isAnimationActive={false}
+                    activeDot={false}
+                  />
+                </>
+              ) : null}
+
               <Area
                 type="monotone"
                 dataKey="concentration"
+                name="Determinístico"
                 stroke="url(#pk-stroke)"
                 strokeWidth={2.5}
                 fill="url(#pk-fill)"
