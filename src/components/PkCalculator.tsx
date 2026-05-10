@@ -130,24 +130,24 @@ export function PkCalculator() {
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div className="min-w-0">
             <CardTitle className="font-serif text-xl font-medium tracking-tight sm:text-2xl md:text-3xl">
-              Modelação farmacocinética
+              Concentração no sangue ao longo do tempo
             </CardTitle>
-            <CardDescription className="mt-1 text-sm">
-              Concentração sérica de testosterona após undecilato IM em óleo de rícino
-              (1000 mg / 4 mL). Modelo Bateman de um compartimento em forma de
-              clearance, calibrado para cinética flip-flop conforme Schubert et al.
-              (JCEM 2004): t½ aparente terminal ≈ 33 d, Tmax ≈ 7–14 d. Esquema de
-              loading 0 + 6 sem (Endocrine Society 2017 / SmPC Nebido).
+            <CardDescription className="mt-2 text-sm leading-relaxed">
+              Simulação da testosterona sérica após injecções intramusculares de undecilato de
+              testosterona em óleo de rícino (1000 mg / 4 mL, tipo Nebido/Reandron). Usa um modelo
+              farmacocinético calibrado para o perfil observado por Schubert et al. (JCEM 2004): pico
+              aos 7–14 dias e meia-vida aparente de ~33 dias. Inclui dose de ataque às 6 semanas
+              segundo Endocrine Society 2017.
             </CardDescription>
           </div>
           <span
-            className={`rounded-full px-3 py-1 font-mono text-[11px] uppercase tracking-[0.16em] ${
+            className={`rounded-full px-3 py-1.5 text-xs font-medium ${
               metrics.inRange
                 ? "bg-[color:var(--color-system-body)]/15 text-[color:var(--color-system-body)]"
                 : "bg-destructive/10 text-destructive"
             }`}
           >
-            {metrics.inRange ? "Dentro do intervalo" : "Fora do intervalo"}
+            {metrics.inRange ? "Dentro do intervalo de referência" : "Fora do intervalo de referência"}
           </span>
         </div>
       </CardHeader>
