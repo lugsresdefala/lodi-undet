@@ -117,8 +117,16 @@ function Index() {
       </main>
 
       <footer className="border-t border-border/70">
-        <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-8 text-xs text-muted-foreground md:flex-row md:items-center md:justify-between md:px-8">
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-8 text-xs text-muted-foreground md:flex-row md:items-center md:justify-between md:px-8">
           <p>lodi-t · página de referência, sem fim comercial.</p>
+          <a
+            href="https://diversidadebarrafunda.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline-offset-4 transition-colors hover:text-foreground hover:underline"
+          >
+            diversidadebarrafunda.org ↗
+          </a>
           <p className="font-mono uppercase tracking-[0.18em]">
             WPATH SOC-8 · Endocrine Society 2017
           </p>
