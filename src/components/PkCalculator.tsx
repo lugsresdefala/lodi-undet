@@ -128,11 +128,11 @@ export function PkCalculator() {
             label="Intervalo (manutenção)"
             unit="dias"
             value={params.intervalDays}
-            min={56}
-            max={126}
+            min={42}
+            max={168}
             step={7}
-            hint="Tempo entre doses de manutenção. Ajustável individualmente conforme níveis séricos — tipicamente 70–98 d (10–14 semanas)."
-            source="Endocrine Society 2017"
+            hint="Tempo entre doses de manutenção. Tipicamente 70–98 d (10–14 sem) conforme Endocrine Society 2017 / SmPC Nebido, mas a literatura documenta encurtamento até 6 sem (42 d) e prolongamento até 24 sem (168 d) em ajuste individualizado guiado por níveis séricos (Saad 2008; Zitzmann 2013)."
+            source="ES 2017 · Saad 2008 · Zitzmann 2013"
             onChange={(v) => update({ intervalDays: v })}
           />
           <Control
