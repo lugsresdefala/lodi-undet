@@ -316,21 +316,22 @@ export function PkCalculator() {
           </section>
 
           {/* === Variação populacional (controlos do gráfico) === */}
-          <section aria-labelledby="pop-heading" className="space-y-3 rounded-lg border border-border/60 bg-[color:var(--color-chart-3)]/8 p-3.5">
-            <div className="flex items-baseline justify-between border-b border-border/50 pb-1.5">
-              <h3 id="pop-heading" className="font-mono text-[11px] uppercase tracking-[0.16em] text-foreground/80">
-                Variação populacional
+          <section aria-labelledby="pop-heading" className="space-y-3 rounded-lg border border-border/60 bg-[color:var(--color-chart-3)]/8 p-4">
+            <div className="flex items-baseline justify-between border-b border-border/50 pb-2">
+              <h3 id="pop-heading" className="text-sm font-semibold text-foreground">
+                Variação entre pessoas
               </h3>
-              <span className="font-mono text-[10px] text-muted-foreground">Monte Carlo</span>
+              <span className="text-xs text-muted-foreground">simulação Monte Carlo</span>
             </div>
 
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
-                <Label className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                  Mostrar faixa populacional
+                <Label className="text-sm font-medium text-foreground">
+                  Mostrar faixa de variação
                 </Label>
-                <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
-                  Sobrepõe percentis de uma coorte simulada (Cl, ka, ke log-normais).
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                  Sobrepõe a faixa onde caem 90% (ou 50%) das pessoas, simulando variação biológica
+                  individual na depuração e na velocidade de absorção/eliminação.
                 </p>
               </div>
               <Switch checked={showBand} onCheckedChange={setShowBand} />
@@ -338,43 +339,46 @@ export function PkCalculator() {
 
             {showBand ? (
               <>
-                <div className="flex flex-wrap gap-1.5">
-                  {([
-                    { id: "p5-p95", label: "P5–P95" },
-                    { id: "p25-p75", label: "P25–P75 (IQR)" },
-                  ] as const).map((opt) => (
-                    <button
-                      key={opt.id}
-                      type="button"
-                      onClick={() => setBandRange(opt.id)}
-                      className={`rounded-full border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] transition ${
-                        bandRange === opt.id
-                          ? "border-[color:var(--color-chart-3)] bg-[color:var(--color-chart-3)]/15 text-foreground"
-                          : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
+                <div>
+                  <Label className="mb-1.5 block text-xs text-muted-foreground">Largura da faixa</Label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {([
+                      { id: "p5-p95", label: "90% das pessoas (P5–P95)" },
+                      { id: "p25-p75", label: "50% central (P25–P75)" },
+                    ] as const).map((opt) => (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        onClick={() => setBandRange(opt.id)}
+                        className={`rounded-full border px-3 py-1.5 text-xs font-medium transition ${
+                          bandRange === opt.id
+                            ? "border-[color:var(--color-chart-3)] bg-[color:var(--color-chart-3)]/15 text-foreground"
+                            : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
                 <Control
-                  label="Indivíduos simulados (N)"
+                  label="Número de pessoas simuladas"
                   unit=""
                   value={nSubjects}
                   min={50}
                   max={1000}
-                  step={50}
-                  hint="Tamanho da coorte Monte Carlo. Mais indivíduos = percentis mais estáveis, simulação mais lenta."
+                  step={10}
+                  hint="Tamanho da coorte simulada. Mais pessoas = faixa mais estável, simulação mais lenta."
                   onChange={setNSubjects}
                 />
                 <Control
-                  label="CV inter-individual"
+                  label="Variabilidade entre pessoas"
                   unit="%"
                   value={cvPct}
                   min={10}
                   max={60}
-                  step={5}
-                  hint="Coeficiente de variação log-normal sobre Cl (e ~70% disso em ka/ke). TU IM reporta CV ≈ 30–50%."
+                  step={1}
+                  hint="Quanto a fisiologia varia entre indivíduos (coeficiente de variação). Estudos com undecilato IM reportam tipicamente 30–50%."
                   source="Behre 1999 · Zitzmann 2013"
                   onChange={setCvPct}
                 />
@@ -384,57 +388,57 @@ export function PkCalculator() {
 
           {/* === Parâmetros PK (avançado) === */}
           <details className="group rounded-lg border border-border/60 bg-muted/20 open:bg-muted/30">
-            <summary className="flex cursor-pointer items-baseline justify-between gap-2 px-3.5 py-2.5 font-mono text-[11px] uppercase tracking-[0.16em] text-foreground/70 transition hover:text-foreground">
-              <span>Parâmetros farmacocinéticos · avançado</span>
-              <span className="text-[10px] text-muted-foreground transition group-open:rotate-180">▾</span>
+            <summary className="flex cursor-pointer items-baseline justify-between gap-2 px-4 py-3 text-sm font-medium text-foreground/80 transition hover:text-foreground">
+              <span>Parâmetros farmacocinéticos avançados</span>
+              <span className="text-xs text-muted-foreground transition group-open:rotate-180">▾</span>
             </summary>
-            <div className="space-y-4 px-3.5 pb-4 pt-1">
+            <div className="space-y-4 px-4 pb-4 pt-1">
               <Control
-                label="t½ subida (absorção)"
-                unit="d"
+                label="Meia-vida de absorção"
+                unit="dias"
                 value={params.absorptionHalfLifeD}
                 min={2}
                 max={20}
-                step={0.5}
-                hint="Meia-vida de absorção (ka): libertação rápida do depósito IM. Tmax (7–14 d, Schubert 2004) emerge da combinação ka/ke."
+                step={0.1}
+                hint="Tempo para metade do fármaco ser libertada do depósito intramuscular. Determina a velocidade de subida até ao pico (7–14 dias, Schubert 2004)."
                 source="Schubert 2004"
                 onChange={(v) => update({ absorptionHalfLifeD: v })}
               />
               <Control
-                label="t½ aparente terminal"
-                unit="d"
+                label="Meia-vida aparente terminal"
+                unit="dias"
                 value={params.eliminationHalfLifeD}
                 min={20}
                 max={50}
-                step={1}
-                hint="Meia-vida aparente da fase descendente. Em flip-flop reflecte libertação do depósito (~33 d), não a eliminação intrínseca da T."
+                step={0.5}
+                hint="Tempo para a concentração cair para metade na fase descendente. Para o undecilato IM (~33 dias) reflecte a libertação lenta do depósito, não a eliminação intrínseca da testosterona."
                 source="Schubert 2004 / Behre 1999"
                 onChange={(v) => update({ eliminationHalfLifeD: v })}
               />
               <Control
-                label="Clearance"
-                unit="L/kg/d"
+                label="Depuração metabólica"
+                unit="L/kg/dia"
                 value={params.clearanceLPerKgPerDay}
                 min={12}
                 max={32}
-                step={1}
-                hint="Clearance metabólica da T — define directamente a Cmédia em estado estacionário."
-                source="Wang 2004 (~21 L/kg/d)"
+                step={0.5}
+                hint="Volume de sangue depurado de testosterona por kg e por dia. Determina directamente a concentração média no estado estacionário."
+                source="Wang 2004 (~21 L/kg/dia)"
                 onChange={(v) => update({ clearanceLPerKgPerDay: v })}
               />
-              <div className="rounded-md border border-border/60 bg-card/60 p-3 text-[11px] leading-relaxed text-muted-foreground">
+              <div className="rounded-md border border-border/60 bg-card/60 p-3 text-xs leading-relaxed text-muted-foreground">
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
-                  <span className="font-mono uppercase tracking-[0.16em] text-foreground/70">
+                  <span className="font-medium text-foreground/80">
                     Verificação analítica
                   </span>
-                  <span className="font-mono text-[10px] text-foreground/60">
-                    Tmax ≈ {tmax.toFixed(1)} d · Css,avg ≈ {Math.round(cssExpected)} ng/dL
+                  <span className="font-mono text-[11px] text-foreground/60">
+                    pico previsto ≈ dia {tmax.toFixed(1)} · média prevista ≈ {Math.round(cssExpected)} ng/dL
                   </span>
                 </div>
                 <p className="mt-1.5">
-                  Css,avg = F·D<sub>T</sub>/(Cl·τ), com D<sub>T</sub> = dose<sub>TU</sub>×0,6315.
-                  Tmax dose-única = ln(ka/ke)/(ka−ke). Esperado: 264–916 ng/dL (Travison 2017),
-                  Tmax 7–14 d (Schubert 2004).
+                  Concentração média = biodisponibilidade × dose efectiva ÷ (depuração × intervalo). A dose
+                  efectiva de testosterona é 63% da dose de undecilato (razão de pesos moleculares).
+                  Valores esperados: 264–916 ng/dL (Travison 2017); pico ao dia 7–14 (Schubert 2004).
                 </p>
               </div>
             </div>
