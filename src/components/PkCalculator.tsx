@@ -293,6 +293,88 @@ export function PkCalculator() {
               hint="Escala a clearance metabólica total (Cl = Cl/kg × peso)."
               onChange={(v) => update({ weightKg: v })}
             />
+            <div className="flex items-start justify-between gap-3 rounded-md border border-border/60 bg-card/60 px-3 py-2.5">
+              <div className="min-w-0">
+                <Label className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                  Dose de ataque (loading)
+                </Label>
+                <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
+                  Segunda dose às 6 semanas após a primeira (ES 2017 / SmPC Nebido) para acelerar
+                  o estado estacionário. Desligar para esquema τ-em-τ desde t = 0.
+                </p>
+              </div>
+              <Switch
+                checked={params.loading ?? true}
+                onCheckedChange={(v) => update({ loading: v })}
+              />
+            </div>
+          </section>
+
+          {/* === Variação populacional (controlos do gráfico) === */}
+          <section aria-labelledby="pop-heading" className="space-y-3 rounded-lg border border-border/60 bg-[color:var(--color-chart-3)]/8 p-3.5">
+            <div className="flex items-baseline justify-between border-b border-border/50 pb-1.5">
+              <h3 id="pop-heading" className="font-mono text-[11px] uppercase tracking-[0.16em] text-foreground/80">
+                Variação populacional
+              </h3>
+              <span className="font-mono text-[10px] text-muted-foreground">Monte Carlo</span>
+            </div>
+
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <Label className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                  Mostrar faixa populacional
+                </Label>
+                <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
+                  Sobrepõe percentis de uma coorte simulada (Cl, ka, ke log-normais).
+                </p>
+              </div>
+              <Switch checked={showBand} onCheckedChange={setShowBand} />
+            </div>
+
+            {showBand ? (
+              <>
+                <div className="flex flex-wrap gap-1.5">
+                  {([
+                    { id: "p5-p95", label: "P5–P95" },
+                    { id: "p25-p75", label: "P25–P75 (IQR)" },
+                  ] as const).map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => setBandRange(opt.id)}
+                      className={`rounded-full border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] transition ${
+                        bandRange === opt.id
+                          ? "border-[color:var(--color-chart-3)] bg-[color:var(--color-chart-3)]/15 text-foreground"
+                          : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+                <Control
+                  label="Indivíduos simulados (N)"
+                  unit=""
+                  value={nSubjects}
+                  min={50}
+                  max={1000}
+                  step={50}
+                  hint="Tamanho da coorte Monte Carlo. Mais indivíduos = percentis mais estáveis, simulação mais lenta."
+                  onChange={setNSubjects}
+                />
+                <Control
+                  label="CV inter-individual"
+                  unit="%"
+                  value={cvPct}
+                  min={10}
+                  max={60}
+                  step={5}
+                  hint="Coeficiente de variação log-normal sobre Cl (e ~70% disso em ka/ke). TU IM reporta CV ≈ 30–50%."
+                  source="Behre 1999 · Zitzmann 2013"
+                  onChange={setCvPct}
+                />
+              </>
+            ) : null}
           </section>
 
           {/* === Parâmetros PK (avançado) === */}
