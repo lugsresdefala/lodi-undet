@@ -641,6 +641,7 @@ export function PkCalculator() {
 
 function Metric({
   label,
+  acronym,
   value,
   unit,
   secondary,
@@ -648,6 +649,7 @@ function Metric({
   emphasis = false,
 }: {
   label: string;
+  acronym?: string;
   value: number;
   unit: string;
   secondary?: string;
@@ -658,17 +660,24 @@ function Metric({
     <div
       className={
         emphasis
-          ? "rounded-md border border-[color:var(--color-chart-2)]/40 bg-card/70 px-2 py-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]"
+          ? "rounded-md border border-[color:var(--color-chart-2)]/40 bg-card/70 px-2.5 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]"
           : "px-1"
       }
     >
-      <div className={`text-[10px] uppercase tracking-[0.18em] ${emphasis ? "text-[color:var(--color-chart-2)]" : "text-muted-foreground"}`}>{label}</div>
-      <div className={`font-mono tabular-nums text-foreground ${emphasis ? "text-xl font-medium" : "text-lg"}`}>{Math.round(value)}</div>
-      <div className="text-[10px] text-muted-foreground">{unit}</div>
+      <div className="flex items-baseline gap-1.5">
+        <span className={`text-xs font-medium ${emphasis ? "text-[color:var(--color-chart-2)]" : "text-foreground"}`}>
+          {label}
+        </span>
+        {acronym ? (
+          <span className="font-mono text-[10px] text-muted-foreground">({acronym})</span>
+        ) : null}
+      </div>
+      <div className={`font-mono tabular-nums text-foreground ${emphasis ? "text-2xl font-semibold" : "text-xl"}`}>{Math.round(value)}</div>
+      <div className="text-[11px] text-muted-foreground">{unit}</div>
       {secondary ? (
-        <div className="font-mono text-[10px] text-foreground/60">{secondary}</div>
+        <div className="font-mono text-[11px] text-foreground/60">{secondary}</div>
       ) : null}
-      {hint ? <div className="mt-1 text-[10px] leading-tight text-muted-foreground/80">{hint}</div> : null}
+      {hint ? <div className="mt-1 text-[11px] leading-tight text-muted-foreground/80">{hint}</div> : null}
     </div>
   );
 }
