@@ -439,7 +439,7 @@ export function PkCalculator() {
         {/* Chart */}
         <div className="h-[260px] w-full sm:h-[320px] md:h-[360px]">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={series} margin={{ top: 10, right: 16, left: 0, bottom: 0 }}>
+            <AreaChart data={chartData} margin={{ top: 10, right: 16, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="pk-fill" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="var(--color-chart-1)" stopOpacity={0.55} />
