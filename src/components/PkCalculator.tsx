@@ -495,17 +495,25 @@ function Metric({
   unit,
   secondary,
   hint,
+  emphasis = false,
 }: {
   label: string;
   value: number;
   unit: string;
   secondary?: string;
   hint?: string;
+  emphasis?: boolean;
 }) {
   return (
-    <div>
-      <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{label}</div>
-      <div className="font-mono text-lg tabular-nums text-foreground">{Math.round(value)}</div>
+    <div
+      className={
+        emphasis
+          ? "rounded-md border border-[color:var(--color-chart-2)]/40 bg-card/70 px-2 py-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]"
+          : "px-1"
+      }
+    >
+      <div className={`text-[10px] uppercase tracking-[0.18em] ${emphasis ? "text-[color:var(--color-chart-2)]" : "text-muted-foreground"}`}>{label}</div>
+      <div className={`font-mono tabular-nums text-foreground ${emphasis ? "text-xl font-medium" : "text-lg"}`}>{Math.round(value)}</div>
       <div className="text-[10px] text-muted-foreground">{unit}</div>
       {secondary ? (
         <div className="font-mono text-[10px] text-foreground/60">{secondary}</div>
