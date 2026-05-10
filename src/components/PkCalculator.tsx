@@ -227,9 +227,22 @@ export function PkCalculator() {
             <AreaChart data={series} margin={{ top: 10, right: 16, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="pk-fill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="var(--color-chart-1)" stopOpacity={0.5} />
-                  <stop offset="100%" stopColor="var(--color-chart-1)" stopOpacity={0.02} />
+                  <stop offset="0%" stopColor="var(--color-chart-1)" stopOpacity={0.55} />
+                  <stop offset="45%" stopColor="var(--color-chart-2)" stopOpacity={0.32} />
+                  <stop offset="100%" stopColor="var(--color-chart-3)" stopOpacity={0.04} />
                 </linearGradient>
+                <linearGradient id="pk-stroke" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="var(--color-chart-2)" />
+                  <stop offset="55%" stopColor="var(--color-chart-1)" />
+                  <stop offset="100%" stopColor="var(--color-chart-4)" />
+                </linearGradient>
+                <filter id="pk-glow" x="-10%" y="-20%" width="120%" height="140%">
+                  <feGaussianBlur stdDeviation="3" result="b" />
+                  <feMerge>
+                    <feMergeNode in="b" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
               </defs>
 
               <CartesianGrid stroke="var(--color-border)" strokeDasharray="2 4" vertical={false} />
