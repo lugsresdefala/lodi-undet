@@ -123,157 +123,204 @@ export function PkCalculator() {
 
       <CardContent className="grid gap-8 px-4 pb-6 md:px-6 lg:grid-cols-[minmax(0,1fr)_1.6fr]">
         {/* Inputs */}
-        <div className="space-y-5">
-          <Control
-            label="Dose"
-            unit="mg TU"
-            value={params.doseMg}
-            min={250}
-            max={1500}
-            step={50}
-            hint="Quantidade de undecilato de testosterona (TU) administrada por injeção IM. Padrão: 1000 mg em 4 mL de óleo de rícino."
-            source="SmPC Nebido / Reandron"
-            onChange={(v) => update({ doseMg: v })}
-          />
-          <Control
-            label="Intervalo (manutenção)"
-            unit="dias"
-            value={params.intervalDays}
-            min={42}
-            max={168}
-            step={7}
-            hint="Tempo entre doses de manutenção. Tipicamente 70–98 d (10–14 sem) conforme Endocrine Society 2017 / SmPC Nebido, mas a literatura documenta encurtamento até 6 sem (42 d) e prolongamento até 24 sem (168 d) em ajuste individualizado guiado por níveis séricos (Saad 2008; Zitzmann 2013)."
-            source="ES 2017 · Saad 2008 · Zitzmann 2013"
-            onChange={(v) => update({ intervalDays: v })}
-          />
-          <Control
-            label="Peso"
-            unit="kg"
-            value={params.weightKg}
-            min={45}
-            max={130}
-            step={1}
-            hint="Peso corporal — escala a clearance metabólica total (Cl total = Cl/kg × peso)."
-            onChange={(v) => update({ weightKg: v })}
-          />
-          <Control
-            label="t½ subida (absorção)"
-            unit="d"
-            value={params.absorptionHalfLifeD}
-            min={2}
-            max={20}
-            step={0.5}
-            hint="Meia-vida de absorção (ka): rapidez com que o TU é libertado do depósito IM. Não confundir com Tmax — o Tmax (7–14 d, Schubert 2004) emerge da combinação de ka e ke; tipicamente ka corresponde a t½ ~3–6 d."
-            source="Schubert 2004 (Tmax 7–14 d)"
-            onChange={(v) => update({ absorptionHalfLifeD: v })}
-          />
-          <Control
-            label="t½ aparente terminal"
-            unit="d"
-            value={params.eliminationHalfLifeD}
-            min={20}
-            max={50}
-            step={1}
-            hint="Meia-vida aparente da fase descendente. Em cinética flip-flop reflecte a libertação lenta do depósito, não a eliminação intrínseca da T (~33 d)."
-            source="Schubert 2004 / Behre 1999"
-            onChange={(v) => update({ eliminationHalfLifeD: v })}
-          />
-          <Control
-            label="Clearance"
-            unit="L/kg/d"
-            value={params.clearanceLPerKgPerDay}
-            min={12}
-            max={32}
-            step={1}
-            hint="Clearance metabólica da testosterona — volume de plasma depurado por dia por kg. Define a concentração média em estado estacionário."
-            source="Wang 2004 (~21 L/kg/d)"
-            onChange={(v) => update({ clearanceLPerKgPerDay: v })}
-          />
-
-          <div className="grid grid-cols-3 gap-2 border-t border-border pt-5">
-            <Metric
-              label="Cmax"
-              value={metrics.cmax}
-              unit="ng/dL"
-              secondary={`${ngdlToNmol(metrics.cmax).toFixed(1)} nmol/L`}
-              hint={`Pico no último intervalo (dia ${metrics.cmaxDay})`}
-            />
-            <Metric
-              label="Cmédia"
-              value={metrics.cmean}
-              unit="ng/dL"
-              secondary={`${ngdlToNmol(metrics.cmean).toFixed(1)} nmol/L`}
-              hint="Exposição média (proxy AUC/τ)"
-            />
-            <Metric
-              label="Cmin"
-              value={metrics.ctrough}
-              unit="ng/dL"
-              secondary={`${ngdlToNmol(metrics.ctrough).toFixed(1)} nmol/L`}
-              hint={`Vale (dia ${metrics.ctroughDay})`}
-            />
-          </div>
-
-          <div className="rounded-md border border-border/60 bg-muted/30 p-3 text-[11px] leading-relaxed text-muted-foreground">
-            <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <span className="font-mono uppercase tracking-[0.16em] text-foreground/70">
-                Verificação analítica
-              </span>
-              <span className="font-mono text-[10px] text-foreground/60">
-                Tmax ≈ {tmax.toFixed(1)} d · Css,avg ≈ {Math.round(cssExpected)} ng/dL
-              </span>
+        <div className="space-y-6">
+          {/* === Variáveis de interesse (hero) === */}
+          <section
+            aria-labelledby="vars-heading"
+            className="relative overflow-hidden rounded-lg border border-border/70 bg-[linear-gradient(135deg,color-mix(in_oklab,var(--color-chart-1)_10%,transparent),color-mix(in_oklab,var(--color-chart-2)_8%,transparent))] p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]"
+          >
+            <div className="flex items-baseline justify-between gap-2">
+              <h3 id="vars-heading" className="font-mono text-[11px] uppercase tracking-[0.16em] text-foreground/80">
+                Variáveis de interesse — estado estacionário
+              </h3>
+              <span className="font-mono text-[10px] text-muted-foreground">último τ</span>
             </div>
-            <p className="mt-1.5">
-              Css,avg = F·D<sub>T</sub>/(Cl·τ), com D<sub>T</sub> = dose<sub>TU</sub>×0,6315
-              (razão MW T/TU). Tmax dose-única = ln(ka/ke)/(ka−ke). Valores devem
-              cair em 264–916 ng/dL (Travison <em>JCEM</em> 2017) e Tmax em 7–14 d
-              (Schubert <em>JCEM</em> 2004) com parâmetros típicos.
-            </p>
-          </div>
-
-          <div className="rounded-md border border-border/60 bg-[color:var(--color-chart-2)]/8 p-3 space-y-2.5">
-            <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-foreground/80">
-                Ajuste por Cmédia-alvo
+            <div className="mt-2.5 grid grid-cols-3 gap-2">
+              <Metric
+                label="Cmax"
+                value={metrics.cmax}
+                unit="ng/dL"
+                secondary={`${ngdlToNmol(metrics.cmax).toFixed(1)} nmol/L`}
+                hint={`Pico · dia ${metrics.cmaxDay}`}
+              />
+              <Metric
+                label="Cmédia"
+                value={metrics.cmean}
+                unit="ng/dL"
+                secondary={`${ngdlToNmol(metrics.cmean).toFixed(1)} nmol/L`}
+                hint="Css,avg (AUC/τ)"
+                emphasis
+              />
+              <Metric
+                label="Cmin"
+                value={metrics.ctrough}
+                unit="ng/dL"
+                secondary={`${ngdlToNmol(metrics.ctrough).toFixed(1)} nmol/L`}
+                hint={`Vale · dia ${metrics.ctroughDay}`}
+              />
+            </div>
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-border/40 pt-2 font-mono text-[10px] text-muted-foreground">
+              <span>
+                Δ vs alvo{" "}
+                <span className={`tabular-nums ${
+                  Math.abs(metrics.cmean - targetCmean) < 50
+                    ? "text-[color:var(--color-system-body)]"
+                    : "text-foreground"
+                }`}>
+                  {metrics.cmean - targetCmean >= 0 ? "+" : ""}
+                  {Math.round(metrics.cmean - targetCmean)} ng/dL
+                </span>
               </span>
+              <span>Amplitude Cmax−Cmin: <span className="text-foreground tabular-nums">{Math.round(metrics.cmax - metrics.ctrough)} ng/dL</span></span>
+              <span>Ref. adulto 264–916 (Travison 2017)</span>
+            </div>
+          </section>
+
+          {/* === Ajuste por Cmédia-alvo === */}
+          <section
+            aria-labelledby="target-heading"
+            className="rounded-lg border border-[color:var(--color-chart-2)]/40 bg-[color:var(--color-chart-2)]/8 p-3.5 space-y-3"
+          >
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h3 id="target-heading" className="font-mono text-[11px] uppercase tracking-[0.16em] text-foreground/80">
+                Ajustar τ para Cmédia-alvo
+              </h3>
               <span className="font-mono text-[10px] text-muted-foreground">
-                Css,avg ≈ {Math.round(cssExpected)} ng/dL · actual
+                τ actual = {params.intervalDays} d
               </span>
             </div>
             <Control
-              label="Cmédia-alvo (estado estacionário)"
+              label="Cmédia-alvo"
               unit="ng/dL"
               value={targetCmean}
               min={264}
               max={916}
               step={10}
-              hint="Concentração sérica média desejada entre aplicações em estado estacionário. Referência adulto: 264–916 ng/dL (Travison 2017). Alvos médios habituais ~500–700 ng/dL."
+              hint="Concentração sérica média desejada entre aplicações em estado estacionário. Alvos habituais ~500–700 ng/dL; intervalo de referência adulto 264–916 ng/dL."
               source="Travison JCEM 2017"
               onChange={setTargetCmean}
             />
-            <div className="flex flex-wrap items-baseline justify-between gap-2 border-t border-border/60 pt-2">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border/50 pt-2.5">
               <div className="text-[11px] leading-snug text-muted-foreground">
-                Intervalo sugerido para atingir alvo (dose/peso/Cl actuais):
-                <br />
+                τ sugerido{" "}
                 <span className="font-mono text-foreground">
-                  τ = F·D<sub>T</sub>/(Cl·C<sub>alvo</sub>) ={" "}
-                  <strong className="text-foreground">{suggestedInterval.toFixed(0)} d</strong>
-                  {" "}(~{(suggestedInterval / 7).toFixed(1)} sem)
+                  <strong>{suggestedInterval.toFixed(0)} d</strong>{" "}
+                  (~{(suggestedInterval / 7).toFixed(1)} sem)
                 </span>
+                <span className="ml-1 text-[10px]">· F·D<sub>T</sub>/(Cl·C<sub>alvo</sub>)</span>
               </div>
               <button
                 type="button"
                 onClick={() => update({ intervalDays: suggestedIntervalClamped })}
-                className="rounded-full border border-border/70 bg-card px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-foreground transition hover:bg-muted"
+                className="rounded-full border border-border/70 bg-card px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-foreground shadow-sm transition hover:bg-muted"
               >
-                Aplicar {suggestedIntervalClamped} d
+                Aplicar τ = {suggestedIntervalClamped} d
               </button>
             </div>
             <p className="text-[10px] leading-snug text-muted-foreground">
-              Cálculo determinístico do modelo de clearance; não substitui titulação por níveis séricos.
-              Valores fora de 42–168 d são ajustados ao intervalo realista de manutenção.
+              Cálculo determinístico; não substitui titulação por níveis séricos. Clampado a 42–168 d.
             </p>
-          </div>
+          </section>
+
+          {/* === Esquema posológico === */}
+          <section aria-labelledby="dose-heading" className="space-y-4">
+            <div className="flex items-baseline justify-between border-b border-border/60 pb-1.5">
+              <h3 id="dose-heading" className="font-mono text-[11px] uppercase tracking-[0.16em] text-foreground/80">
+                Esquema posológico
+              </h3>
+              <span className="font-mono text-[10px] text-muted-foreground">variáveis controláveis</span>
+            </div>
+            <Control
+              label="Dose"
+              unit="mg TU"
+              value={params.doseMg}
+              min={250}
+              max={1500}
+              step={50}
+              hint="Quantidade de undecilato de testosterona (TU) por injecção IM. Padrão 1000 mg / 4 mL óleo de rícino."
+              source="SmPC Nebido / Reandron"
+              onChange={(v) => update({ doseMg: v })}
+            />
+            <Control
+              label="Intervalo τ (manutenção)"
+              unit="dias"
+              value={params.intervalDays}
+              min={42}
+              max={168}
+              step={7}
+              hint="Tempo entre doses de manutenção. Tipicamente 70–98 d (10–14 sem) — ES 2017 / SmPC Nebido. Literatura documenta 42–168 d em ajuste individualizado guiado por níveis séricos."
+              source="ES 2017 · Saad 2008 · Zitzmann 2013"
+              onChange={(v) => update({ intervalDays: v })}
+            />
+            <Control
+              label="Peso"
+              unit="kg"
+              value={params.weightKg}
+              min={45}
+              max={130}
+              step={1}
+              hint="Escala a clearance metabólica total (Cl = Cl/kg × peso)."
+              onChange={(v) => update({ weightKg: v })}
+            />
+          </section>
+
+          {/* === Parâmetros PK (avançado) === */}
+          <details className="group rounded-lg border border-border/60 bg-muted/20 open:bg-muted/30">
+            <summary className="flex cursor-pointer items-baseline justify-between gap-2 px-3.5 py-2.5 font-mono text-[11px] uppercase tracking-[0.16em] text-foreground/70 transition hover:text-foreground">
+              <span>Parâmetros farmacocinéticos · avançado</span>
+              <span className="text-[10px] text-muted-foreground transition group-open:rotate-180">▾</span>
+            </summary>
+            <div className="space-y-4 px-3.5 pb-4 pt-1">
+              <Control
+                label="t½ subida (absorção)"
+                unit="d"
+                value={params.absorptionHalfLifeD}
+                min={2}
+                max={20}
+                step={0.5}
+                hint="Meia-vida de absorção (ka): libertação rápida do depósito IM. Tmax (7–14 d, Schubert 2004) emerge da combinação ka/ke."
+                source="Schubert 2004"
+                onChange={(v) => update({ absorptionHalfLifeD: v })}
+              />
+              <Control
+                label="t½ aparente terminal"
+                unit="d"
+                value={params.eliminationHalfLifeD}
+                min={20}
+                max={50}
+                step={1}
+                hint="Meia-vida aparente da fase descendente. Em flip-flop reflecte libertação do depósito (~33 d), não a eliminação intrínseca da T."
+                source="Schubert 2004 / Behre 1999"
+                onChange={(v) => update({ eliminationHalfLifeD: v })}
+              />
+              <Control
+                label="Clearance"
+                unit="L/kg/d"
+                value={params.clearanceLPerKgPerDay}
+                min={12}
+                max={32}
+                step={1}
+                hint="Clearance metabólica da T — define directamente a Cmédia em estado estacionário."
+                source="Wang 2004 (~21 L/kg/d)"
+                onChange={(v) => update({ clearanceLPerKgPerDay: v })}
+              />
+              <div className="rounded-md border border-border/60 bg-card/60 p-3 text-[11px] leading-relaxed text-muted-foreground">
+                <div className="flex flex-wrap items-baseline justify-between gap-2">
+                  <span className="font-mono uppercase tracking-[0.16em] text-foreground/70">
+                    Verificação analítica
+                  </span>
+                  <span className="font-mono text-[10px] text-foreground/60">
+                    Tmax ≈ {tmax.toFixed(1)} d · Css,avg ≈ {Math.round(cssExpected)} ng/dL
+                  </span>
+                </div>
+                <p className="mt-1.5">
+                  Css,avg = F·D<sub>T</sub>/(Cl·τ), com D<sub>T</sub> = dose<sub>TU</sub>×0,6315.
+                  Tmax dose-única = ln(ka/ke)/(ka−ke). Esperado: 264–916 ng/dL (Travison 2017),
+                  Tmax 7–14 d (Schubert 2004).
+                </p>
+              </div>
+            </div>
+          </details>
         </div>
 
         {/* Chart */}
@@ -347,6 +394,35 @@ export function PkCalculator() {
                 }}
               />
 
+              {/* Cmédia actual */}
+              <ReferenceLine
+                y={metrics.cmean}
+                stroke="var(--color-chart-2)"
+                strokeDasharray="4 2"
+                strokeOpacity={0.7}
+                label={{
+                  value: `Cmédia ${Math.round(metrics.cmean)}`,
+                  position: "insideTopRight",
+                  fill: "var(--color-chart-2)",
+                  fontSize: 10,
+                  fontFamily: "var(--font-mono)",
+                }}
+              />
+              {/* Cmédia-alvo */}
+              <ReferenceLine
+                y={targetCmean}
+                stroke="var(--color-chart-4)"
+                strokeDasharray="6 3"
+                strokeOpacity={0.55}
+                label={{
+                  value: `alvo ${targetCmean}`,
+                  position: "insideBottomRight",
+                  fill: "var(--color-chart-4)",
+                  fontSize: 10,
+                  fontFamily: "var(--font-mono)",
+                }}
+              />
+
               <ReferenceDot
                 x={metrics.cmaxDay}
                 y={metrics.cmax}
@@ -359,6 +435,20 @@ export function PkCalculator() {
                   position: "top",
                   fontSize: 11,
                   fill: "var(--color-foreground)",
+                }}
+              />
+              <ReferenceDot
+                x={metrics.ctroughDay}
+                y={metrics.ctrough}
+                r={4}
+                fill="var(--color-chart-3)"
+                stroke="var(--color-background)"
+                strokeWidth={2}
+                label={{
+                  value: `Cmin ${Math.round(metrics.ctrough)}`,
+                  position: "bottom",
+                  fontSize: 10,
+                  fill: "var(--color-muted-foreground)",
                 }}
               />
 
@@ -405,17 +495,25 @@ function Metric({
   unit,
   secondary,
   hint,
+  emphasis = false,
 }: {
   label: string;
   value: number;
   unit: string;
   secondary?: string;
   hint?: string;
+  emphasis?: boolean;
 }) {
   return (
-    <div>
-      <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{label}</div>
-      <div className="font-mono text-lg tabular-nums text-foreground">{Math.round(value)}</div>
+    <div
+      className={
+        emphasis
+          ? "rounded-md border border-[color:var(--color-chart-2)]/40 bg-card/70 px-2 py-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]"
+          : "px-1"
+      }
+    >
+      <div className={`text-[10px] uppercase tracking-[0.18em] ${emphasis ? "text-[color:var(--color-chart-2)]" : "text-muted-foreground"}`}>{label}</div>
+      <div className={`font-mono tabular-nums text-foreground ${emphasis ? "text-xl font-medium" : "text-lg"}`}>{Math.round(value)}</div>
       <div className="text-[10px] text-muted-foreground">{unit}</div>
       {secondary ? (
         <div className="font-mono text-[10px] text-foreground/60">{secondary}</div>
