@@ -216,97 +216,96 @@ export function PkCalculator() {
           {/* === Ajuste por Cmédia-alvo === */}
           <section
             aria-labelledby="target-heading"
-            className="rounded-lg border border-[color:var(--color-chart-2)]/40 bg-[color:var(--color-chart-2)]/8 p-3.5 space-y-3"
+            className="rounded-lg border border-[color:var(--color-chart-2)]/40 bg-[color:var(--color-chart-2)]/8 p-4 space-y-3"
           >
             <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <h3 id="target-heading" className="font-mono text-[11px] uppercase tracking-[0.16em] text-foreground/80">
-                Ajustar τ para Cmédia-alvo
+              <h3 id="target-heading" className="text-sm font-semibold text-foreground">
+                Calcular intervalo entre doses a partir do alvo
               </h3>
-              <span className="font-mono text-[10px] text-muted-foreground">
-                τ actual = {params.intervalDays} d
+              <span className="text-xs text-muted-foreground">
+                intervalo actual: {params.intervalDays} dias
               </span>
             </div>
             <Control
-              label="Cmédia-alvo"
+              label="Concentração média alvo"
               unit="ng/dL"
               value={targetCmean}
               min={264}
               max={916}
-              step={10}
-              hint="Concentração sérica média desejada entre aplicações em estado estacionário. Alvos habituais ~500–700 ng/dL; intervalo de referência adulto 264–916 ng/dL."
+              step={5}
+              hint="Concentração média desejada no sangue entre aplicações, em estado estacionário. Alvos habituais ~500–700 ng/dL. Intervalo de referência adulto: 264–916 ng/dL."
               source="Travison JCEM 2017"
               onChange={setTargetCmean}
             />
-            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border/50 pt-2.5">
-              <div className="text-[11px] leading-snug text-muted-foreground">
-                τ sugerido{" "}
+            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border/50 pt-3">
+              <div className="text-xs leading-relaxed text-muted-foreground">
+                Intervalo sugerido:{" "}
                 <span className="font-mono text-foreground">
-                  <strong>{suggestedInterval.toFixed(0)} d</strong>{" "}
-                  (~{(suggestedInterval / 7).toFixed(1)} sem)
+                  <strong>{suggestedInterval.toFixed(0)} dias</strong>{" "}
+                  (~{(suggestedInterval / 7).toFixed(1)} semanas)
                 </span>
-                <span className="ml-1 text-[10px]">· F·D<sub>T</sub>/(Cl·C<sub>alvo</sub>)</span>
               </div>
               <button
                 type="button"
                 onClick={() => update({ intervalDays: suggestedIntervalClamped })}
-                className="rounded-full border border-border/70 bg-card px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-foreground shadow-sm transition hover:bg-muted"
+                className="rounded-full border border-border/70 bg-card px-3.5 py-1.5 text-xs font-medium text-foreground shadow-sm transition hover:bg-muted"
               >
-                Aplicar τ = {suggestedIntervalClamped} d
+                Aplicar {suggestedIntervalClamped} dias
               </button>
             </div>
-            <p className="text-[10px] leading-snug text-muted-foreground">
-              Cálculo determinístico; não substitui titulação por níveis séricos. Clampado a 42–168 d.
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              Cálculo determinístico (não substitui a titulação por análises sanguíneas). Limitado a 42–168 dias.
             </p>
           </section>
 
           {/* === Esquema posológico === */}
           <section aria-labelledby="dose-heading" className="space-y-4">
-            <div className="flex items-baseline justify-between border-b border-border/60 pb-1.5">
-              <h3 id="dose-heading" className="font-mono text-[11px] uppercase tracking-[0.16em] text-foreground/80">
-                Esquema posológico
+            <div className="flex items-baseline justify-between border-b border-border/60 pb-2">
+              <h3 id="dose-heading" className="text-sm font-semibold text-foreground">
+                Esquema de aplicação
               </h3>
-              <span className="font-mono text-[10px] text-muted-foreground">variáveis controláveis</span>
+              <span className="text-xs text-muted-foreground">parâmetros que pode ajustar</span>
             </div>
             <Control
-              label="Dose"
-              unit="mg TU"
+              label="Dose por injecção"
+              unit="mg"
               value={params.doseMg}
               min={250}
               max={1500}
-              step={50}
-              hint="Quantidade de undecilato de testosterona (TU) por injecção IM. Padrão 1000 mg / 4 mL óleo de rícino."
+              step={10}
+              hint="Quantidade de undecilato de testosterona (TU) por injecção intramuscular. Apresentação padrão: 1000 mg em 4 mL de óleo de rícino."
               source="SmPC Nebido / Reandron"
               onChange={(v) => update({ doseMg: v })}
             />
             <Control
-              label="Intervalo τ (manutenção)"
+              label="Intervalo entre doses (manutenção)"
               unit="dias"
               value={params.intervalDays}
               min={42}
               max={168}
-              step={7}
-              hint="Tempo entre doses de manutenção. Tipicamente 70–98 d (10–14 sem) — ES 2017 / SmPC Nebido. Literatura documenta 42–168 d em ajuste individualizado guiado por níveis séricos."
+              step={1}
+              hint="Tempo entre injecções na fase de manutenção. Tipicamente 70–98 dias (10–14 semanas) segundo Endocrine Society 2017 / SmPC Nebido. A literatura documenta 42–168 dias quando individualizado por análises."
               source="ES 2017 · Saad 2008 · Zitzmann 2013"
               onChange={(v) => update({ intervalDays: v })}
             />
             <Control
-              label="Peso"
+              label="Peso corporal"
               unit="kg"
               value={params.weightKg}
               min={45}
               max={130}
               step={1}
-              hint="Escala a clearance metabólica total (Cl = Cl/kg × peso)."
+              hint="Escala a depuração metabólica total (depuração total = depuração por kg × peso)."
               onChange={(v) => update({ weightKg: v })}
             />
-            <div className="flex items-start justify-between gap-3 rounded-md border border-border/60 bg-card/60 px-3 py-2.5">
+            <div className="flex items-start justify-between gap-3 rounded-md border border-border/60 bg-card/60 px-3.5 py-3">
               <div className="min-w-0">
-                <Label className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                <Label className="text-sm font-medium text-foreground">
                   Dose de ataque (loading)
                 </Label>
-                <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
-                  Segunda dose às 6 semanas após a primeira (ES 2017 / SmPC Nebido) para acelerar
-                  o estado estacionário. Desligar para esquema τ-em-τ desde t = 0.
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                  Segunda dose 6 semanas após a primeira (Endocrine Society 2017 / SmPC Nebido) para
+                  acelerar a chegada ao estado estacionário. Desligar para esquema regular desde o início.
                 </p>
               </div>
               <Switch
