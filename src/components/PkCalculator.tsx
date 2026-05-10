@@ -46,12 +46,12 @@ function Control({ label, value, min, max, step, unit, hint, source, onChange }:
   return (
     <div className="space-y-2">
       <div className="flex items-baseline justify-between gap-2">
-        <Label className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+        <Label className="text-sm font-medium text-foreground">
           {label}
         </Label>
-        <span className="font-mono text-sm tabular-nums text-foreground">
+        <span className="font-mono text-base tabular-nums text-foreground">
           {value}
-          <span className="ml-1 text-[10px] text-muted-foreground">{unit}</span>
+          <span className="ml-1 text-xs text-muted-foreground">{unit}</span>
         </span>
       </div>
       <Slider
@@ -61,10 +61,10 @@ function Control({ label, value, min, max, step, unit, hint, source, onChange }:
         step={step}
         onValueChange={(v) => onChange(v[0])}
       />
-      <p className="text-[11px] leading-snug text-muted-foreground">
+      <p className="text-xs leading-relaxed text-muted-foreground">
         {hint}
         {source ? (
-          <span className="ml-1 font-mono text-[10px] text-foreground/60">— {source}</span>
+          <span className="ml-1 font-mono text-[11px] text-foreground/60">— {source}</span>
         ) : null}
       </p>
     </div>
