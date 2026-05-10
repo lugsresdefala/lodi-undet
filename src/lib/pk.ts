@@ -155,6 +155,105 @@ export function generatePkSeries(p: PkParams, opts?: { stepDays?: number }): PkS
   return series;
 }
 
+// ──────────────────────────────────────────────────────────────────────────
+// Simulação populacional (Monte Carlo)
+// Variabilidade inter-individual log-normal aplicada a Cl, ka, ke.
+// CV (coef. variação) ~ 30–50% é o reportado em estudos de TU IM
+// (Behre 1999, Schubert 2004, Zitzmann 2013). Aqui parametrizado pelo utilizador.
+// ──────────────────────────────────────────────────────────────────────────
+
+/** Amostra normal padrão (Box–Muller). */
+function randn(rng: () => number): number {
+  const u = Math.max(rng(), 1e-12);
+  const v = rng();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+
+/** PRNG determinístico (mulberry32) — reprodutibilidade entre renders. */
+export function seededRng(seed: number): () => number {
+  let a = seed >>> 0;
+  return function () {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/** Amostra log-normal com mediana = median e CV aproximado. */
+function lognormal(median: number, cv: number, rng: () => number): number {
+  const sigma = Math.sqrt(Math.log(1 + cv * cv));
+  return median * Math.exp(sigma * randn(rng));
+}
+
+export interface PopulationSeriesPoint {
+  day: number;
+  p05: number;
+  p25: number;
+  p50: number;
+  p75: number;
+  p95: number;
+}
+
+export interface PopulationSimOptions {
+  /** Número de indivíduos simulados. */
+  nSubjects: number;
+  /** CV inter-individual (0.30 = 30%). */
+  cv: number;
+  stepDays?: number;
+  seed?: number;
+}
+
+/** Simula coorte e devolve percentis por dia. */
+export function simulatePopulation(
+  p: PkParams,
+  opts: PopulationSimOptions,
+): PopulationSeriesPoint[] {
+  const step = opts.stepDays ?? 1;
+  const n = Math.max(1, Math.floor(opts.nSubjects));
+  const cv = Math.max(0, opts.cv);
+  const rng = seededRng(opts.seed ?? 42);
+
+  const times = doseTimes(p);
+  const totalDays = times[times.length - 1] + p.intervalDays;
+  const days: number[] = [];
+  for (let t = 0; t <= totalDays; t += step) days.push(t);
+
+  // matriz [nDays][nSubjects]
+  const matrix: number[][] = days.map(() => new Array<number>(n));
+
+  for (let s = 0; s < n; s++) {
+    const subject: PkParams = {
+      ...p,
+      clearanceLPerKgPerDay: lognormal(p.clearanceLPerKgPerDay, cv, rng),
+      absorptionHalfLifeD: lognormal(p.absorptionHalfLifeD, cv * 0.7, rng),
+      eliminationHalfLifeD: lognormal(p.eliminationHalfLifeD, cv * 0.7, rng),
+    };
+    for (let i = 0; i < days.length; i++) {
+      matrix[i][s] = Math.max(0, steadyStateConcentration(days[i], subject));
+    }
+  }
+
+  const pct = (arr: number[], q: number) => {
+    const sorted = [...arr].sort((a, b) => a - b);
+    const idx = (sorted.length - 1) * q;
+    const lo = Math.floor(idx);
+    const hi = Math.ceil(idx);
+    if (lo === hi) return sorted[lo];
+    return sorted[lo] + (sorted[hi] - sorted[lo]) * (idx - lo);
+  };
+
+  return days.map((day, i) => ({
+    day,
+    p05: pct(matrix[i], 0.05),
+    p25: pct(matrix[i], 0.25),
+    p50: pct(matrix[i], 0.5),
+    p75: pct(matrix[i], 0.75),
+    p95: pct(matrix[i], 0.95),
+  }));
+}
+
 export interface PkMetrics {
   cmax: number;
   cmaxDay: number;

@@ -15,11 +15,13 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
 import {
   computeMetrics,
   DEFAULT_PK,
   generatePkSeries,
   ngdlToNmol,
+  simulatePopulation,
   singleDoseTmax,
   steadyStateMean,
   type PkParams,
@@ -73,10 +75,39 @@ export function PkCalculator() {
   const [params, setParams] = useState<PkParams>(DEFAULT_PK);
   const [targetCmean, setTargetCmean] = useState<number>(550); // ng/dL — meio do intervalo 264–916
 
+  // === Controlos do gráfico ===
+  const [showBand, setShowBand] = useState<boolean>(true);
+  const [bandRange, setBandRange] = useState<"p5-p95" | "p25-p75">("p5-p95");
+  const [nSubjects, setNSubjects] = useState<number>(200);
+  const [cvPct, setCvPct] = useState<number>(35);
+
   const series = useMemo(() => generatePkSeries(params, { stepDays: 1 }), [params]);
   const metrics = useMemo(() => computeMetrics(series, params), [series, params]);
   const tmax = useMemo(() => singleDoseTmax(params), [params]);
   const cssExpected = useMemo(() => steadyStateMean(params), [params]);
+
+  const population = useMemo(
+    () =>
+      showBand
+        ? simulatePopulation(params, { nSubjects, cv: cvPct / 100, stepDays: 1, seed: 1234 })
+        : [],
+    [showBand, params, nSubjects, cvPct],
+  );
+
+  const chartData = useMemo(() => {
+    if (!showBand || population.length !== series.length) return series;
+    return series.map((pt, i) => ({
+      ...pt,
+      p05: population[i]?.p05,
+      p25: population[i]?.p25,
+      p50: population[i]?.p50,
+      p75: population[i]?.p75,
+      p95: population[i]?.p95,
+    }));
+  }, [series, population, showBand]);
+
+  const bandLow = bandRange === "p5-p95" ? "p05" : "p25";
+  const bandHigh = bandRange === "p5-p95" ? "p95" : "p75";
 
   // τ sugerido para atingir Css,avg = alvo, mantendo dose, peso e Cl fixos.
   // Css,avg = F · D_T / (Cl · τ) · 1e5  →  τ = F · D_T / (Cl · C_alvo) · 1e5
@@ -262,6 +293,88 @@ export function PkCalculator() {
               hint="Escala a clearance metabólica total (Cl = Cl/kg × peso)."
               onChange={(v) => update({ weightKg: v })}
             />
+            <div className="flex items-start justify-between gap-3 rounded-md border border-border/60 bg-card/60 px-3 py-2.5">
+              <div className="min-w-0">
+                <Label className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                  Dose de ataque (loading)
+                </Label>
+                <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
+                  Segunda dose às 6 semanas após a primeira (ES 2017 / SmPC Nebido) para acelerar
+                  o estado estacionário. Desligar para esquema τ-em-τ desde t = 0.
+                </p>
+              </div>
+              <Switch
+                checked={params.loading ?? true}
+                onCheckedChange={(v) => update({ loading: v })}
+              />
+            </div>
+          </section>
+
+          {/* === Variação populacional (controlos do gráfico) === */}
+          <section aria-labelledby="pop-heading" className="space-y-3 rounded-lg border border-border/60 bg-[color:var(--color-chart-3)]/8 p-3.5">
+            <div className="flex items-baseline justify-between border-b border-border/50 pb-1.5">
+              <h3 id="pop-heading" className="font-mono text-[11px] uppercase tracking-[0.16em] text-foreground/80">
+                Variação populacional
+              </h3>
+              <span className="font-mono text-[10px] text-muted-foreground">Monte Carlo</span>
+            </div>
+
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <Label className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                  Mostrar faixa populacional
+                </Label>
+                <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
+                  Sobrepõe percentis de uma coorte simulada (Cl, ka, ke log-normais).
+                </p>
+              </div>
+              <Switch checked={showBand} onCheckedChange={setShowBand} />
+            </div>
+
+            {showBand ? (
+              <>
+                <div className="flex flex-wrap gap-1.5">
+                  {([
+                    { id: "p5-p95", label: "P5–P95" },
+                    { id: "p25-p75", label: "P25–P75 (IQR)" },
+                  ] as const).map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => setBandRange(opt.id)}
+                      className={`rounded-full border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] transition ${
+                        bandRange === opt.id
+                          ? "border-[color:var(--color-chart-3)] bg-[color:var(--color-chart-3)]/15 text-foreground"
+                          : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+                <Control
+                  label="Indivíduos simulados (N)"
+                  unit=""
+                  value={nSubjects}
+                  min={50}
+                  max={1000}
+                  step={50}
+                  hint="Tamanho da coorte Monte Carlo. Mais indivíduos = percentis mais estáveis, simulação mais lenta."
+                  onChange={setNSubjects}
+                />
+                <Control
+                  label="CV inter-individual"
+                  unit="%"
+                  value={cvPct}
+                  min={10}
+                  max={60}
+                  step={5}
+                  hint="Coeficiente de variação log-normal sobre Cl (e ~70% disso em ka/ke). TU IM reporta CV ≈ 30–50%."
+                  source="Behre 1999 · Zitzmann 2013"
+                  onChange={setCvPct}
+                />
+              </>
+            ) : null}
           </section>
 
           {/* === Parâmetros PK (avançado) === */}
@@ -326,7 +439,7 @@ export function PkCalculator() {
         {/* Chart */}
         <div className="h-[260px] w-full sm:h-[320px] md:h-[360px]">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={series} margin={{ top: 10, right: 16, left: 0, bottom: 0 }}>
+            <AreaChart data={chartData} margin={{ top: 10, right: 16, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="pk-fill" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="var(--color-chart-1)" stopOpacity={0.55} />
@@ -464,9 +577,38 @@ export function PkCalculator() {
                 labelFormatter={(v) => `Dia ${v}`}
               />
 
+              {showBand ? (
+                <>
+                  <Area
+                    type="monotone"
+                    dataKey={(d: Record<string, number>) => [d[bandLow], d[bandHigh]]}
+                    name={bandRange === "p5-p95" ? "P5–P95" : "P25–P75"}
+                    stroke="var(--color-chart-3)"
+                    strokeOpacity={0.35}
+                    strokeWidth={1}
+                    fill="var(--color-chart-3)"
+                    fillOpacity={0.14}
+                    isAnimationActive={false}
+                    activeDot={false}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="p50"
+                    name="Mediana populacional"
+                    stroke="var(--color-chart-4)"
+                    strokeWidth={1.5}
+                    strokeDasharray="4 3"
+                    fill="none"
+                    isAnimationActive={false}
+                    activeDot={false}
+                  />
+                </>
+              ) : null}
+
               <Area
                 type="monotone"
                 dataKey="concentration"
+                name="Determinístico"
                 stroke="url(#pk-stroke)"
                 strokeWidth={2.5}
                 fill="url(#pk-fill)"
