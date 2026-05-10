@@ -15,11 +15,13 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
 import {
   computeMetrics,
   DEFAULT_PK,
   generatePkSeries,
   ngdlToNmol,
+  simulatePopulation,
   singleDoseTmax,
   steadyStateMean,
   type PkParams,
