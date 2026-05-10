@@ -394,6 +394,35 @@ export function PkCalculator() {
                 }}
               />
 
+              {/* Cmédia actual */}
+              <ReferenceLine
+                y={metrics.cmean}
+                stroke="var(--color-chart-2)"
+                strokeDasharray="4 2"
+                strokeOpacity={0.7}
+                label={{
+                  value: `Cmédia ${Math.round(metrics.cmean)}`,
+                  position: "insideTopRight",
+                  fill: "var(--color-chart-2)",
+                  fontSize: 10,
+                  fontFamily: "var(--font-mono)",
+                }}
+              />
+              {/* Cmédia-alvo */}
+              <ReferenceLine
+                y={targetCmean}
+                stroke="var(--color-chart-4)"
+                strokeDasharray="6 3"
+                strokeOpacity={0.55}
+                label={{
+                  value: `alvo ${targetCmean}`,
+                  position: "insideBottomRight",
+                  fill: "var(--color-chart-4)",
+                  fontSize: 10,
+                  fontFamily: "var(--font-mono)",
+                }}
+              />
+
               <ReferenceDot
                 x={metrics.cmaxDay}
                 y={metrics.cmax}
@@ -406,6 +435,20 @@ export function PkCalculator() {
                   position: "top",
                   fontSize: 11,
                   fill: "var(--color-foreground)",
+                }}
+              />
+              <ReferenceDot
+                x={metrics.ctroughDay}
+                y={metrics.ctrough}
+                r={4}
+                fill="var(--color-chart-3)"
+                stroke="var(--color-background)"
+                strokeWidth={2}
+                label={{
+                  value: `Cmin ${Math.round(metrics.ctrough)}`,
+                  position: "bottom",
+                  fontSize: 10,
+                  fill: "var(--color-muted-foreground)",
                 }}
               />
 
