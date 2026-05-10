@@ -71,11 +71,22 @@ function Control({ label, value, min, max, step, unit, hint, source, onChange }:
 
 export function PkCalculator() {
   const [params, setParams] = useState<PkParams>(DEFAULT_PK);
+  const [targetCmean, setTargetCmean] = useState<number>(550); // ng/dL — meio do intervalo 264–916
 
   const series = useMemo(() => generatePkSeries(params, { stepDays: 1 }), [params]);
   const metrics = useMemo(() => computeMetrics(series, params), [series, params]);
   const tmax = useMemo(() => singleDoseTmax(params), [params]);
   const cssExpected = useMemo(() => steadyStateMean(params), [params]);
+
+  // τ sugerido para atingir Css,avg = alvo, mantendo dose, peso e Cl fixos.
+  // Css,avg = F · D_T / (Cl · τ) · 1e5  →  τ = F · D_T / (Cl · C_alvo) · 1e5
+  const suggestedInterval = useMemo(() => {
+    const Cl = params.clearanceLPerKgPerDay * params.weightKg;
+    const D_T = params.doseMg * 0.6315;
+    if (targetCmean <= 0) return 0;
+    return (params.bioavailability * D_T) / (Cl * targetCmean) * 100_000;
+  }, [params, targetCmean]);
+  const suggestedIntervalClamped = Math.max(42, Math.min(168, Math.round(suggestedInterval / 7) * 7));
 
   const update = (patch: Partial<PkParams>) => setParams((p) => ({ ...p, ...patch }));
 
@@ -217,6 +228,50 @@ export function PkCalculator() {
               (razão MW T/TU). Tmax dose-única = ln(ka/ke)/(ka−ke). Valores devem
               cair em 264–916 ng/dL (Travison <em>JCEM</em> 2017) e Tmax em 7–14 d
               (Schubert <em>JCEM</em> 2004) com parâmetros típicos.
+            </p>
+          </div>
+
+          <div className="rounded-md border border-border/60 bg-[color:var(--color-chart-2)]/8 p-3 space-y-2.5">
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-foreground/80">
+                Ajuste por Cmédia-alvo
+              </span>
+              <span className="font-mono text-[10px] text-muted-foreground">
+                Css,avg ≈ {Math.round(cssExpected)} ng/dL · actual
+              </span>
+            </div>
+            <Control
+              label="Cmédia-alvo (estado estacionário)"
+              unit="ng/dL"
+              value={targetCmean}
+              min={264}
+              max={916}
+              step={10}
+              hint="Concentração sérica média desejada entre aplicações em estado estacionário. Referência adulto: 264–916 ng/dL (Travison 2017). Alvos médios habituais ~500–700 ng/dL."
+              source="Travison JCEM 2017"
+              onChange={setTargetCmean}
+            />
+            <div className="flex flex-wrap items-baseline justify-between gap-2 border-t border-border/60 pt-2">
+              <div className="text-[11px] leading-snug text-muted-foreground">
+                Intervalo sugerido para atingir alvo (dose/peso/Cl actuais):
+                <br />
+                <span className="font-mono text-foreground">
+                  τ = F·D<sub>T</sub>/(Cl·C<sub>alvo</sub>) ={" "}
+                  <strong className="text-foreground">{suggestedInterval.toFixed(0)} d</strong>
+                  {" "}(~{(suggestedInterval / 7).toFixed(1)} sem)
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => update({ intervalDays: suggestedIntervalClamped })}
+                className="rounded-full border border-border/70 bg-card px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-foreground transition hover:bg-muted"
+              >
+                Aplicar {suggestedIntervalClamped} d
+              </button>
+            </div>
+            <p className="text-[10px] leading-snug text-muted-foreground">
+              Cálculo determinístico do modelo de clearance; não substitui titulação por níveis séricos.
+              Valores fora de 42–168 d são ajustados ao intervalo realista de manutenção.
             </p>
           </div>
         </div>
