@@ -158,42 +158,45 @@ export function PkCalculator() {
           {/* === Variáveis de interesse (hero) === */}
           <section
             aria-labelledby="vars-heading"
-            className="relative overflow-hidden rounded-lg border border-border/70 bg-[linear-gradient(135deg,color-mix(in_oklab,var(--color-chart-1)_10%,transparent),color-mix(in_oklab,var(--color-chart-2)_8%,transparent))] p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]"
+            className="relative overflow-hidden rounded-lg border border-border/70 bg-[linear-gradient(135deg,color-mix(in_oklab,var(--color-chart-1)_10%,transparent),color-mix(in_oklab,var(--color-chart-2)_8%,transparent))] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]"
           >
             <div className="flex items-baseline justify-between gap-2">
-              <h3 id="vars-heading" className="font-mono text-[11px] uppercase tracking-[0.16em] text-foreground/80">
-                Variáveis de interesse — estado estacionário
+              <h3 id="vars-heading" className="text-sm font-semibold text-foreground">
+                Concentração sérica prevista
               </h3>
-              <span className="font-mono text-[10px] text-muted-foreground">último τ</span>
+              <span className="text-xs text-muted-foreground">no último intervalo entre doses</span>
             </div>
-            <div className="mt-2.5 grid grid-cols-3 gap-2">
+            <div className="mt-3 grid grid-cols-3 gap-3">
               <Metric
-                label="Cmax"
+                label="Pico"
+                acronym="Cmax"
                 value={metrics.cmax}
                 unit="ng/dL"
                 secondary={`${ngdlToNmol(metrics.cmax).toFixed(1)} nmol/L`}
-                hint={`Pico · dia ${metrics.cmaxDay}`}
+                hint={`atingido ao dia ${metrics.cmaxDay}`}
               />
               <Metric
-                label="Cmédia"
+                label="Média"
+                acronym="Cmédia"
                 value={metrics.cmean}
                 unit="ng/dL"
                 secondary={`${ngdlToNmol(metrics.cmean).toFixed(1)} nmol/L`}
-                hint="Css,avg (AUC/τ)"
+                hint="média entre doses"
                 emphasis
               />
               <Metric
-                label="Cmin"
+                label="Vale"
+                acronym="Cmin"
                 value={metrics.ctrough}
                 unit="ng/dL"
                 secondary={`${ngdlToNmol(metrics.ctrough).toFixed(1)} nmol/L`}
-                hint={`Vale · dia ${metrics.ctroughDay}`}
+                hint={`atingido ao dia ${metrics.ctroughDay}`}
               />
             </div>
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-border/40 pt-2 font-mono text-[10px] text-muted-foreground">
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5 border-t border-border/40 pt-2.5 text-xs text-muted-foreground">
               <span>
-                Δ vs alvo{" "}
-                <span className={`tabular-nums ${
+                Diferença para alvo:{" "}
+                <span className={`font-mono tabular-nums ${
                   Math.abs(metrics.cmean - targetCmean) < 50
                     ? "text-[color:var(--color-system-body)]"
                     : "text-foreground"
@@ -202,8 +205,11 @@ export function PkCalculator() {
                   {Math.round(metrics.cmean - targetCmean)} ng/dL
                 </span>
               </span>
-              <span>Amplitude Cmax−Cmin: <span className="text-foreground tabular-nums">{Math.round(metrics.cmax - metrics.ctrough)} ng/dL</span></span>
-              <span>Ref. adulto 264–916 (Travison 2017)</span>
+              <span>
+                Oscilação pico–vale:{" "}
+                <span className="font-mono tabular-nums text-foreground">{Math.round(metrics.cmax - metrics.ctrough)} ng/dL</span>
+              </span>
+              <span className="text-[11px]">Referência adulto: 264–916 ng/dL (Travison 2017)</span>
             </div>
           </section>
 
