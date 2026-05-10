@@ -80,7 +80,10 @@ export function PkCalculator() {
   const update = (patch: Partial<PkParams>) => setParams((p) => ({ ...p, ...patch }));
 
   return (
-    <Card className="border-border/70 bg-card/80 shadow-sm backdrop-blur">
+    <Card className="relative overflow-hidden border-border/70 bg-card/80 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_20px_40px_-24px_color-mix(in_oklab,var(--color-chart-1)_35%,transparent),0_30px_60px_-30px_color-mix(in_oklab,var(--color-chart-2)_30%,transparent)] backdrop-blur">
+      <div aria-hidden className="pointer-events-none absolute -top-24 -left-20 h-72 w-72 rounded-full bg-[radial-gradient(circle,color-mix(in_oklab,var(--color-chart-1)_55%,transparent),transparent_70%)] blur-2xl" />
+      <div aria-hidden className="pointer-events-none absolute -top-10 -right-16 h-80 w-80 rounded-full bg-[radial-gradient(circle,color-mix(in_oklab,var(--color-chart-2)_55%,transparent),transparent_70%)] blur-3xl" />
+      <div aria-hidden className="pointer-events-none absolute -bottom-24 left-1/3 h-72 w-72 rounded-full bg-[radial-gradient(circle,color-mix(in_oklab,var(--color-chart-3)_45%,transparent),transparent_70%)] blur-3xl" />
       <CardHeader className="px-4 pt-5 md:px-6 md:pt-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div className="min-w-0">
