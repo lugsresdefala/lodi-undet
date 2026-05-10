@@ -611,8 +611,8 @@ export function PkCalculator() {
                 name="Determinístico"
                 stroke="url(#pk-stroke)"
                 strokeWidth={2.5}
-                fill={showBand ? "none" : "url(#pk-fill)"}
-                fillOpacity={showBand ? 0 : 1}
+                fill="url(#pk-fill)"
+                fillOpacity={1}
                 filter="url(#pk-glow)"
                 isAnimationActive={false}
               />
