@@ -322,9 +322,10 @@ export function PkCalculator() {
               <Area
                 type="monotone"
                 dataKey="concentration"
-                stroke="var(--color-chart-1)"
-                strokeWidth={2}
+                stroke="url(#pk-stroke)"
+                strokeWidth={2.5}
                 fill="url(#pk-fill)"
+                filter="url(#pk-glow)"
               />
             </AreaChart>
           </ResponsiveContainer>
