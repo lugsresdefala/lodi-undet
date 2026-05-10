@@ -46,12 +46,12 @@ function Control({ label, value, min, max, step, unit, hint, source, onChange }:
   return (
     <div className="space-y-2">
       <div className="flex items-baseline justify-between gap-2">
-        <Label className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+        <Label className="text-sm font-medium text-foreground">
           {label}
         </Label>
-        <span className="font-mono text-sm tabular-nums text-foreground">
+        <span className="font-mono text-base tabular-nums text-foreground">
           {value}
-          <span className="ml-1 text-[10px] text-muted-foreground">{unit}</span>
+          <span className="ml-1 text-xs text-muted-foreground">{unit}</span>
         </span>
       </div>
       <Slider
@@ -61,10 +61,10 @@ function Control({ label, value, min, max, step, unit, hint, source, onChange }:
         step={step}
         onValueChange={(v) => onChange(v[0])}
       />
-      <p className="text-[11px] leading-snug text-muted-foreground">
+      <p className="text-xs leading-relaxed text-muted-foreground">
         {hint}
         {source ? (
-          <span className="ml-1 font-mono text-[10px] text-foreground/60">— {source}</span>
+          <span className="ml-1 font-mono text-[11px] text-foreground/60">— {source}</span>
         ) : null}
       </p>
     </div>
@@ -130,24 +130,24 @@ export function PkCalculator() {
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div className="min-w-0">
             <CardTitle className="font-serif text-xl font-medium tracking-tight sm:text-2xl md:text-3xl">
-              Modelação farmacocinética
+              Concentração no sangue ao longo do tempo
             </CardTitle>
-            <CardDescription className="mt-1 text-sm">
-              Concentração sérica de testosterona após undecilato IM em óleo de rícino
-              (1000 mg / 4 mL). Modelo Bateman de um compartimento em forma de
-              clearance, calibrado para cinética flip-flop conforme Schubert et al.
-              (JCEM 2004): t½ aparente terminal ≈ 33 d, Tmax ≈ 7–14 d. Esquema de
-              loading 0 + 6 sem (Endocrine Society 2017 / SmPC Nebido).
+            <CardDescription className="mt-2 text-sm leading-relaxed">
+              Simulação da testosterona sérica após injecções intramusculares de undecilato de
+              testosterona em óleo de rícino (1000 mg / 4 mL, tipo Nebido/Reandron). Usa um modelo
+              farmacocinético calibrado para o perfil observado por Schubert et al. (JCEM 2004): pico
+              aos 7–14 dias e meia-vida aparente de ~33 dias. Inclui dose de ataque às 6 semanas
+              segundo Endocrine Society 2017.
             </CardDescription>
           </div>
           <span
-            className={`rounded-full px-3 py-1 font-mono text-[11px] uppercase tracking-[0.16em] ${
+            className={`rounded-full px-3 py-1.5 text-xs font-medium ${
               metrics.inRange
                 ? "bg-[color:var(--color-system-body)]/15 text-[color:var(--color-system-body)]"
                 : "bg-destructive/10 text-destructive"
             }`}
           >
-            {metrics.inRange ? "Dentro do intervalo" : "Fora do intervalo"}
+            {metrics.inRange ? "Dentro do intervalo de referência" : "Fora do intervalo de referência"}
           </span>
         </div>
       </CardHeader>
@@ -158,42 +158,45 @@ export function PkCalculator() {
           {/* === Variáveis de interesse (hero) === */}
           <section
             aria-labelledby="vars-heading"
-            className="relative overflow-hidden rounded-lg border border-border/70 bg-[linear-gradient(135deg,color-mix(in_oklab,var(--color-chart-1)_10%,transparent),color-mix(in_oklab,var(--color-chart-2)_8%,transparent))] p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]"
+            className="relative overflow-hidden rounded-lg border border-border/70 bg-[linear-gradient(135deg,color-mix(in_oklab,var(--color-chart-1)_10%,transparent),color-mix(in_oklab,var(--color-chart-2)_8%,transparent))] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]"
           >
             <div className="flex items-baseline justify-between gap-2">
-              <h3 id="vars-heading" className="font-mono text-[11px] uppercase tracking-[0.16em] text-foreground/80">
-                Variáveis de interesse — estado estacionário
+              <h3 id="vars-heading" className="text-sm font-semibold text-foreground">
+                Concentração sérica prevista
               </h3>
-              <span className="font-mono text-[10px] text-muted-foreground">último τ</span>
+              <span className="text-xs text-muted-foreground">no último intervalo entre doses</span>
             </div>
-            <div className="mt-2.5 grid grid-cols-3 gap-2">
+            <div className="mt-3 grid grid-cols-3 gap-3">
               <Metric
-                label="Cmax"
+                label="Pico"
+                acronym="Cmax"
                 value={metrics.cmax}
                 unit="ng/dL"
                 secondary={`${ngdlToNmol(metrics.cmax).toFixed(1)} nmol/L`}
-                hint={`Pico · dia ${metrics.cmaxDay}`}
+                hint={`atingido ao dia ${metrics.cmaxDay}`}
               />
               <Metric
-                label="Cmédia"
+                label="Média"
+                acronym="Cmédia"
                 value={metrics.cmean}
                 unit="ng/dL"
                 secondary={`${ngdlToNmol(metrics.cmean).toFixed(1)} nmol/L`}
-                hint="Css,avg (AUC/τ)"
+                hint="média entre doses"
                 emphasis
               />
               <Metric
-                label="Cmin"
+                label="Vale"
+                acronym="Cmin"
                 value={metrics.ctrough}
                 unit="ng/dL"
                 secondary={`${ngdlToNmol(metrics.ctrough).toFixed(1)} nmol/L`}
-                hint={`Vale · dia ${metrics.ctroughDay}`}
+                hint={`atingido ao dia ${metrics.ctroughDay}`}
               />
             </div>
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-border/40 pt-2 font-mono text-[10px] text-muted-foreground">
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5 border-t border-border/40 pt-2.5 text-xs text-muted-foreground">
               <span>
-                Δ vs alvo{" "}
-                <span className={`tabular-nums ${
+                Diferença para alvo:{" "}
+                <span className={`font-mono tabular-nums ${
                   Math.abs(metrics.cmean - targetCmean) < 50
                     ? "text-[color:var(--color-system-body)]"
                     : "text-foreground"
@@ -202,105 +205,107 @@ export function PkCalculator() {
                   {Math.round(metrics.cmean - targetCmean)} ng/dL
                 </span>
               </span>
-              <span>Amplitude Cmax−Cmin: <span className="text-foreground tabular-nums">{Math.round(metrics.cmax - metrics.ctrough)} ng/dL</span></span>
-              <span>Ref. adulto 264–916 (Travison 2017)</span>
+              <span>
+                Oscilação pico–vale:{" "}
+                <span className="font-mono tabular-nums text-foreground">{Math.round(metrics.cmax - metrics.ctrough)} ng/dL</span>
+              </span>
+              <span className="text-[11px]">Referência adulto: 264–916 ng/dL (Travison 2017)</span>
             </div>
           </section>
 
           {/* === Ajuste por Cmédia-alvo === */}
           <section
             aria-labelledby="target-heading"
-            className="rounded-lg border border-[color:var(--color-chart-2)]/40 bg-[color:var(--color-chart-2)]/8 p-3.5 space-y-3"
+            className="rounded-lg border border-[color:var(--color-chart-2)]/40 bg-[color:var(--color-chart-2)]/8 p-4 space-y-3"
           >
             <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <h3 id="target-heading" className="font-mono text-[11px] uppercase tracking-[0.16em] text-foreground/80">
-                Ajustar τ para Cmédia-alvo
+              <h3 id="target-heading" className="text-sm font-semibold text-foreground">
+                Calcular intervalo entre doses a partir do alvo
               </h3>
-              <span className="font-mono text-[10px] text-muted-foreground">
-                τ actual = {params.intervalDays} d
+              <span className="text-xs text-muted-foreground">
+                intervalo actual: {params.intervalDays} dias
               </span>
             </div>
             <Control
-              label="Cmédia-alvo"
+              label="Concentração média alvo"
               unit="ng/dL"
               value={targetCmean}
               min={264}
               max={916}
-              step={10}
-              hint="Concentração sérica média desejada entre aplicações em estado estacionário. Alvos habituais ~500–700 ng/dL; intervalo de referência adulto 264–916 ng/dL."
+              step={5}
+              hint="Concentração média desejada no sangue entre aplicações, em estado estacionário. Alvos habituais ~500–700 ng/dL. Intervalo de referência adulto: 264–916 ng/dL."
               source="Travison JCEM 2017"
               onChange={setTargetCmean}
             />
-            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border/50 pt-2.5">
-              <div className="text-[11px] leading-snug text-muted-foreground">
-                τ sugerido{" "}
+            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border/50 pt-3">
+              <div className="text-xs leading-relaxed text-muted-foreground">
+                Intervalo sugerido:{" "}
                 <span className="font-mono text-foreground">
-                  <strong>{suggestedInterval.toFixed(0)} d</strong>{" "}
-                  (~{(suggestedInterval / 7).toFixed(1)} sem)
+                  <strong>{suggestedInterval.toFixed(0)} dias</strong>{" "}
+                  (~{(suggestedInterval / 7).toFixed(1)} semanas)
                 </span>
-                <span className="ml-1 text-[10px]">· F·D<sub>T</sub>/(Cl·C<sub>alvo</sub>)</span>
               </div>
               <button
                 type="button"
                 onClick={() => update({ intervalDays: suggestedIntervalClamped })}
-                className="rounded-full border border-border/70 bg-card px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-foreground shadow-sm transition hover:bg-muted"
+                className="rounded-full border border-border/70 bg-card px-3.5 py-1.5 text-xs font-medium text-foreground shadow-sm transition hover:bg-muted"
               >
-                Aplicar τ = {suggestedIntervalClamped} d
+                Aplicar {suggestedIntervalClamped} dias
               </button>
             </div>
-            <p className="text-[10px] leading-snug text-muted-foreground">
-              Cálculo determinístico; não substitui titulação por níveis séricos. Clampado a 42–168 d.
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              Cálculo determinístico (não substitui a titulação por análises sanguíneas). Limitado a 42–168 dias.
             </p>
           </section>
 
           {/* === Esquema posológico === */}
           <section aria-labelledby="dose-heading" className="space-y-4">
-            <div className="flex items-baseline justify-between border-b border-border/60 pb-1.5">
-              <h3 id="dose-heading" className="font-mono text-[11px] uppercase tracking-[0.16em] text-foreground/80">
-                Esquema posológico
+            <div className="flex items-baseline justify-between border-b border-border/60 pb-2">
+              <h3 id="dose-heading" className="text-sm font-semibold text-foreground">
+                Esquema de aplicação
               </h3>
-              <span className="font-mono text-[10px] text-muted-foreground">variáveis controláveis</span>
+              <span className="text-xs text-muted-foreground">parâmetros que pode ajustar</span>
             </div>
             <Control
-              label="Dose"
-              unit="mg TU"
+              label="Dose por injecção"
+              unit="mg"
               value={params.doseMg}
               min={250}
               max={1500}
-              step={50}
-              hint="Quantidade de undecilato de testosterona (TU) por injecção IM. Padrão 1000 mg / 4 mL óleo de rícino."
+              step={10}
+              hint="Quantidade de undecilato de testosterona (TU) por injecção intramuscular. Apresentação padrão: 1000 mg em 4 mL de óleo de rícino."
               source="SmPC Nebido / Reandron"
               onChange={(v) => update({ doseMg: v })}
             />
             <Control
-              label="Intervalo τ (manutenção)"
+              label="Intervalo entre doses (manutenção)"
               unit="dias"
               value={params.intervalDays}
               min={42}
               max={168}
-              step={7}
-              hint="Tempo entre doses de manutenção. Tipicamente 70–98 d (10–14 sem) — ES 2017 / SmPC Nebido. Literatura documenta 42–168 d em ajuste individualizado guiado por níveis séricos."
+              step={1}
+              hint="Tempo entre injecções na fase de manutenção. Tipicamente 70–98 dias (10–14 semanas) segundo Endocrine Society 2017 / SmPC Nebido. A literatura documenta 42–168 dias quando individualizado por análises."
               source="ES 2017 · Saad 2008 · Zitzmann 2013"
               onChange={(v) => update({ intervalDays: v })}
             />
             <Control
-              label="Peso"
+              label="Peso corporal"
               unit="kg"
               value={params.weightKg}
               min={45}
               max={130}
               step={1}
-              hint="Escala a clearance metabólica total (Cl = Cl/kg × peso)."
+              hint="Escala a depuração metabólica total (depuração total = depuração por kg × peso)."
               onChange={(v) => update({ weightKg: v })}
             />
-            <div className="flex items-start justify-between gap-3 rounded-md border border-border/60 bg-card/60 px-3 py-2.5">
+            <div className="flex items-start justify-between gap-3 rounded-md border border-border/60 bg-card/60 px-3.5 py-3">
               <div className="min-w-0">
-                <Label className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                <Label className="text-sm font-medium text-foreground">
                   Dose de ataque (loading)
                 </Label>
-                <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
-                  Segunda dose às 6 semanas após a primeira (ES 2017 / SmPC Nebido) para acelerar
-                  o estado estacionário. Desligar para esquema τ-em-τ desde t = 0.
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                  Segunda dose 6 semanas após a primeira (Endocrine Society 2017 / SmPC Nebido) para
+                  acelerar a chegada ao estado estacionário. Desligar para esquema regular desde o início.
                 </p>
               </div>
               <Switch
@@ -311,21 +316,22 @@ export function PkCalculator() {
           </section>
 
           {/* === Variação populacional (controlos do gráfico) === */}
-          <section aria-labelledby="pop-heading" className="space-y-3 rounded-lg border border-border/60 bg-[color:var(--color-chart-3)]/8 p-3.5">
-            <div className="flex items-baseline justify-between border-b border-border/50 pb-1.5">
-              <h3 id="pop-heading" className="font-mono text-[11px] uppercase tracking-[0.16em] text-foreground/80">
-                Variação populacional
+          <section aria-labelledby="pop-heading" className="space-y-3 rounded-lg border border-border/60 bg-[color:var(--color-chart-3)]/8 p-4">
+            <div className="flex items-baseline justify-between border-b border-border/50 pb-2">
+              <h3 id="pop-heading" className="text-sm font-semibold text-foreground">
+                Variação entre pessoas
               </h3>
-              <span className="font-mono text-[10px] text-muted-foreground">Monte Carlo</span>
+              <span className="text-xs text-muted-foreground">simulação Monte Carlo</span>
             </div>
 
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
-                <Label className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                  Mostrar faixa populacional
+                <Label className="text-sm font-medium text-foreground">
+                  Mostrar faixa de variação
                 </Label>
-                <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
-                  Sobrepõe percentis de uma coorte simulada (Cl, ka, ke log-normais).
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                  Sobrepõe a faixa onde caem 90% (ou 50%) das pessoas, simulando variação biológica
+                  individual na depuração e na velocidade de absorção/eliminação.
                 </p>
               </div>
               <Switch checked={showBand} onCheckedChange={setShowBand} />
@@ -333,43 +339,46 @@ export function PkCalculator() {
 
             {showBand ? (
               <>
-                <div className="flex flex-wrap gap-1.5">
-                  {([
-                    { id: "p5-p95", label: "P5–P95" },
-                    { id: "p25-p75", label: "P25–P75 (IQR)" },
-                  ] as const).map((opt) => (
-                    <button
-                      key={opt.id}
-                      type="button"
-                      onClick={() => setBandRange(opt.id)}
-                      className={`rounded-full border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] transition ${
-                        bandRange === opt.id
-                          ? "border-[color:var(--color-chart-3)] bg-[color:var(--color-chart-3)]/15 text-foreground"
-                          : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
+                <div>
+                  <Label className="mb-1.5 block text-xs text-muted-foreground">Largura da faixa</Label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {([
+                      { id: "p5-p95", label: "90% das pessoas (P5–P95)" },
+                      { id: "p25-p75", label: "50% central (P25–P75)" },
+                    ] as const).map((opt) => (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        onClick={() => setBandRange(opt.id)}
+                        className={`rounded-full border px-3 py-1.5 text-xs font-medium transition ${
+                          bandRange === opt.id
+                            ? "border-[color:var(--color-chart-3)] bg-[color:var(--color-chart-3)]/15 text-foreground"
+                            : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
                 <Control
-                  label="Indivíduos simulados (N)"
+                  label="Número de pessoas simuladas"
                   unit=""
                   value={nSubjects}
                   min={50}
                   max={1000}
-                  step={50}
-                  hint="Tamanho da coorte Monte Carlo. Mais indivíduos = percentis mais estáveis, simulação mais lenta."
+                  step={10}
+                  hint="Tamanho da coorte simulada. Mais pessoas = faixa mais estável, simulação mais lenta."
                   onChange={setNSubjects}
                 />
                 <Control
-                  label="CV inter-individual"
+                  label="Variabilidade entre pessoas"
                   unit="%"
                   value={cvPct}
                   min={10}
                   max={60}
-                  step={5}
-                  hint="Coeficiente de variação log-normal sobre Cl (e ~70% disso em ka/ke). TU IM reporta CV ≈ 30–50%."
+                  step={1}
+                  hint="Quanto a fisiologia varia entre indivíduos (coeficiente de variação). Estudos com undecilato IM reportam tipicamente 30–50%."
                   source="Behre 1999 · Zitzmann 2013"
                   onChange={setCvPct}
                 />
@@ -379,57 +388,57 @@ export function PkCalculator() {
 
           {/* === Parâmetros PK (avançado) === */}
           <details className="group rounded-lg border border-border/60 bg-muted/20 open:bg-muted/30">
-            <summary className="flex cursor-pointer items-baseline justify-between gap-2 px-3.5 py-2.5 font-mono text-[11px] uppercase tracking-[0.16em] text-foreground/70 transition hover:text-foreground">
-              <span>Parâmetros farmacocinéticos · avançado</span>
-              <span className="text-[10px] text-muted-foreground transition group-open:rotate-180">▾</span>
+            <summary className="flex cursor-pointer items-baseline justify-between gap-2 px-4 py-3 text-sm font-medium text-foreground/80 transition hover:text-foreground">
+              <span>Parâmetros farmacocinéticos avançados</span>
+              <span className="text-xs text-muted-foreground transition group-open:rotate-180">▾</span>
             </summary>
-            <div className="space-y-4 px-3.5 pb-4 pt-1">
+            <div className="space-y-4 px-4 pb-4 pt-1">
               <Control
-                label="t½ subida (absorção)"
-                unit="d"
+                label="Meia-vida de absorção"
+                unit="dias"
                 value={params.absorptionHalfLifeD}
                 min={2}
                 max={20}
-                step={0.5}
-                hint="Meia-vida de absorção (ka): libertação rápida do depósito IM. Tmax (7–14 d, Schubert 2004) emerge da combinação ka/ke."
+                step={0.1}
+                hint="Tempo para metade do fármaco ser libertada do depósito intramuscular. Determina a velocidade de subida até ao pico (7–14 dias, Schubert 2004)."
                 source="Schubert 2004"
                 onChange={(v) => update({ absorptionHalfLifeD: v })}
               />
               <Control
-                label="t½ aparente terminal"
-                unit="d"
+                label="Meia-vida aparente terminal"
+                unit="dias"
                 value={params.eliminationHalfLifeD}
                 min={20}
                 max={50}
-                step={1}
-                hint="Meia-vida aparente da fase descendente. Em flip-flop reflecte libertação do depósito (~33 d), não a eliminação intrínseca da T."
+                step={0.5}
+                hint="Tempo para a concentração cair para metade na fase descendente. Para o undecilato IM (~33 dias) reflecte a libertação lenta do depósito, não a eliminação intrínseca da testosterona."
                 source="Schubert 2004 / Behre 1999"
                 onChange={(v) => update({ eliminationHalfLifeD: v })}
               />
               <Control
-                label="Clearance"
-                unit="L/kg/d"
+                label="Depuração metabólica"
+                unit="L/kg/dia"
                 value={params.clearanceLPerKgPerDay}
                 min={12}
                 max={32}
-                step={1}
-                hint="Clearance metabólica da T — define directamente a Cmédia em estado estacionário."
-                source="Wang 2004 (~21 L/kg/d)"
+                step={0.5}
+                hint="Volume de sangue depurado de testosterona por kg e por dia. Determina directamente a concentração média no estado estacionário."
+                source="Wang 2004 (~21 L/kg/dia)"
                 onChange={(v) => update({ clearanceLPerKgPerDay: v })}
               />
-              <div className="rounded-md border border-border/60 bg-card/60 p-3 text-[11px] leading-relaxed text-muted-foreground">
+              <div className="rounded-md border border-border/60 bg-card/60 p-3 text-xs leading-relaxed text-muted-foreground">
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
-                  <span className="font-mono uppercase tracking-[0.16em] text-foreground/70">
+                  <span className="font-medium text-foreground/80">
                     Verificação analítica
                   </span>
-                  <span className="font-mono text-[10px] text-foreground/60">
-                    Tmax ≈ {tmax.toFixed(1)} d · Css,avg ≈ {Math.round(cssExpected)} ng/dL
+                  <span className="font-mono text-[11px] text-foreground/60">
+                    pico previsto ≈ dia {tmax.toFixed(1)} · média prevista ≈ {Math.round(cssExpected)} ng/dL
                   </span>
                 </div>
                 <p className="mt-1.5">
-                  Css,avg = F·D<sub>T</sub>/(Cl·τ), com D<sub>T</sub> = dose<sub>TU</sub>×0,6315.
-                  Tmax dose-única = ln(ka/ke)/(ka−ke). Esperado: 264–916 ng/dL (Travison 2017),
-                  Tmax 7–14 d (Schubert 2004).
+                  Concentração média = biodisponibilidade × dose efectiva ÷ (depuração × intervalo). A dose
+                  efectiva de testosterona é 63% da dose de undecilato (razão de pesos moleculares).
+                  Valores esperados: 264–916 ng/dL (Travison 2017); pico ao dia 7–14 (Schubert 2004).
                 </p>
               </div>
             </div>
@@ -635,6 +644,7 @@ export function PkCalculator() {
 
 function Metric({
   label,
+  acronym,
   value,
   unit,
   secondary,
@@ -642,6 +652,7 @@ function Metric({
   emphasis = false,
 }: {
   label: string;
+  acronym?: string;
   value: number;
   unit: string;
   secondary?: string;
@@ -652,17 +663,24 @@ function Metric({
     <div
       className={
         emphasis
-          ? "rounded-md border border-[color:var(--color-chart-2)]/40 bg-card/70 px-2 py-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]"
+          ? "rounded-md border border-[color:var(--color-chart-2)]/40 bg-card/70 px-2.5 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]"
           : "px-1"
       }
     >
-      <div className={`text-[10px] uppercase tracking-[0.18em] ${emphasis ? "text-[color:var(--color-chart-2)]" : "text-muted-foreground"}`}>{label}</div>
-      <div className={`font-mono tabular-nums text-foreground ${emphasis ? "text-xl font-medium" : "text-lg"}`}>{Math.round(value)}</div>
-      <div className="text-[10px] text-muted-foreground">{unit}</div>
+      <div className="flex items-baseline gap-1.5">
+        <span className={`text-xs font-medium ${emphasis ? "text-[color:var(--color-chart-2)]" : "text-foreground"}`}>
+          {label}
+        </span>
+        {acronym ? (
+          <span className="font-mono text-[10px] text-muted-foreground">({acronym})</span>
+        ) : null}
+      </div>
+      <div className={`font-mono tabular-nums text-foreground ${emphasis ? "text-2xl font-semibold" : "text-xl"}`}>{Math.round(value)}</div>
+      <div className="text-[11px] text-muted-foreground">{unit}</div>
       {secondary ? (
-        <div className="font-mono text-[10px] text-foreground/60">{secondary}</div>
+        <div className="font-mono text-[11px] text-foreground/60">{secondary}</div>
       ) : null}
-      {hint ? <div className="mt-1 text-[10px] leading-tight text-muted-foreground/80">{hint}</div> : null}
+      {hint ? <div className="mt-1 text-[11px] leading-tight text-muted-foreground/80">{hint}</div> : null}
     </div>
   );
 }
