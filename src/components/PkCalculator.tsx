@@ -75,10 +75,39 @@ export function PkCalculator() {
   const [params, setParams] = useState<PkParams>(DEFAULT_PK);
   const [targetCmean, setTargetCmean] = useState<number>(550); // ng/dL — meio do intervalo 264–916
 
+  // === Controlos do gráfico ===
+  const [showBand, setShowBand] = useState<boolean>(true);
+  const [bandRange, setBandRange] = useState<"p5-p95" | "p25-p75">("p5-p95");
+  const [nSubjects, setNSubjects] = useState<number>(200);
+  const [cvPct, setCvPct] = useState<number>(35);
+
   const series = useMemo(() => generatePkSeries(params, { stepDays: 1 }), [params]);
   const metrics = useMemo(() => computeMetrics(series, params), [series, params]);
   const tmax = useMemo(() => singleDoseTmax(params), [params]);
   const cssExpected = useMemo(() => steadyStateMean(params), [params]);
+
+  const population = useMemo(
+    () =>
+      showBand
+        ? simulatePopulation(params, { nSubjects, cv: cvPct / 100, stepDays: 1, seed: 1234 })
+        : [],
+    [showBand, params, nSubjects, cvPct],
+  );
+
+  const chartData = useMemo(() => {
+    if (!showBand || population.length !== series.length) return series;
+    return series.map((pt, i) => ({
+      ...pt,
+      p05: population[i]?.p05,
+      p25: population[i]?.p25,
+      p50: population[i]?.p50,
+      p75: population[i]?.p75,
+      p95: population[i]?.p95,
+    }));
+  }, [series, population, showBand]);
+
+  const bandLow = bandRange === "p5-p95" ? "p05" : "p25";
+  const bandHigh = bandRange === "p5-p95" ? "p95" : "p75";
 
   // τ sugerido para atingir Css,avg = alvo, mantendo dose, peso e Cl fixos.
   // Css,avg = F · D_T / (Cl · τ) · 1e5  →  τ = F · D_T / (Cl · C_alvo) · 1e5
