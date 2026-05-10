@@ -71,11 +71,22 @@ function Control({ label, value, min, max, step, unit, hint, source, onChange }:
 
 export function PkCalculator() {
   const [params, setParams] = useState<PkParams>(DEFAULT_PK);
+  const [targetCmean, setTargetCmean] = useState<number>(550); // ng/dL — meio do intervalo 264–916
 
   const series = useMemo(() => generatePkSeries(params, { stepDays: 1 }), [params]);
   const metrics = useMemo(() => computeMetrics(series, params), [series, params]);
   const tmax = useMemo(() => singleDoseTmax(params), [params]);
   const cssExpected = useMemo(() => steadyStateMean(params), [params]);
+
+  // τ sugerido para atingir Css,avg = alvo, mantendo dose, peso e Cl fixos.
+  // Css,avg = F · D_T / (Cl · τ) · 1e5  →  τ = F · D_T / (Cl · C_alvo) · 1e5
+  const suggestedInterval = useMemo(() => {
+    const Cl = params.clearanceLPerKgPerDay * params.weightKg;
+    const D_T = params.doseMg * 0.6315;
+    if (targetCmean <= 0) return 0;
+    return (params.bioavailability * D_T) / (Cl * targetCmean) * 100_000;
+  }, [params, targetCmean]);
+  const suggestedIntervalClamped = Math.max(42, Math.min(168, Math.round(suggestedInterval / 7) * 7));
 
   const update = (patch: Partial<PkParams>) => setParams((p) => ({ ...p, ...patch }));
 
