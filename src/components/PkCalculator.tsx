@@ -80,7 +80,10 @@ export function PkCalculator() {
   const update = (patch: Partial<PkParams>) => setParams((p) => ({ ...p, ...patch }));
 
   return (
-    <Card className="border-border/70 bg-card/80 shadow-sm backdrop-blur">
+    <Card className="relative overflow-hidden border-border/70 bg-card/80 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_20px_40px_-24px_color-mix(in_oklab,var(--color-chart-1)_35%,transparent),0_30px_60px_-30px_color-mix(in_oklab,var(--color-chart-2)_30%,transparent)] backdrop-blur">
+      <div aria-hidden className="pointer-events-none absolute -top-24 -left-20 h-72 w-72 rounded-full bg-[radial-gradient(circle,color-mix(in_oklab,var(--color-chart-1)_55%,transparent),transparent_70%)] blur-2xl" />
+      <div aria-hidden className="pointer-events-none absolute -top-10 -right-16 h-80 w-80 rounded-full bg-[radial-gradient(circle,color-mix(in_oklab,var(--color-chart-2)_55%,transparent),transparent_70%)] blur-3xl" />
+      <div aria-hidden className="pointer-events-none absolute -bottom-24 left-1/3 h-72 w-72 rounded-full bg-[radial-gradient(circle,color-mix(in_oklab,var(--color-chart-3)_45%,transparent),transparent_70%)] blur-3xl" />
       <CardHeader className="px-4 pt-5 md:px-6 md:pt-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div className="min-w-0">
@@ -224,9 +227,22 @@ export function PkCalculator() {
             <AreaChart data={series} margin={{ top: 10, right: 16, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="pk-fill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="var(--color-chart-1)" stopOpacity={0.5} />
-                  <stop offset="100%" stopColor="var(--color-chart-1)" stopOpacity={0.02} />
+                  <stop offset="0%" stopColor="var(--color-chart-1)" stopOpacity={0.55} />
+                  <stop offset="45%" stopColor="var(--color-chart-2)" stopOpacity={0.32} />
+                  <stop offset="100%" stopColor="var(--color-chart-3)" stopOpacity={0.04} />
                 </linearGradient>
+                <linearGradient id="pk-stroke" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="var(--color-chart-2)" />
+                  <stop offset="55%" stopColor="var(--color-chart-1)" />
+                  <stop offset="100%" stopColor="var(--color-chart-4)" />
+                </linearGradient>
+                <filter id="pk-glow" x="-10%" y="-20%" width="120%" height="140%">
+                  <feGaussianBlur stdDeviation="3" result="b" />
+                  <feMerge>
+                    <feMergeNode in="b" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
               </defs>
 
               <CartesianGrid stroke="var(--color-border)" strokeDasharray="2 4" vertical={false} />
@@ -306,9 +322,10 @@ export function PkCalculator() {
               <Area
                 type="monotone"
                 dataKey="concentration"
-                stroke="var(--color-chart-1)"
-                strokeWidth={2}
+                stroke="url(#pk-stroke)"
+                strokeWidth={2.5}
                 fill="url(#pk-fill)"
+                filter="url(#pk-glow)"
               />
             </AreaChart>
           </ResponsiveContainer>
