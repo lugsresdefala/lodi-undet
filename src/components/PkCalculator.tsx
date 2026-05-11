@@ -109,15 +109,27 @@ export function PkCalculator() {
   const bandLow = bandRange === "p5-p95" ? "p05" : "p25";
   const bandHigh = bandRange === "p5-p95" ? "p95" : "p75";
 
-  // τ sugerido para atingir Css,avg = alvo, mantendo dose, peso e Cl fixos.
+  // τ para atingir Css,avg = alvo NA POPULAÇÃO MÉDIA (Cl populacional fixo).
   // Css,avg = F · D_T / (Cl · τ) · 1e5  →  τ = F · D_T / (Cl · C_alvo) · 1e5
+  // ATENÇÃO: este τ é determinístico e não personalizável sem medição sérica.
+  // A variabilidade inter-individual de Cl (CV 30–50%) implica que, para um
+  // indivíduo concreto, o τ que produz a Cmédia-alvo pode diferir em ±40–60%.
+  // O intervalo abaixo é a faixa de 90% (log-normal, σ = √ln(1+CV²)).
   const suggestedInterval = useMemo(() => {
     const Cl = params.clearanceLPerKgPerDay * params.weightKg;
     const D_T = params.doseMg * 0.6315;
     if (targetCmean <= 0) return 0;
     return (params.bioavailability * D_T) / (Cl * targetCmean) * 100_000;
   }, [params, targetCmean]);
-  const suggestedIntervalClamped = Math.max(42, Math.min(168, Math.round(suggestedInterval / 7) * 7));
+  const intervalBand = useMemo(() => {
+    const cv = cvPct / 100;
+    const sigma = Math.sqrt(Math.log(1 + cv * cv));
+    const z = 1.645;
+    return {
+      low: suggestedInterval * Math.exp(-z * sigma),
+      high: suggestedInterval * Math.exp(z * sigma),
+    };
+  }, [suggestedInterval, cvPct]);
 
   const update = (patch: Partial<PkParams>) => setParams((p) => ({ ...p, ...patch }));
 
