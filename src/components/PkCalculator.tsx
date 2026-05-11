@@ -302,9 +302,91 @@ export function PkCalculator() {
                 </span>
               </div>
             </div>
+
+            {/* === Modo individual === */}
+            <div className="border-t border-border/50 pt-3 space-y-3">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <Switch checked={individualMode} onCheckedChange={setIndividualMode} className="mt-0.5" />
+                <span className="text-sm">
+                  <span className="font-medium text-foreground">Titulação individual</span>
+                  <span className="block text-xs text-muted-foreground leading-relaxed">
+                    Tenho uma medição sérica de testosterona total feita no esquema actual ({params.doseMg} mg cada {params.intervalDays} dias).
+                  </span>
+                </span>
+              </label>
+              {individualMode && (
+                <div className="space-y-3 rounded-md border border-[color:var(--color-chart-1)]/30 bg-[color:var(--color-chart-1)]/8 p-3">
+                  <div className="flex gap-2 text-xs">
+                    <button
+                      type="button"
+                      onClick={() => setMeasuredType("ctrough")}
+                      className={`flex-1 rounded-md border px-2.5 py-2 transition ${
+                        measuredType === "ctrough"
+                          ? "border-[color:var(--color-chart-1)] bg-[color:var(--color-chart-1)]/15 text-foreground font-medium"
+                          : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      Vale (antes da próxima dose)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setMeasuredType("cmean")}
+                      className={`flex-1 rounded-md border px-2.5 py-2 transition ${
+                        measuredType === "cmean"
+                          ? "border-[color:var(--color-chart-1)] bg-[color:var(--color-chart-1)]/15 text-foreground font-medium"
+                          : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      Média do intervalo
+                    </button>
+                  </div>
+                  <Control
+                    label={measuredType === "ctrough" ? "T total medida (vale)" : "T total medida (média)"}
+                    unit="ng/dL"
+                    value={measuredValue}
+                    min={50}
+                    max={2000}
+                    step={5}
+                    hint={
+                      measuredType === "ctrough"
+                        ? "Concentração medida no dia da próxima injecção, antes de aplicar. Convertida para Cmédia pelo modelo actual."
+                        : "Média estimada do intervalo entre doses (geralmente requer 2–3 colheitas seriadas)."
+                    }
+                    onChange={setMeasuredValue}
+                  />
+                  {individualResult && (
+                    <div className="space-y-1.5 text-xs leading-relaxed border-t border-border/50 pt-2.5">
+                      <div className="text-muted-foreground">
+                        Cmédia estimada do paciente:{" "}
+                        <span className="font-mono text-foreground">{Math.round(individualResult.cmeanIndiv)} ng/dL</span>
+                      </div>
+                      <div className="text-muted-foreground">
+                        Depuração estimada:{" "}
+                        <span className="font-mono text-foreground">{individualResult.clIndiv.toFixed(0)} L/dia</span>{" "}
+                        <span className="text-[11px]">({(individualResult.clRatio * 100).toFixed(0)}% da população)</span>
+                      </div>
+                      <div className="pt-1 text-foreground">
+                        <strong>Intervalo individualizado para {targetCmean} ng/dL:</strong>{" "}
+                        <span className="font-mono">
+                          {individualResult.tauIndiv.toFixed(0)} dias (~{(individualResult.tauIndiv / 7).toFixed(1)} semanas)
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => update({ intervalDays: Math.max(28, Math.min(168, Math.round(individualResult.tauIndiv))) })}
+                        className="mt-1 rounded-full border border-[color:var(--color-chart-1)]/50 bg-[color:var(--color-chart-1)]/15 px-3 py-1.5 text-xs font-medium text-foreground hover:bg-[color:var(--color-chart-1)]/25"
+                      >
+                        Aplicar ao gráfico
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
             <p className="text-xs leading-relaxed text-muted-foreground">
-              Ferramenta didáctica. A escolha real de τ deve basear-se em medições séricas
-              repetidas (T total no vale, sintomas, hematócrito) e não neste cálculo.
+              Mesmo com medição individual, a titulação clínica requer ≥2 medições em condições
+              estáveis (≥3 doses no mesmo τ) e ajuste por sintomas/hematócrito.
             </p>
           </section>
 
