@@ -143,30 +143,30 @@ export function PkCalculator() {
   }, [suggestedInterval, cvPct]);
 
   // === Titulação individual ===
-  // Se o paciente fez análises ao fim de ≥3 doses no esquema actual, pode-se
-  // estimar a sua depuração metabólica intrínseca:
-  //   Cl_indiv = F · D_T / (Cmédia_medida · τ_actual) · 1e5
-  // Converte-se Cvale → Cmédia através da razão prevista pelo modelo actual.
-  // τ_indiv = τ_actual · (Cmédia_medida / Cmédia_alvo)
+  // Uma medição isolada só é utilizável se o dia pós-dose for conhecido e o
+  // esquema estiver em estado estacionário. O modelo é então calibrado por um
+  // factor individual no mesmo tempo de colheita; isto estima a exposição média
+  // desse indivíduo, não "converte" genericamente vale em média.
   const individualResult = useMemo(() => {
     if (!individualMode || measuredValue <= 0 || targetCmean <= 0) return null;
-    const ratio = measuredType === "cmean"
-      ? 1
-      : metrics.cmean > 0 && metrics.ctrough > 0
-        ? metrics.cmean / metrics.ctrough
-        : 1;
-    const cmeanIndiv = measuredValue * ratio;
+    const sampleDay = Math.max(1, Math.min(sampleDayAfterDose, params.intervalDays));
+    const predictedAtSample = steadyStateConcentration(lastDoseDay + sampleDay, params);
+    if (predictedAtSample <= 0 || metrics.cmean <= 0) return null;
+    const exposureRatio = measuredValue / predictedAtSample;
+    const cmeanIndiv = metrics.cmean * exposureRatio;
     const tauIndiv = (params.intervalDays * cmeanIndiv) / targetCmean;
-    const D_T = params.doseMg * 0.6315;
-    const clIndiv = (params.bioavailability * D_T) / (cmeanIndiv * params.intervalDays) * 100_000;
     const clPop = params.clearanceLPerKgPerDay * params.weightKg;
+    const clIndiv = clPop / exposureRatio;
     return {
+      sampleDay,
+      predictedAtSample,
+      exposureRatio,
       cmeanIndiv,
       tauIndiv,
       clIndiv,
       clRatio: clIndiv / clPop,
     };
-  }, [individualMode, measuredValue, measuredType, targetCmean, params, metrics]);
+  }, [individualMode, measuredValue, sampleDayAfterDose, targetCmean, params, metrics, lastDoseDay]);
 
   const update = (patch: Partial<PkParams>) => setParams((p) => ({ ...p, ...patch }));
 
