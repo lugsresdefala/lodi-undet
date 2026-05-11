@@ -362,14 +362,14 @@ export function PkCalculator() {
                         <span className="text-[11px]">({(individualResult.clRatio * 100).toFixed(0)}% da população)</span>
                       </div>
                       <div className="pt-1 text-foreground">
-                        <strong>Intervalo individualizado para {targetCmean} ng/dL:</strong>{" "}
+                        <strong>Intervalo estimado pelo modelo calibrado para {targetCmean} ng/dL:</strong>{" "}
                         <span className="font-mono">
                           {individualResult.tauIndiv.toFixed(0)} dias (~{(individualResult.tauIndiv / 7).toFixed(1)} semanas)
                         </span>
                       </div>
                       <button
                         type="button"
-                        onClick={() => update({ intervalDays: Math.max(28, Math.min(168, Math.round(individualResult.tauIndiv))) })}
+                        onClick={() => update({ intervalDays: Math.max(42, Math.min(168, Math.round(individualResult.tauIndiv))) })}
                         className="mt-1 rounded-full border border-[color:var(--color-chart-1)]/50 bg-[color:var(--color-chart-1)]/15 px-3 py-1.5 text-xs font-medium text-foreground hover:bg-[color:var(--color-chart-1)]/25"
                       >
                         Aplicar ao gráfico
@@ -381,8 +381,9 @@ export function PkCalculator() {
             </div>
 
             <p className="text-xs leading-relaxed text-muted-foreground">
-              Mesmo com medição individual, a titulação clínica requer ≥2 medições em condições
-              estáveis (≥3 doses no mesmo τ) e ajuste por sintomas/hematócrito.
+              Uma medição única apenas calibra a curva no dia informado. Titulação clínica real requer
+              medições em condições estáveis (≥3 doses no mesmo τ), momento de colheita documentado e
+              ajuste por sintomas/hematócrito.
             </p>
           </section>
 
