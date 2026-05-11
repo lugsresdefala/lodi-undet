@@ -718,6 +718,18 @@ export function PkCalculator() {
                 labelFormatter={(v) => `Dia ${v}`}
               />
 
+              <Area
+                type="monotone"
+                dataKey="concentration"
+                name="Determinístico"
+                stroke="url(#pk-stroke)"
+                strokeWidth={2.5}
+                fill="url(#pk-fill)"
+                fillOpacity={1}
+                filter="url(#pk-glow)"
+                isAnimationActive={false}
+              />
+
               {showBand ? (
                 <>
                   <Area
@@ -725,10 +737,10 @@ export function PkCalculator() {
                     dataKey={(d: Record<string, number>) => [d[bandLow], d[bandHigh]]}
                     name={bandRange === "p5-p95" ? "P5–P95" : "P25–P75"}
                     stroke="var(--color-chart-3)"
-                    strokeOpacity={0.35}
+                    strokeOpacity={0.5}
                     strokeWidth={1}
                     fill="var(--color-chart-3)"
-                    fillOpacity={0.14}
+                    fillOpacity={0.22}
                     isAnimationActive={false}
                     activeDot={false}
                   />
@@ -745,18 +757,6 @@ export function PkCalculator() {
                   />
                 </>
               ) : null}
-
-              <Area
-                type="monotone"
-                dataKey="concentration"
-                name="Determinístico"
-                stroke="url(#pk-stroke)"
-                strokeWidth={2.5}
-                fill="url(#pk-fill)"
-                fillOpacity={1}
-                filter="url(#pk-glow)"
-                isAnimationActive={false}
-              />
             </AreaChart>
           </ResponsiveContainer>
         </div>
