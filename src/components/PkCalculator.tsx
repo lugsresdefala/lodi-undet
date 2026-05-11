@@ -48,9 +48,7 @@ function Control({ label, value, min, max, step, unit, hint, source, onChange }:
   return (
     <div className="space-y-2">
       <div className="flex items-baseline justify-between gap-2">
-        <Label className="text-sm font-medium text-foreground">
-          {label}
-        </Label>
+        <Label className="text-sm font-medium text-foreground">{label}</Label>
         <span className="font-mono text-base tabular-nums text-foreground">
           {value}
           <span className="ml-1 text-xs text-muted-foreground">{unit}</span>
@@ -130,7 +128,7 @@ export function PkCalculator() {
     const Cl = params.clearanceLPerKgPerDay * params.weightKg;
     const D_T = params.doseMg * 0.6315;
     if (targetCmean <= 0) return 0;
-    return (params.bioavailability * D_T) / (Cl * targetCmean) * 100_000;
+    return ((params.bioavailability * D_T) / (Cl * targetCmean)) * 100_000;
   }, [params, targetCmean]);
   const intervalBand = useMemo(() => {
     const cv = cvPct / 100;
@@ -166,15 +164,32 @@ export function PkCalculator() {
       clIndiv,
       clRatio: clIndiv / clPop,
     };
-  }, [individualMode, measuredValue, sampleDayAfterDose, targetCmean, params, metrics, lastDoseDay]);
+  }, [
+    individualMode,
+    measuredValue,
+    sampleDayAfterDose,
+    targetCmean,
+    params,
+    metrics,
+    lastDoseDay,
+  ]);
 
   const update = (patch: Partial<PkParams>) => setParams((p) => ({ ...p, ...patch }));
 
   return (
     <Card className="relative overflow-hidden border-border/70 bg-card/80 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_20px_40px_-24px_color-mix(in_oklab,var(--color-chart-1)_35%,transparent),0_30px_60px_-30px_color-mix(in_oklab,var(--color-chart-2)_30%,transparent)] backdrop-blur">
-      <div aria-hidden className="pointer-events-none absolute -top-24 -left-20 h-72 w-72 rounded-full bg-[radial-gradient(circle,color-mix(in_oklab,var(--color-chart-1)_55%,transparent),transparent_70%)] blur-2xl" />
-      <div aria-hidden className="pointer-events-none absolute -top-10 -right-16 h-80 w-80 rounded-full bg-[radial-gradient(circle,color-mix(in_oklab,var(--color-chart-2)_55%,transparent),transparent_70%)] blur-3xl" />
-      <div aria-hidden className="pointer-events-none absolute -bottom-24 left-1/3 h-72 w-72 rounded-full bg-[radial-gradient(circle,color-mix(in_oklab,var(--color-chart-3)_45%,transparent),transparent_70%)] blur-3xl" />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-24 -left-20 h-72 w-72 rounded-full bg-[radial-gradient(circle,color-mix(in_oklab,var(--color-chart-1)_55%,transparent),transparent_70%)] blur-2xl"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-10 -right-16 h-80 w-80 rounded-full bg-[radial-gradient(circle,color-mix(in_oklab,var(--color-chart-2)_55%,transparent),transparent_70%)] blur-3xl"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -bottom-24 left-1/3 h-72 w-72 rounded-full bg-[radial-gradient(circle,color-mix(in_oklab,var(--color-chart-3)_45%,transparent),transparent_70%)] blur-3xl"
+      />
       <CardHeader className="px-4 pt-5 md:px-6 md:pt-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div className="min-w-0">
@@ -184,9 +199,9 @@ export function PkCalculator() {
             <CardDescription className="mt-2 text-sm leading-relaxed">
               Simulação da testosterona sérica após injecções intramusculares de undecilato de
               testosterona em óleo de rícino (1000 mg / 4 mL, tipo Nebido/Reandron). Usa um modelo
-              farmacocinético calibrado para o perfil observado por Schubert et al. (JCEM 2004): pico
-              aos 7–14 dias e meia-vida aparente de ~33 dias. Inclui dose de ataque às 6 semanas
-              segundo Endocrine Society 2017.
+              farmacocinético calibrado para o perfil observado por Schubert et al. (JCEM 2004):
+              pico aos 7–14 dias e meia-vida aparente de ~33 dias. Inclui dose de ataque às 6
+              semanas segundo Endocrine Society 2017.
             </CardDescription>
           </div>
           <span
@@ -196,7 +211,9 @@ export function PkCalculator() {
                 : "bg-destructive/10 text-destructive"
             }`}
           >
-            {metrics.inRange ? "Dentro do intervalo de referência" : "Fora do intervalo de referência"}
+            {metrics.inRange
+              ? "Dentro do intervalo de referência"
+              : "Fora do intervalo de referência"}
           </span>
         </div>
       </CardHeader>
@@ -213,10 +230,14 @@ export function PkCalculator() {
               <h3 id="vars-heading" className="text-sm font-semibold text-foreground">
                 Concentração sérica prevista por este modelo
               </h3>
-              <span className="text-xs text-muted-foreground">para os parâmetros actuais, no último intervalo</span>
+              <span className="text-xs text-muted-foreground">
+                para os parâmetros actuais, no último intervalo
+              </span>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed mt-1">
-              Estimativas calculadas a partir da dose ({params.doseMg} mg), intervalo ({params.intervalDays} d) e peso ({params.weightKg} kg) escolhidos — não são valores genéricos nem normativos.
+              Estimativas calculadas a partir da dose ({params.doseMg} mg), intervalo (
+              {params.intervalDays} d) e peso ({params.weightKg} kg) escolhidos — não são valores
+              genéricos nem normativos.
             </p>
             <div className="mt-3 grid grid-cols-3 gap-3">
               <Metric
@@ -248,18 +269,22 @@ export function PkCalculator() {
             <div className="mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5 border-t border-border/40 pt-2.5 text-xs text-muted-foreground">
               <span>
                 Diferença para alvo:{" "}
-                <span className={`font-mono tabular-nums ${
-                  Math.abs(metrics.cmean - targetCmean) < 50
-                    ? "text-[color:var(--color-system-body)]"
-                    : "text-foreground"
-                }`}>
+                <span
+                  className={`font-mono tabular-nums ${
+                    Math.abs(metrics.cmean - targetCmean) < 50
+                      ? "text-[color:var(--color-system-body)]"
+                      : "text-foreground"
+                  }`}
+                >
                   {metrics.cmean - targetCmean >= 0 ? "+" : ""}
                   {Math.round(metrics.cmean - targetCmean)} ng/dL
                 </span>
               </span>
               <span>
                 Oscilação pico–vale:{" "}
-                <span className="font-mono tabular-nums text-foreground">{Math.round(metrics.cmax - metrics.ctrough)} ng/dL</span>
+                <span className="font-mono tabular-nums text-foreground">
+                  {Math.round(metrics.cmax - metrics.ctrough)} ng/dL
+                </span>
               </span>
               <span className="text-[11px]">Referência adulto: 264–916 ng/dL (Travison 2017)</span>
             </div>
@@ -282,8 +307,8 @@ export function PkCalculator() {
               <strong>Não é uma recomendação individual.</strong> O cálculo assume a depuração
               metabólica populacional (Wang 2004). Como a variabilidade inter-individual de Cl é
               alta (CV ~30–50%), o τ que produz a Cmédia-alvo num indivíduo concreto só pode ser
-              determinado por <em>titulação com análises séricas</em> (vale antes da dose
-              seguinte, Endocrine Society 2017).
+              determinado por <em>titulação com análises séricas</em> (vale antes da dose seguinte,
+              Endocrine Society 2017).
             </div>
             <Control
               label="Concentração média alvo"
@@ -300,8 +325,8 @@ export function PkCalculator() {
               <div className="text-xs leading-relaxed text-muted-foreground">
                 Intervalo populacional médio:{" "}
                 <span className="font-mono text-foreground">
-                  <strong>{suggestedInterval.toFixed(0)} dias</strong>{" "}
-                  (~{(suggestedInterval / 7).toFixed(1)} semanas)
+                  <strong>{suggestedInterval.toFixed(0)} dias</strong> (~
+                  {(suggestedInterval / 7).toFixed(1)} semanas)
                 </span>
               </div>
               <div className="text-xs leading-relaxed text-muted-foreground">
@@ -315,11 +340,16 @@ export function PkCalculator() {
             {/* === Modo individual === */}
             <div className="border-t border-border/50 pt-3 space-y-3">
               <label className="flex items-start gap-3 cursor-pointer">
-                <Switch checked={individualMode} onCheckedChange={setIndividualMode} className="mt-0.5" />
+                <Switch
+                  checked={individualMode}
+                  onCheckedChange={setIndividualMode}
+                  className="mt-0.5"
+                />
                 <span className="text-sm">
                   <span className="font-medium text-foreground">Titulação individual</span>
                   <span className="block text-xs text-muted-foreground leading-relaxed">
-                    Tenho uma medição sérica de testosterona total feita no esquema actual ({params.doseMg} mg cada {params.intervalDays} dias).
+                    Tenho uma medição sérica de testosterona total feita no esquema actual (
+                    {params.doseMg} mg cada {params.intervalDays} dias).
                   </span>
                 </span>
               </label>
@@ -349,27 +379,47 @@ export function PkCalculator() {
                     <div className="space-y-1.5 text-xs leading-relaxed border-t border-border/50 pt-2.5">
                       <div className="text-muted-foreground">
                         Modelo no mesmo dia pós-dose ({individualResult.sampleDay} d):{" "}
-                        <span className="font-mono text-foreground">{Math.round(individualResult.predictedAtSample)} ng/dL</span>{" "}
-                        <span className="text-[11px]">→ factor individual {(individualResult.exposureRatio * 100).toFixed(0)}%</span>
+                        <span className="font-mono text-foreground">
+                          {Math.round(individualResult.predictedAtSample)} ng/dL
+                        </span>{" "}
+                        <span className="text-[11px]">
+                          → factor individual {(individualResult.exposureRatio * 100).toFixed(0)}%
+                        </span>
                       </div>
                       <div className="text-muted-foreground">
                         Cmédia estimada do paciente:{" "}
-                        <span className="font-mono text-foreground">{Math.round(individualResult.cmeanIndiv)} ng/dL</span>
+                        <span className="font-mono text-foreground">
+                          {Math.round(individualResult.cmeanIndiv)} ng/dL
+                        </span>
                       </div>
                       <div className="text-muted-foreground">
                         Depuração estimada:{" "}
-                        <span className="font-mono text-foreground">{individualResult.clIndiv.toFixed(0)} L/dia</span>{" "}
-                        <span className="text-[11px]">({(individualResult.clRatio * 100).toFixed(0)}% da população)</span>
+                        <span className="font-mono text-foreground">
+                          {individualResult.clIndiv.toFixed(0)} L/dia
+                        </span>{" "}
+                        <span className="text-[11px]">
+                          ({(individualResult.clRatio * 100).toFixed(0)}% da população)
+                        </span>
                       </div>
                       <div className="pt-1 text-foreground">
-                        <strong>Intervalo estimado pelo modelo calibrado para {targetCmean} ng/dL:</strong>{" "}
+                        <strong>
+                          Intervalo estimado pelo modelo calibrado para {targetCmean} ng/dL:
+                        </strong>{" "}
                         <span className="font-mono">
-                          {individualResult.tauIndiv.toFixed(0)} dias (~{(individualResult.tauIndiv / 7).toFixed(1)} semanas)
+                          {individualResult.tauIndiv.toFixed(0)} dias (~
+                          {(individualResult.tauIndiv / 7).toFixed(1)} semanas)
                         </span>
                       </div>
                       <button
                         type="button"
-                        onClick={() => update({ intervalDays: Math.max(42, Math.min(168, Math.round(individualResult.tauIndiv))) })}
+                        onClick={() =>
+                          update({
+                            intervalDays: Math.max(
+                              42,
+                              Math.min(168, Math.round(individualResult.tauIndiv)),
+                            ),
+                          })
+                        }
                         className="mt-1 rounded-full border border-[color:var(--color-chart-1)]/50 bg-[color:var(--color-chart-1)]/15 px-3 py-1.5 text-xs font-medium text-foreground hover:bg-[color:var(--color-chart-1)]/25"
                       >
                         Aplicar ao gráfico
@@ -381,9 +431,9 @@ export function PkCalculator() {
             </div>
 
             <p className="text-xs leading-relaxed text-muted-foreground">
-              Uma medição única apenas calibra a curva no dia informado. Titulação clínica real requer
-              medições em condições estáveis (≥3 doses no mesmo τ), momento de colheita documentado e
-              ajuste por sintomas/hematócrito.
+              Uma medição única apenas calibra a curva no dia informado. Titulação clínica real
+              requer medições em condições estáveis (≥3 doses no mesmo τ), momento de colheita
+              documentado e ajuste por sintomas/hematócrito.
             </p>
           </section>
 
@@ -434,7 +484,8 @@ export function PkCalculator() {
                 </Label>
                 <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                   Segunda dose 6 semanas após a primeira (Endocrine Society 2017 / SmPC Nebido) para
-                  acelerar a chegada ao estado estacionário. Desligar para esquema regular desde o início.
+                  acelerar a chegada ao estado estacionário. Desligar para esquema regular desde o
+                  início.
                 </p>
               </div>
               <Switch
@@ -445,7 +496,10 @@ export function PkCalculator() {
           </section>
 
           {/* === Variação populacional (controlos do gráfico) === */}
-          <section aria-labelledby="pop-heading" className="space-y-3 rounded-lg border border-border/60 bg-[color:var(--color-chart-3)]/8 p-4">
+          <section
+            aria-labelledby="pop-heading"
+            className="space-y-3 rounded-lg border border-border/60 bg-[color:var(--color-chart-3)]/8 p-4"
+          >
             <div className="flex items-baseline justify-between border-b border-border/50 pb-2">
               <h3 id="pop-heading" className="text-sm font-semibold text-foreground">
                 Variação entre pessoas
@@ -469,12 +523,16 @@ export function PkCalculator() {
             {showBand ? (
               <>
                 <div>
-                  <Label className="mb-1.5 block text-xs text-muted-foreground">Largura da faixa</Label>
+                  <Label className="mb-1.5 block text-xs text-muted-foreground">
+                    Largura da faixa
+                  </Label>
                   <div className="flex flex-wrap gap-1.5">
-                    {([
-                      { id: "p5-p95", label: "90% das pessoas (P5–P95)" },
-                      { id: "p25-p75", label: "50% central (P25–P75)" },
-                    ] as const).map((opt) => (
+                    {(
+                      [
+                        { id: "p5-p95", label: "90% das pessoas (P5–P95)" },
+                        { id: "p25-p75", label: "50% central (P25–P75)" },
+                      ] as const
+                    ).map((opt) => (
                       <button
                         key={opt.id}
                         type="button"
@@ -519,7 +577,9 @@ export function PkCalculator() {
           <details className="group rounded-lg border border-border/60 bg-muted/20 open:bg-muted/30">
             <summary className="flex cursor-pointer items-baseline justify-between gap-2 px-4 py-3 text-sm font-medium text-foreground/80 transition hover:text-foreground">
               <span>Parâmetros farmacocinéticos avançados</span>
-              <span className="text-xs text-muted-foreground transition group-open:rotate-180">▾</span>
+              <span className="text-xs text-muted-foreground transition group-open:rotate-180">
+                ▾
+              </span>
             </summary>
             <div className="space-y-4 px-4 pb-4 pt-1">
               <Control
@@ -557,17 +617,17 @@ export function PkCalculator() {
               />
               <div className="rounded-md border border-border/60 bg-card/60 p-3 text-xs leading-relaxed text-muted-foreground">
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
-                  <span className="font-medium text-foreground/80">
-                    Verificação analítica
-                  </span>
+                  <span className="font-medium text-foreground/80">Verificação analítica</span>
                   <span className="font-mono text-[11px] text-foreground/60">
-                    pico previsto ≈ dia {tmax.toFixed(1)} · média prevista ≈ {Math.round(cssExpected)} ng/dL
+                    pico previsto ≈ dia {tmax.toFixed(1)} · média prevista ≈{" "}
+                    {Math.round(cssExpected)} ng/dL
                   </span>
                 </div>
                 <p className="mt-1.5">
-                  Concentração média = biodisponibilidade × dose efectiva ÷ (depuração × intervalo). A dose
-                  efectiva de testosterona é 63% da dose de undecilato (razão de pesos moleculares).
-                  Valores esperados: 264–916 ng/dL (Travison 2017); pico ao dia 7–14 (Schubert 2004).
+                  Concentração média = biodisponibilidade × dose efectiva ÷ (depuração × intervalo).
+                  A dose efectiva de testosterona é 63% da dose de undecilato (razão de pesos
+                  moleculares). Valores esperados: 264–916 ng/dL (Travison 2017); pico ao dia 7–14
+                  (Schubert 2004).
                 </p>
               </div>
             </div>
@@ -761,10 +821,10 @@ export function PkCalculator() {
 
       <div className="border-t border-border/60 px-4 py-4 text-[11px] leading-relaxed text-muted-foreground md:px-6">
         <span className="font-mono uppercase tracking-[0.16em] text-foreground/70">Fontes —</span>{" "}
-        Schubert M et al. <em>JCEM</em> 2004;89:5429–34 (PK do TU 1000 mg IM, t½ aparente
-        33,9 d). Behre HM, Nieschlag E. <em>Eur J Endocrinol</em> 1999. Wang C et al.{" "}
-        <em>JCEM</em> 2004 (Cl ≈ 1500 L/d). Endocrine Society Clinical Practice Guideline
-        2017. Travison TG et al. <em>JCEM</em> 2017 (intervalo 264–916 ng/dL).{" "}
+        Schubert M et al. <em>JCEM</em> 2004;89:5429–34 (PK do TU 1000 mg IM, t½ aparente 33,9 d).
+        Behre HM, Nieschlag E. <em>Eur J Endocrinol</em> 1999. Wang C et al. <em>JCEM</em> 2004 (Cl
+        ≈ 1500 L/d). Endocrine Society Clinical Practice Guideline 2017. Travison TG et al.{" "}
+        <em>JCEM</em> 2017 (intervalo 264–916 ng/dL).{" "}
         <span className="italic">Página educativa; não constitui orientação posológica.</span>
       </div>
     </Card>
@@ -797,19 +857,27 @@ function Metric({
       }
     >
       <div className="flex items-baseline gap-1.5">
-        <span className={`text-xs font-medium ${emphasis ? "text-[color:var(--color-chart-2)]" : "text-foreground"}`}>
+        <span
+          className={`text-xs font-medium ${emphasis ? "text-[color:var(--color-chart-2)]" : "text-foreground"}`}
+        >
           {label}
         </span>
         {acronym ? (
           <span className="font-mono text-[10px] text-muted-foreground">({acronym})</span>
         ) : null}
       </div>
-      <div className={`font-mono tabular-nums text-foreground ${emphasis ? "text-2xl font-semibold" : "text-xl"}`}>{Math.round(value)}</div>
+      <div
+        className={`font-mono tabular-nums text-foreground ${emphasis ? "text-2xl font-semibold" : "text-xl"}`}
+      >
+        {Math.round(value)}
+      </div>
       <div className="text-[11px] text-muted-foreground">{unit}</div>
       {secondary ? (
         <div className="font-mono text-[11px] text-foreground/60">{secondary}</div>
       ) : null}
-      {hint ? <div className="mt-1 text-[11px] leading-tight text-muted-foreground/80">{hint}</div> : null}
+      {hint ? (
+        <div className="mt-1 text-[11px] leading-tight text-muted-foreground/80">{hint}</div>
+      ) : null}
     </div>
   );
 }
