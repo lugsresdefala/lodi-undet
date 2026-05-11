@@ -325,46 +325,33 @@ export function PkCalculator() {
               </label>
               {individualMode && (
                 <div className="space-y-3 rounded-md border border-[color:var(--color-chart-1)]/30 bg-[color:var(--color-chart-1)]/8 p-3">
-                  <div className="flex gap-2 text-xs">
-                    <button
-                      type="button"
-                      onClick={() => setMeasuredType("ctrough")}
-                      className={`flex-1 rounded-md border px-2.5 py-2 transition ${
-                        measuredType === "ctrough"
-                          ? "border-[color:var(--color-chart-1)] bg-[color:var(--color-chart-1)]/15 text-foreground font-medium"
-                          : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      Vale (antes da próxima dose)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setMeasuredType("cmean")}
-                      className={`flex-1 rounded-md border px-2.5 py-2 transition ${
-                        measuredType === "cmean"
-                          ? "border-[color:var(--color-chart-1)] bg-[color:var(--color-chart-1)]/15 text-foreground font-medium"
-                          : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      Média do intervalo
-                    </button>
-                  </div>
                   <Control
-                    label={measuredType === "ctrough" ? "T total medida (vale)" : "T total medida (média)"}
+                    label="T total medida no paciente"
                     unit="ng/dL"
                     value={measuredValue}
                     min={50}
                     max={2000}
                     step={5}
-                    hint={
-                      measuredType === "ctrough"
-                        ? "Concentração medida no dia da próxima injecção, antes de aplicar. Convertida para Cmédia pelo modelo actual."
-                        : "Média estimada do intervalo entre doses (geralmente requer 2–3 colheitas seriadas)."
-                    }
+                    hint="Valor laboratorial real, colhido enquanto o paciente estava no mesmo esquema de dose e intervalo."
                     onChange={setMeasuredValue}
+                  />
+                  <Control
+                    label="Dia da colheita após a última injecção"
+                    unit="dias"
+                    value={sampleDayAfterDose}
+                    min={1}
+                    max={params.intervalDays}
+                    step={1}
+                    hint="Obrigatório para contextualizar a análise: dia 7–14 aproxima pico; o último dia antes da próxima aplicação aproxima vale."
+                    onChange={setSampleDayAfterDose}
                   />
                   {individualResult && (
                     <div className="space-y-1.5 text-xs leading-relaxed border-t border-border/50 pt-2.5">
+                      <div className="text-muted-foreground">
+                        Modelo no mesmo dia pós-dose ({individualResult.sampleDay} d):{" "}
+                        <span className="font-mono text-foreground">{Math.round(individualResult.predictedAtSample)} ng/dL</span>{" "}
+                        <span className="text-[11px]">→ factor individual {(individualResult.exposureRatio * 100).toFixed(0)}%</span>
+                      </div>
                       <div className="text-muted-foreground">
                         Cmédia estimada do paciente:{" "}
                         <span className="font-mono text-foreground">{Math.round(individualResult.cmeanIndiv)} ng/dL</span>
