@@ -205,10 +205,13 @@ export function PkCalculator() {
           >
             <div className="flex items-baseline justify-between gap-2">
               <h3 id="vars-heading" className="text-sm font-semibold text-foreground">
-                Concentração sérica prevista
+                Concentração sérica prevista por este modelo
               </h3>
-              <span className="text-xs text-muted-foreground">no último intervalo entre doses</span>
+              <span className="text-xs text-muted-foreground">para os parâmetros actuais, no último intervalo</span>
             </div>
+            <p className="text-xs text-muted-foreground leading-relaxed mt-1">
+              Estimativas calculadas a partir da dose ({params.doseMg} mg), intervalo ({params.intervalDays} d) e peso ({params.weightKg} kg) escolhidos — não são valores genéricos nem normativos.
+            </p>
             <div className="mt-3 grid grid-cols-3 gap-3">
               <Metric
                 label="Pico"
@@ -280,10 +283,10 @@ export function PkCalculator() {
               label="Concentração média alvo"
               unit="ng/dL"
               value={targetCmean}
-              min={264}
-              max={916}
-              step={5}
-              hint="Concentração média desejada no sangue entre aplicações, em estado estacionário, na média da população. Intervalo de referência adulto: 264–916 ng/dL."
+              min={150}
+              max={1500}
+              step={10}
+              hint="Concentração média desejada no sangue entre aplicações, em estado estacionário. Intervalo de referência adulto cis: 264–916 ng/dL (Travison 2017). Alvos clínicos típicos para hormonização masculinizante: meio do intervalo (~500–700 ng/dL); alvos supra-fisiológicos não são recomendados pela Endocrine Society 2017."
               source="Travison JCEM 2017"
               onChange={setTargetCmean}
             />
