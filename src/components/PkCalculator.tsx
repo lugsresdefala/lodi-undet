@@ -75,6 +75,11 @@ export function PkCalculator() {
   const [params, setParams] = useState<PkParams>(DEFAULT_PK);
   const [targetCmean, setTargetCmean] = useState<number>(550); // ng/dL — meio do intervalo 264–916
 
+  // === Modo individual: titulação a partir de medição sérica ===
+  const [individualMode, setIndividualMode] = useState<boolean>(false);
+  const [measuredValue, setMeasuredValue] = useState<number>(550); // ng/dL medido no paciente
+  const [measuredType, setMeasuredType] = useState<"cmean" | "ctrough">("ctrough");
+
   // === Controlos do gráfico ===
   const [showBand, setShowBand] = useState<boolean>(true);
   const [bandRange, setBandRange] = useState<"p5-p95" | "p25-p75">("p5-p95");
