@@ -109,15 +109,27 @@ export function PkCalculator() {
   const bandLow = bandRange === "p5-p95" ? "p05" : "p25";
   const bandHigh = bandRange === "p5-p95" ? "p95" : "p75";
 
-  // τ sugerido para atingir Css,avg = alvo, mantendo dose, peso e Cl fixos.
+  // τ para atingir Css,avg = alvo NA POPULAÇÃO MÉDIA (Cl populacional fixo).
   // Css,avg = F · D_T / (Cl · τ) · 1e5  →  τ = F · D_T / (Cl · C_alvo) · 1e5
+  // ATENÇÃO: este τ é determinístico e não personalizável sem medição sérica.
+  // A variabilidade inter-individual de Cl (CV 30–50%) implica que, para um
+  // indivíduo concreto, o τ que produz a Cmédia-alvo pode diferir em ±40–60%.
+  // O intervalo abaixo é a faixa de 90% (log-normal, σ = √ln(1+CV²)).
   const suggestedInterval = useMemo(() => {
     const Cl = params.clearanceLPerKgPerDay * params.weightKg;
     const D_T = params.doseMg * 0.6315;
     if (targetCmean <= 0) return 0;
     return (params.bioavailability * D_T) / (Cl * targetCmean) * 100_000;
   }, [params, targetCmean]);
-  const suggestedIntervalClamped = Math.max(42, Math.min(168, Math.round(suggestedInterval / 7) * 7));
+  const intervalBand = useMemo(() => {
+    const cv = cvPct / 100;
+    const sigma = Math.sqrt(Math.log(1 + cv * cv));
+    const z = 1.645;
+    return {
+      low: suggestedInterval * Math.exp(-z * sigma),
+      high: suggestedInterval * Math.exp(z * sigma),
+    };
+  }, [suggestedInterval, cvPct]);
 
   const update = (patch: Partial<PkParams>) => setParams((p) => ({ ...p, ...patch }));
 
@@ -213,18 +225,25 @@ export function PkCalculator() {
             </div>
           </section>
 
-          {/* === Ajuste por Cmédia-alvo === */}
+          {/* === Ajuste por Cmédia-alvo (POPULACIONAL — não individual) === */}
           <section
             aria-labelledby="target-heading"
             className="rounded-lg border border-[color:var(--color-chart-2)]/40 bg-[color:var(--color-chart-2)]/8 p-4 space-y-3"
           >
             <div className="flex flex-wrap items-baseline justify-between gap-2">
               <h3 id="target-heading" className="text-sm font-semibold text-foreground">
-                Calcular intervalo entre doses a partir do alvo
+                Intervalo populacional a partir de uma Cmédia-alvo
               </h3>
               <span className="text-xs text-muted-foreground">
                 intervalo actual: {params.intervalDays} dias
               </span>
+            </div>
+            <div className="rounded-md border border-amber-500/40 bg-amber-500/10 p-2.5 text-xs leading-relaxed text-foreground/90">
+              <strong>Não é uma recomendação individual.</strong> O cálculo assume a depuração
+              metabólica populacional (Wang 2004). Como a variabilidade inter-individual de Cl é
+              alta (CV ~30–50%), o τ que produz a Cmédia-alvo num indivíduo concreto só pode ser
+              determinado por <em>titulação com análises séricas</em> (vale antes da dose
+              seguinte, Endocrine Society 2017).
             </div>
             <Control
               label="Concentração média alvo"
@@ -233,28 +252,28 @@ export function PkCalculator() {
               min={264}
               max={916}
               step={5}
-              hint="Concentração média desejada no sangue entre aplicações, em estado estacionário. Alvos habituais ~500–700 ng/dL. Intervalo de referência adulto: 264–916 ng/dL."
+              hint="Concentração média desejada no sangue entre aplicações, em estado estacionário, na média da população. Intervalo de referência adulto: 264–916 ng/dL."
               source="Travison JCEM 2017"
               onChange={setTargetCmean}
             />
-            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border/50 pt-3">
+            <div className="border-t border-border/50 pt-3 space-y-1.5">
               <div className="text-xs leading-relaxed text-muted-foreground">
-                Intervalo sugerido:{" "}
+                Intervalo populacional médio:{" "}
                 <span className="font-mono text-foreground">
                   <strong>{suggestedInterval.toFixed(0)} dias</strong>{" "}
                   (~{(suggestedInterval / 7).toFixed(1)} semanas)
                 </span>
               </div>
-              <button
-                type="button"
-                onClick={() => update({ intervalDays: suggestedIntervalClamped })}
-                className="rounded-full border border-border/70 bg-card px-3.5 py-1.5 text-xs font-medium text-foreground shadow-sm transition hover:bg-muted"
-              >
-                Aplicar {suggestedIntervalClamped} dias
-              </button>
+              <div className="text-xs leading-relaxed text-muted-foreground">
+                Faixa individual plausível (90%, CV {cvPct}%):{" "}
+                <span className="font-mono text-foreground">
+                  {intervalBand.low.toFixed(0)}–{intervalBand.high.toFixed(0)} dias
+                </span>
+              </div>
             </div>
             <p className="text-xs leading-relaxed text-muted-foreground">
-              Cálculo determinístico (não substitui a titulação por análises sanguíneas). Limitado a 42–168 dias.
+              Ferramenta didáctica. A escolha real de τ deve basear-se em medições séricas
+              repetidas (T total no vale, sintomas, hematócrito) e não neste cálculo.
             </p>
           </section>
 
