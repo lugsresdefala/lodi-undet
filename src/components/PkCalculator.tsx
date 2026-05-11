@@ -136,6 +136,32 @@ export function PkCalculator() {
     };
   }, [suggestedInterval, cvPct]);
 
+  // === Titulação individual ===
+  // Se o paciente fez análises ao fim de ≥3 doses no esquema actual, pode-se
+  // estimar a sua depuração metabólica intrínseca:
+  //   Cl_indiv = F · D_T / (Cmédia_medida · τ_actual) · 1e5
+  // Converte-se Cvale → Cmédia através da razão prevista pelo modelo actual.
+  // τ_indiv = τ_actual · (Cmédia_medida / Cmédia_alvo)
+  const individualResult = useMemo(() => {
+    if (!individualMode || measuredValue <= 0 || targetCmean <= 0) return null;
+    const ratio = measuredType === "cmean"
+      ? 1
+      : metrics.cmean > 0 && metrics.ctrough > 0
+        ? metrics.cmean / metrics.ctrough
+        : 1;
+    const cmeanIndiv = measuredValue * ratio;
+    const tauIndiv = (params.intervalDays * cmeanIndiv) / targetCmean;
+    const D_T = params.doseMg * 0.6315;
+    const clIndiv = (params.bioavailability * D_T) / (cmeanIndiv * params.intervalDays) * 100_000;
+    const clPop = params.clearanceLPerKgPerDay * params.weightKg;
+    return {
+      cmeanIndiv,
+      tauIndiv,
+      clIndiv,
+      clRatio: clIndiv / clPop,
+    };
+  }, [individualMode, measuredValue, measuredType, targetCmean, params, metrics]);
+
   const update = (patch: Partial<PkParams>) => setParams((p) => ({ ...p, ...patch }));
 
   return (
