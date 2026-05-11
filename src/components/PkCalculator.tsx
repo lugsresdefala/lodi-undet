@@ -205,10 +205,13 @@ export function PkCalculator() {
           >
             <div className="flex items-baseline justify-between gap-2">
               <h3 id="vars-heading" className="text-sm font-semibold text-foreground">
-                Concentração sérica prevista
+                Concentração sérica prevista por este modelo
               </h3>
-              <span className="text-xs text-muted-foreground">no último intervalo entre doses</span>
+              <span className="text-xs text-muted-foreground">para os parâmetros actuais, no último intervalo</span>
             </div>
+            <p className="text-xs text-muted-foreground leading-relaxed mt-1">
+              Estimativas calculadas a partir da dose ({params.doseMg} mg), intervalo ({params.intervalDays} d) e peso ({params.weightKg} kg) escolhidos — não são valores genéricos nem normativos.
+            </p>
             <div className="mt-3 grid grid-cols-3 gap-3">
               <Metric
                 label="Pico"
