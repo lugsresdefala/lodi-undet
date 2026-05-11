@@ -19,10 +19,12 @@ import { Switch } from "@/components/ui/switch";
 import {
   computeMetrics,
   DEFAULT_PK,
+  doseTimes,
   generatePkSeries,
   ngdlToNmol,
   simulatePopulation,
   singleDoseTmax,
+  steadyStateConcentration,
   steadyStateMean,
   type PkParams,
 } from "@/lib/pk";
@@ -78,7 +80,7 @@ export function PkCalculator() {
   // === Modo individual: titulação a partir de medição sérica ===
   const [individualMode, setIndividualMode] = useState<boolean>(false);
   const [measuredValue, setMeasuredValue] = useState<number>(550); // ng/dL medido no paciente
-  const [measuredType, setMeasuredType] = useState<"cmean" | "ctrough">("ctrough");
+  const [sampleDayAfterDose, setSampleDayAfterDose] = useState<number>(84); // dia da colheita no intervalo actual
 
   // === Controlos do gráfico ===
   const [showBand, setShowBand] = useState<boolean>(true);
@@ -90,6 +92,10 @@ export function PkCalculator() {
   const metrics = useMemo(() => computeMetrics(series, params), [series, params]);
   const tmax = useMemo(() => singleDoseTmax(params), [params]);
   const cssExpected = useMemo(() => steadyStateMean(params), [params]);
+  const lastDoseDay = useMemo(() => {
+    const times = doseTimes(params);
+    return times[times.length - 1] ?? 0;
+  }, [params]);
 
   const population = useMemo(
     () =>
