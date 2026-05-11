@@ -283,10 +283,10 @@ export function PkCalculator() {
               label="Concentração média alvo"
               unit="ng/dL"
               value={targetCmean}
-              min={264}
-              max={916}
-              step={5}
-              hint="Concentração média desejada no sangue entre aplicações, em estado estacionário, na média da população. Intervalo de referência adulto: 264–916 ng/dL."
+              min={150}
+              max={1500}
+              step={10}
+              hint="Concentração média desejada no sangue entre aplicações, em estado estacionário. Intervalo de referência adulto cis: 264–916 ng/dL (Travison 2017). Alvos clínicos típicos para hormonização masculinizante: meio do intervalo (~500–700 ng/dL); alvos supra-fisiológicos não são recomendados pela Endocrine Society 2017."
               source="Travison JCEM 2017"
               onChange={setTargetCmean}
             />
