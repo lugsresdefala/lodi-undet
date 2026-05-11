@@ -338,7 +338,7 @@ export function PkCalculator() {
                   <Control
                     label="Dia da colheita após a última injecção"
                     unit="dias"
-                    value={sampleDayAfterDose}
+                    value={Math.min(sampleDayAfterDose, params.intervalDays)}
                     min={1}
                     max={params.intervalDays}
                     step={1}
