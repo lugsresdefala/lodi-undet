@@ -79,6 +79,7 @@ export function PkCalculator() {
   const [individualMode, setIndividualMode] = useState<boolean>(false);
   const [measuredValue, setMeasuredValue] = useState<number>(550); // ng/dL medido no paciente
   const [sampleDayAfterDose, setSampleDayAfterDose] = useState<number>(84); // dia da colheita no intervalo actual
+  const [dosesBeforeSample, setDosesBeforeSample] = useState<number>(4); // n.º de doses no MESMO esquema antes da colheita
 
   // === Controlos do gráfico ===
   const [showBand, setShowBand] = useState<boolean>(true);
