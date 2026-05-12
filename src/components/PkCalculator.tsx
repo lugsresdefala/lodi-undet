@@ -175,6 +175,55 @@ export function PkCalculator() {
     lastDoseDay,
   ]);
 
+  // Validações: a calibração só é fiável em estado estacionário e com timing
+  // bem definido. Regra prática (Rowland & Tozer): ≈4–5 × t½ aparente para
+  // atingir 90–97% de Css. Com t½ ≈ 33 d isto significa ~130–165 dias no
+  // MESMO esquema (dose + τ) antes da colheita.
+  const individualWarnings = useMemo(() => {
+    if (!individualMode) return [] as { level: "error" | "warn"; msg: string }[];
+    const warnings: { level: "error" | "warn"; msg: string }[] = [];
+    const timeOnRegimen = dosesBeforeSample * params.intervalDays;
+    const ssTime = 4 * params.eliminationHalfLifeD; // ~94% Css
+    const ssTimeFull = 5 * params.eliminationHalfLifeD; // ~97% Css
+    if (timeOnRegimen < ssTime) {
+      warnings.push({
+        level: "error",
+        msg: `Esquema ainda NÃO está em estado estacionário: ${dosesBeforeSample} dose(s) × ${params.intervalDays} d = ${timeOnRegimen} d, abaixo de 4×t½ (${Math.round(ssTime)} d). A medição subestima a exposição real — não é comparável a Cmédia de equilíbrio.`,
+      });
+    } else if (timeOnRegimen < ssTimeFull) {
+      warnings.push({
+        level: "warn",
+        msg: `Estado estacionário apenas parcial (~94% de Css). Idealmente ≥ ${Math.round(ssTimeFull)} d (${Math.ceil(ssTimeFull / params.intervalDays)} doses) no mesmo esquema antes da colheita.`,
+      });
+    }
+    if (sampleDayAfterDose <= 3) {
+      warnings.push({
+        level: "warn",
+        msg: "Colheita muito próxima da injecção (≤3 d): fase de subida com elevada variabilidade; o factor individual pode estar inflacionado.",
+      });
+    }
+    if (sampleDayAfterDose >= params.intervalDays - 1) {
+      warnings.push({
+        level: "warn",
+        msg: "Colheita em vale: representativa do mínimo, mas extrapolar Cmédia depende fortemente da forma da curva — confirmar com pelo menos uma segunda medição em momento diferente.",
+      });
+    }
+    if (individualResult && (individualResult.exposureRatio < 0.5 || individualResult.exposureRatio > 2)) {
+      warnings.push({
+        level: "warn",
+        msg: `Factor individual extremo (${(individualResult.exposureRatio * 100).toFixed(0)}%): verifique se a dose, intervalo e dia da colheita inseridos correspondem ao realmente praticado.`,
+      });
+    }
+    return warnings;
+  }, [
+    individualMode,
+    dosesBeforeSample,
+    sampleDayAfterDose,
+    params.intervalDays,
+    params.eliminationHalfLifeD,
+    individualResult,
+  ]);
+
   const update = (patch: Partial<PkParams>) => setParams((p) => ({ ...p, ...patch }));
 
   return (
