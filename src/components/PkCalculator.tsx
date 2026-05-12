@@ -79,6 +79,7 @@ export function PkCalculator() {
   const [individualMode, setIndividualMode] = useState<boolean>(false);
   const [measuredValue, setMeasuredValue] = useState<number>(550); // ng/dL medido no paciente
   const [sampleDayAfterDose, setSampleDayAfterDose] = useState<number>(84); // dia da colheita no intervalo actual
+  const [dosesBeforeSample, setDosesBeforeSample] = useState<number>(4); // n.º de doses no MESMO esquema antes da colheita
 
   // === Controlos do gráfico ===
   const [showBand, setShowBand] = useState<boolean>(true);
@@ -172,6 +173,55 @@ export function PkCalculator() {
     params,
     metrics,
     lastDoseDay,
+  ]);
+
+  // Validações: a calibração só é fiável em estado estacionário e com timing
+  // bem definido. Regra prática (Rowland & Tozer): ≈4–5 × t½ aparente para
+  // atingir 90–97% de Css. Com t½ ≈ 33 d isto significa ~130–165 dias no
+  // MESMO esquema (dose + τ) antes da colheita.
+  const individualWarnings = useMemo(() => {
+    if (!individualMode) return [] as { level: "error" | "warn"; msg: string }[];
+    const warnings: { level: "error" | "warn"; msg: string }[] = [];
+    const timeOnRegimen = dosesBeforeSample * params.intervalDays;
+    const ssTime = 4 * params.eliminationHalfLifeD; // ~94% Css
+    const ssTimeFull = 5 * params.eliminationHalfLifeD; // ~97% Css
+    if (timeOnRegimen < ssTime) {
+      warnings.push({
+        level: "error",
+        msg: `Esquema ainda NÃO está em estado estacionário: ${dosesBeforeSample} dose(s) × ${params.intervalDays} d = ${timeOnRegimen} d, abaixo de 4×t½ (${Math.round(ssTime)} d). A medição subestima a exposição real — não é comparável a Cmédia de equilíbrio.`,
+      });
+    } else if (timeOnRegimen < ssTimeFull) {
+      warnings.push({
+        level: "warn",
+        msg: `Estado estacionário apenas parcial (~94% de Css). Idealmente ≥ ${Math.round(ssTimeFull)} d (${Math.ceil(ssTimeFull / params.intervalDays)} doses) no mesmo esquema antes da colheita.`,
+      });
+    }
+    if (sampleDayAfterDose <= 3) {
+      warnings.push({
+        level: "warn",
+        msg: "Colheita muito próxima da injecção (≤3 d): fase de subida com elevada variabilidade; o factor individual pode estar inflacionado.",
+      });
+    }
+    if (sampleDayAfterDose >= params.intervalDays - 1) {
+      warnings.push({
+        level: "warn",
+        msg: "Colheita em vale: representativa do mínimo, mas extrapolar Cmédia depende fortemente da forma da curva — confirmar com pelo menos uma segunda medição em momento diferente.",
+      });
+    }
+    if (individualResult && (individualResult.exposureRatio < 0.5 || individualResult.exposureRatio > 2)) {
+      warnings.push({
+        level: "warn",
+        msg: `Factor individual extremo (${(individualResult.exposureRatio * 100).toFixed(0)}%): verifique se a dose, intervalo e dia da colheita inseridos correspondem ao realmente praticado.`,
+      });
+    }
+    return warnings;
+  }, [
+    individualMode,
+    dosesBeforeSample,
+    sampleDayAfterDose,
+    params.intervalDays,
+    params.eliminationHalfLifeD,
+    individualResult,
   ]);
 
   const update = (patch: Partial<PkParams>) => setParams((p) => ({ ...p, ...patch }));
@@ -375,6 +425,35 @@ export function PkCalculator() {
                     hint="Obrigatório para contextualizar a análise: dia 7–14 aproxima pico; o último dia antes da próxima aplicação aproxima vale."
                     onChange={setSampleDayAfterDose}
                   />
+                  <Control
+                    label="Doses já feitas no MESMO esquema antes da colheita"
+                    unit="doses"
+                    value={dosesBeforeSample}
+                    min={1}
+                    max={20}
+                    step={1}
+                    hint={`Estado estacionário ≈ 4–5 × t½ aparente (${Math.round(4 * params.eliminationHalfLifeD)}–${Math.round(5 * params.eliminationHalfLifeD)} d). Com τ = ${params.intervalDays} d, são necessárias pelo menos ${Math.ceil((4 * params.eliminationHalfLifeD) / params.intervalDays)} doses.`}
+                    onChange={setDosesBeforeSample}
+                  />
+                  {individualWarnings.length > 0 && (
+                    <ul className="space-y-1.5 text-[11px] leading-relaxed">
+                      {individualWarnings.map((w, i) => (
+                        <li
+                          key={i}
+                          className={
+                            w.level === "error"
+                              ? "rounded-md border border-destructive/40 bg-destructive/10 px-2.5 py-1.5 text-destructive"
+                              : "rounded-md border border-amber-500/40 bg-amber-500/10 px-2.5 py-1.5 text-amber-700 dark:text-amber-300"
+                          }
+                        >
+                          <span className="font-semibold">
+                            {w.level === "error" ? "⛔ " : "⚠️ "}
+                          </span>
+                          {w.msg}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                   {individualResult && (
                     <div className="space-y-1.5 text-xs leading-relaxed border-t border-border/50 pt-2.5">
                       <div className="text-muted-foreground">
