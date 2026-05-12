@@ -54,7 +54,9 @@ export interface PkParams {
   eliminationHalfLifeD: number;
   /** Biodisponibilidade (IM ≈ 1,0). */
   bioavailability: number;
-  /** Clearance metabólica da testosterona em L/kg/dia; Wang 2004 ≈ 21 L/kg/d. */
+  /** Clearance metabólica efectiva da testosterona em L/kg/dia.
+   *  Default 17,5 calibrado para homens trans em hormonização (ENIGI/Defreyne 2018,
+   *  Pelusi 2014). Em homens cis eugonadais (Wang 2004) é ~21 L/kg/d. */
   clearanceLPerKgPerDay: number;
   /** Número de doses simuladas (incluindo loading). */
   doses?: number;
@@ -69,7 +71,7 @@ export const DEFAULT_PK: PkParams = {
   absorptionHalfLifeD: 4,
   eliminationHalfLifeD: 33,
   bioavailability: 1.0,
-  clearanceLPerKgPerDay: 21,
+  clearanceLPerKgPerDay: 17.5,
   doses: 6,
   loading: true,
 };
