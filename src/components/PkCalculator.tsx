@@ -691,7 +691,7 @@ export function PkCalculator() {
                 max={32}
                 step={0.5}
                 hint="Volume de sangue depurado de testosterona por kg e por dia. Determina directamente a concentração média no estado estacionário."
-                source="Wang 2004 (~21 L/kg/dia)"
+                source="ENIGI/Defreyne 2018, Pelusi 2014 (~17,5 L/kg/d em homens trans); Wang 2004 ~21 em homens cis"
                 onChange={(v) => update({ clearanceLPerKgPerDay: v })}
               />
               <div className="rounded-md border border-border/60 bg-card/60 p-3 text-xs leading-relaxed text-muted-foreground">

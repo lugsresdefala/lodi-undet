@@ -7,7 +7,15 @@
 //   • Behre HM, Nieschlag E. Eur J Endocrinol 1999 — TU IM long-acting; cinética
 //     de tipo "flip-flop" (a libertação a partir do depósito é a etapa limitante;
 //     o t½ aparente reflecte a libertação, não a eliminação intrínseca da T).
-//   • Wang C et al. JCEM 2004 — clearance metabólica da testosterona ≈ 1500 L/dia.
+//   • Wang C et al. JCEM 2004 — clearance metabólica da testosterona ≈ 1500 L/d
+//     em homens cis eugonadais (~21 L/kg/d).
+//   • Defreyne J et al. JCEM 2017 / Andrology 2018 (coorte ENIGI) e Pelusi C et al.
+//     Andrology 2014 — em homens trans em hormonização masculinizante com TU IM
+//     1000 mg q10–14 sem, Cmédia em estado estacionário situa-se ~600–700 ng/dL
+//     (Cmin ~13–15 nmol/L ≈ 375–430 ng/dL; Cmax ~28–32 nmol/L ≈ 810–920 ng/dL).
+//     Isto corresponde a depuração efectiva de testosterona ~17–18 L/kg/d, inferior
+//     à descrita em homens cis eugonadais. Este modelo está calibrado por defeito
+//     para esta população (17,5 L/kg/d).
 //   • Endocrine Society Guideline 2017 / Nebido SmPC — esquema posológico:
 //     1000 mg em t = 0, repetir a 6 semanas, depois a cada 10–14 semanas.
 //   • Travison TG et al. JCEM 2017 — intervalo harmonizado de testosterona total
@@ -46,7 +54,9 @@ export interface PkParams {
   eliminationHalfLifeD: number;
   /** Biodisponibilidade (IM ≈ 1,0). */
   bioavailability: number;
-  /** Clearance metabólica da testosterona em L/kg/dia; Wang 2004 ≈ 21 L/kg/d. */
+  /** Clearance metabólica efectiva da testosterona em L/kg/dia.
+   *  Default 17,5 calibrado para homens trans em hormonização (ENIGI/Defreyne 2018,
+   *  Pelusi 2014). Em homens cis eugonadais (Wang 2004) é ~21 L/kg/d. */
   clearanceLPerKgPerDay: number;
   /** Número de doses simuladas (incluindo loading). */
   doses?: number;
@@ -61,7 +71,7 @@ export const DEFAULT_PK: PkParams = {
   absorptionHalfLifeD: 4,
   eliminationHalfLifeD: 33,
   bioavailability: 1.0,
-  clearanceLPerKgPerDay: 21,
+  clearanceLPerKgPerDay: 17.5,
   doses: 6,
   loading: true,
 };
