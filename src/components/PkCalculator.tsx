@@ -425,6 +425,35 @@ export function PkCalculator() {
                     hint="Obrigatório para contextualizar a análise: dia 7–14 aproxima pico; o último dia antes da próxima aplicação aproxima vale."
                     onChange={setSampleDayAfterDose}
                   />
+                  <Control
+                    label="Doses já feitas no MESMO esquema antes da colheita"
+                    unit="doses"
+                    value={dosesBeforeSample}
+                    min={1}
+                    max={20}
+                    step={1}
+                    hint={`Estado estacionário ≈ 4–5 × t½ aparente (${Math.round(4 * params.eliminationHalfLifeD)}–${Math.round(5 * params.eliminationHalfLifeD)} d). Com τ = ${params.intervalDays} d, são necessárias pelo menos ${Math.ceil((4 * params.eliminationHalfLifeD) / params.intervalDays)} doses.`}
+                    onChange={setDosesBeforeSample}
+                  />
+                  {individualWarnings.length > 0 && (
+                    <ul className="space-y-1.5 text-[11px] leading-relaxed">
+                      {individualWarnings.map((w, i) => (
+                        <li
+                          key={i}
+                          className={
+                            w.level === "error"
+                              ? "rounded-md border border-destructive/40 bg-destructive/10 px-2.5 py-1.5 text-destructive"
+                              : "rounded-md border border-amber-500/40 bg-amber-500/10 px-2.5 py-1.5 text-amber-700 dark:text-amber-300"
+                          }
+                        >
+                          <span className="font-semibold">
+                            {w.level === "error" ? "⛔ " : "⚠️ "}
+                          </span>
+                          {w.msg}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                   {individualResult && (
                     <div className="space-y-1.5 text-xs leading-relaxed border-t border-border/50 pt-2.5">
                       <div className="text-muted-foreground">
