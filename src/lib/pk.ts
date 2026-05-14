@@ -2,24 +2,33 @@
 // (formulação tipo Nebido/Reandron 1000 mg / 4 mL).
 //
 // Base na literatura:
-//   • Schubert M et al. JCEM 2004 — perfil PK após 1000 mg IM TU em castor oil:
-//     Tmax ≈ 7 d, t½ aparente terminal ≈ 33,9 d, Cmax ≈ 23–37 nmol/L (≈660–1070 ng/dL).
-//   • Behre HM, Nieschlag E. Eur J Endocrinol 1999 — TU IM long-acting; cinética
-//     de tipo "flip-flop" (a libertação a partir do depósito é a etapa limitante;
-//     o t½ aparente reflecte a libertação, não a eliminação intrínseca da T).
-//   • Wang C et al. JCEM 2004 — clearance metabólica da testosterona ≈ 1500 L/d
-//     em homens cis eugonadais (~21 L/kg/d).
-//   • Defreyne J et al. JCEM 2017 / Andrology 2018 (coorte ENIGI) e Pelusi C et al.
-//     Andrology 2014 — em homens trans em hormonização masculinizante com TU IM
-//     1000 mg q10–14 sem, Cmédia em estado estacionário situa-se ~600–700 ng/dL
-//     (Cmin ~13–15 nmol/L ≈ 375–430 ng/dL; Cmax ~28–32 nmol/L ≈ 810–920 ng/dL).
-//     Isto corresponde a depuração efectiva de testosterona ~17–18 L/kg/d, inferior
-//     à descrita em homens cis eugonadais. Este modelo está calibrado por defeito
-//     para esta população (17,5 L/kg/d).
-//   • Endocrine Society Guideline 2017 / Nebido SmPC — esquema posológico:
-//     1000 mg em t = 0, repetir a 6 semanas, depois a cada 10–14 semanas.
-//   • Travison TG et al. JCEM 2017 — intervalo harmonizado de testosterona total
-//     em adultos saudáveis (19–39 anos): 264–916 ng/dL.
+//   • Schubert M et al. JCEM 2004;89(11):5429–34 — perfil PK após 1000 mg IM TU
+//     em castor oil em homens hipogonadais: Tmax mediano ≈ 7 d, t½ aparente
+//     terminal 33,9 ± 26,6 d (elevada variabilidade), Cmax ≈ 23–37 nmol/L
+//     (≈660–1070 ng/dL).
+//   • Behre HM, Nieschlag E. Eur J Endocrinol 1999;140(5):414–9 — primeira
+//     descrição da cinética de tipo "flip-flop" para TU IM 1000 mg: a libertação
+//     a partir do depósito lipofílico é a etapa limitante; o t½ aparente reflecte
+//     a taxa de libertação do depot, não a eliminação intrínseca da T (t½ real
+//     da T livre ≈ 10–100 min).
+//   • Wang C et al. JCEM 2004;89(2):534–43 — clearance metabólica da testosterona
+//     (MCR) medida por diluição isotópica em homens cis eugonadais: MCR ≈ 1500 L/d
+//     (~21 L/kg/d a 70 kg).
+//   • Defreyne J et al. J Sex Med 2017;14(5):e345; Defreyne J et al. Andrology
+//     2018;6(3):441–51 (coorte ENIGI, n = 53 homens trans) e Pelusi C et al.
+//     Andrology 2014;2(4):516–21 — em homens trans em hormonização masculinizante
+//     com TU IM 1000 mg q10–14 sem, Cmédia em estado estacionário situa-se
+//     ~600–700 ng/dL (Cmin ~13–15 nmol/L ≈ 375–430 ng/dL; Cmax ~28–32 nmol/L
+//     ≈ 810–920 ng/dL). A clearance efectiva retro-calculada a partir destas
+//     concentrações observadas é ~17–18 L/kg/d, inferior à MCR de homens cis
+//     eugonadais (Wang 2004). Este modelo está calibrado por defeito para esta
+//     população (Cl = 17,5 L/kg/d).
+//   • Endocrine Society Clinical Practice Guideline 2017 (Hembree WC et al.
+//     JCEM 2017;102(11):3869–903) / SmPC Nebido — esquema posológico:
+//     1000 mg em t = 0, repetir às 6 semanas (42 d), depois a cada 10–14 semanas.
+//   • Travison TG et al. JCEM 2017;102(4):1161–73 — intervalo harmonizado de
+//     testosterona total em homens saudáveis dos 19–39 anos: 264–916 ng/dL
+//     (percentis 2,5–97,5 em 4 coortes EUA/UE combinadas).
 //
 // IMPLEMENTAÇÃO. Modelo Bateman de um compartimento, expresso em forma de
 // clearance (Cl) em vez de volume de distribuição. Esta forma é numericamente
@@ -28,18 +37,27 @@
 //   C(t) = (F · D_T · ka · ke) / (Cl · (ka − ke)) · (e^(−ke·t) − e^(−ka·t))
 //
 // onde:
-//   D_T  = dose efectiva de testosterona (mg) = dose_TU × 0,6315 (razão MW T/TU)
-//   ka   = constante de subida (libertação rápida inicial do depósito)
-//   ke   = constante aparente terminal (limite por libertação do depósito)
+//   D_T  = dose efectiva de testosterona (mg) = dose_TU × 0,6315 (razão MW T/TU:
+//          288,43 g/mol / 456,71 g/mol)
+//   ka   = constante de absorção (libertação rápida inicial do depot IM)
+//   ke   = constante aparente terminal (dominada pela libertação lenta do depot)
 //   F    = biodisponibilidade (IM ≈ 1,0)
-//   Cl   = clearance metabólica da testosterona (L/dia)
+//   Cl   = clearance metabólica efectiva da testosterona (L/dia)
 //
-// Em flip-flop convencional, a menor das duas constantes domina a cauda. Aqui
-// definimos ka > ke, tal que ke é o rate-limit (t½ aparente ≈ 33 d) e ka modela
-// a fase ascendente (Tmax ≈ 7–14 d).
+// Em cinética flip-flop (ka > ke), a cauda terminal é governada por ke e o pico
+// analítico surge em Tmax = ln(ka/ke)/(ka − ke). Com os parâmetros padrão
+// (t½_abs = 4 d → ka ≈ 0,173 d⁻¹; t½_elim = 33 d → ke ≈ 0,021 d⁻¹), o modelo
+// produz Tmax ≈ 14 d. O Tmax mediano reportado por Schubert 2004 é ~7 d, o que
+// corresponderia a t½_abs ≈ 1,5 d; contudo, esse valor gera Cmax >900 ng/dL por
+// dose única, acima do intervalo ENIGI observado (~810–920 ng/dL em estado
+// estacionário). Os parâmetros padrão constituem um compromisso calibrado para
+// compatibilidade simultânea com o Cmax e a Cmédia da coorte ENIGI, à custa de
+// um Tmax ligeiramente mais tardio do que o mediano de Schubert 2004.
 //
 // AVISO: ferramenta educativa; não substitui monitorização sérica nem ajuste
-// clínico individual. Variabilidade interindividual é elevada (CV 30–50%).
+// clínico individual. A variabilidade inter-individual é elevada (CV 30–50% para
+// Cl, ka e ke; Schubert 2004, Behre 1999, Zitzmann M, Nieschlag E. Nat Clin
+// Pract Urol 2007;4(3):160–70).
 
 export interface PkParams {
   /** Dose de undecilato de testosterona em mg (Nebido/Reandron padrão = 1000 mg). */
@@ -169,7 +187,17 @@ export function generatePkSeries(p: PkParams, opts?: { stepDays?: number }): PkS
 // Simulação populacional (Monte Carlo)
 // Variabilidade inter-individual log-normal aplicada a Cl, ka, ke.
 // CV (coef. variação) ~ 30–50% é o reportado em estudos de TU IM
-// (Behre 1999, Schubert 2004, Zitzmann 2013). Aqui parametrizado pelo utilizador.
+// (Schubert 2004;89:5429–34; Behre & Nieschlag 1999;140:414–9;
+// Zitzmann M & Nieschlag E, Nat Clin Pract Urol 2007;4(3):160–70).
+// Aqui parametrizado pelo utilizador.
+//
+// O factor de escala 0,7 aplicado ao CV de ka e ke reflecte o pressuposto de
+// que a clearance sistémica (determinada por enzimas hepáticas e composição
+// corporal) exibe maior variabilidade inter-individual do que os parâmetros de
+// libertação do depot (ka, ke), que dependem predominantemente do volume e
+// vascularização do local de injecção. Este rácio é uma escolha de modelação;
+// na ausência de dados de variância conjunta publicados para TU IM, assume-se
+// independência log-normal entre os três parâmetros.
 // ──────────────────────────────────────────────────────────────────────────
 
 /** Amostra normal padrão (Box–Muller). */
@@ -286,8 +314,9 @@ export function computeMetrics(series: PkSeriesPoint[], p: PkParams): PkMetrics 
   let ctrough = Infinity;
   let cmaxDay = startDay;
   let ctroughDay = startDay;
-  let sum = 0;
-  for (const pt of window) {
+  let trapSum = 0;
+  for (let i = 0; i < window.length; i++) {
+    const pt = window[i];
     if (pt.concentration > cmax) {
       cmax = pt.concentration;
       cmaxDay = pt.day;
@@ -296,15 +325,23 @@ export function computeMetrics(series: PkSeriesPoint[], p: PkParams): PkMetrics 
       ctrough = pt.concentration;
       ctroughDay = pt.day;
     }
-    sum += pt.concentration;
+    // Integração trapezoidal: peso 0,5 nos extremos, 1 nos pontos interiores.
+    // Calcula AUC/τ, que é a verdadeira média temporal (Rowland & Tozer, 5ª ed.).
+    const w = i === 0 || i === window.length - 1 ? 0.5 : 1;
+    trapSum += w * pt.concentration;
   }
-  const cmean = sum / window.length;
-  // Intervalo harmonizado adulto (Travison 2017): 264–916 ng/dL.
+  // window.length - 1 = número de intervalos de 1 d = τ (em dias inteiros)
+  const cmean = window.length > 1 ? trapSum / (window.length - 1) : window[0].concentration;
+  // Intervalo harmonizado adulto (Travison TG et al. JCEM 2017;102:1161–73): 264–916 ng/dL.
   const inRange = cmean >= 264 && cmean <= 916;
   return { cmax, cmaxDay, ctrough, ctroughDay, cmean, inRange };
 }
 
-/** Conversão ng/dL → nmol/L (factor 0,03467 para testosterona). */
+/**
+ * Conversão ng/dL → nmol/L para testosterona.
+ * Factor = 10 / MW_T = 10 / 288,43 = 0,03467 nmol·dL/(ng·L).
+ * (1 ng/dL = 10 ng/L; 1 nmol/L = 288,43 ng/L para T com MW = 288,43 g/mol.)
+ */
 export function ngdlToNmol(ngdl: number): number {
   return ngdl * 0.03467;
 }

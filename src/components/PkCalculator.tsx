@@ -355,10 +355,12 @@ export function PkCalculator() {
             </div>
             <div className="rounded-md border border-amber-500/40 bg-amber-500/10 p-2.5 text-xs leading-relaxed text-foreground/90">
               <strong>Não é uma recomendação individual.</strong> O cálculo assume a depuração
-              metabólica populacional (Wang 2004). Como a variabilidade inter-individual de Cl é
-              alta (CV ~30–50%), o τ que produz a Cmédia-alvo num indivíduo concreto só pode ser
-              determinado por <em>titulação com análises séricas</em> (vale antes da dose seguinte,
-              Endocrine Society 2017).
+              metabólica do modelo actual (padrão: 17,5 L/kg/d, retro-calculada da coorte ENIGI de
+              homens trans em TU IM; Defreyne et al., Andrology 2018). Como a variabilidade
+              inter-individual de Cl é alta (CV ~30–50%), o τ que produz a Cmédia-alvo num
+              indivíduo concreto só pode ser determinado por{" "}
+              <em>titulação com análises séricas</em> (vale antes da dose seguinte, Endocrine
+              Society 2017).
             </div>
             <Control
               label="Concentração média alvo"
@@ -900,10 +902,14 @@ export function PkCalculator() {
 
       <div className="border-t border-border/60 px-4 py-4 text-[11px] leading-relaxed text-muted-foreground md:px-6">
         <span className="font-mono uppercase tracking-[0.16em] text-foreground/70">Fontes —</span>{" "}
-        Schubert M et al. <em>JCEM</em> 2004;89:5429–34 (PK do TU 1000 mg IM, t½ aparente 33,9 d).
-        Behre HM, Nieschlag E. <em>Eur J Endocrinol</em> 1999. Wang C et al. <em>JCEM</em> 2004 (Cl
-        ≈ 1500 L/d). Endocrine Society Clinical Practice Guideline 2017. Travison TG et al.{" "}
-        <em>JCEM</em> 2017 (intervalo 264–916 ng/dL).{" "}
+        Schubert M et al. <em>JCEM</em> 2004;89(11):5429–34 (PK do TU 1000 mg IM; Tmax ≈ 7 d, t½
+        aparente 33,9 d). Behre HM, Nieschlag E. <em>Eur J Endocrinol</em> 1999;140(5):414–9
+        (cinética flip-flop do TU IM). Wang C et al. <em>JCEM</em> 2004;89(2):534–43 (MCR da T ≈
+        1500 L/d em homens cis). Defreyne J et al. <em>Andrology</em> 2018;6(3):441–51; Pelusi C et
+        al. <em>Andrology</em> 2014;2(4):516–21 (coorte ENIGI; calibração Cl = 17,5 L/kg/d em
+        homens trans). Hembree WC et al. <em>JCEM</em> 2017;102(11):3869–903 (Endocrine Society
+        CPG). Travison TG et al. <em>JCEM</em> 2017;102(4):1161–73 (intervalo harmonizado
+        264–916 ng/dL).{" "}
         <span className="italic">Página educativa; não constitui orientação posológica.</span>
       </div>
     </Card>

@@ -55,7 +55,7 @@ export const EFFECTS: EffectEntry[] = [
     maxMonths: [60, 120],
     reversible: false,
     notes:
-      "Ocorre na presença de predisposição genética. Curso e intensidade variáveis; para alguns é desejado, para outros não.",
+      "Ocorre na presença de predisposição genética (polimorfismos do receptor de androgénio). Curso e intensidade variáveis; para alguns é desejado, para outros não. (Endocrine Society 2017; WPATH SOC-8, Coleman et al., J Sex Med 2022;19(3):S1–S259)",
   },
   {
     id: "muscle-mass",
@@ -65,7 +65,7 @@ export const EFFECTS: EffectEntry[] = [
     maxMonths: [24, 60],
     reversible: false,
     notes:
-      "Potenciado por treino de resistência e nutrição adequada. Reverte parcialmente se a hormonização for interrompida.",
+      "Potenciado por treino de resistência e nutrição adequada. Classificado como não totalmente reversível pela Endocrine Society 2017 (Tabela 13): alguma redução pode ocorrer com a descontinuação, mas tipicamente não há retorno completo ao estado pré-hormonização. (Endocrine Society 2017; Hembree WC et al., JCEM 2017;102(11):3869–903)",
   },
   {
     id: "fat-redist",
@@ -121,11 +121,11 @@ export const EFFECTS: EffectEntry[] = [
     id: "libido",
     title: "Alteração da libido",
     system: "mind",
-    onsetMonths: [0.25, 3],
+    onsetMonths: [1, 3],
     maxMonths: [3, 6],
     reversible: true,
     notes:
-      "Frequentemente perceptível nas primeiras semanas; magnitude variável. Tende a estabilizar com o tempo.",
+      "Início típico ao 1.º–3.º mês segundo a Endocrine Society 2017 (Tabela 13). Magnitude variável entre indivíduos; tende a estabilizar ao longo do tempo. (Endocrine Society 2017; Hembree WC et al., JCEM 2017;102(11):3869–903)",
   },
   {
     id: "mood",
@@ -135,7 +135,7 @@ export const EFFECTS: EffectEntry[] = [
     maxMonths: [3, 12],
     reversible: true,
     notes:
-      "Muitas pessoas relatam melhora do bem-estar e redução da disforia. Oscilações iniciais são comuns e tendem a estabilizar. Não há evidência de que a testosterona cause patologia psiquiátrica.",
+      "Muitas pessoas relatam melhora do bem-estar e redução da disforia de género com a hormonização masculinizante. Oscilações iniciais são comuns e tendem a estabilizar. A evidência disponível não suporta uma associação causal entre testosterona terapêutica e o surgimento de nova patologia psiquiátrica (Colizzi M et al., J Endocrinol Invest 2014;37(12):1205–13; Costa R & Colizzi M, Ther Adv Psychopharmacol 2016;6(3):187–97). (Endocrine Society 2017)",
   },
   {
     id: "fertility",
@@ -143,8 +143,8 @@ export const EFFECTS: EffectEntry[] = [
     system: "repro",
     onsetMonths: [1, 6],
     maxMonths: [3, 12],
-    reversible: false,
+    reversible: true,
     notes:
-      "Reversibilidade incerta e variável após a interrupção. A testosterona não é contraceptivo: gestação é possível mesmo sem menstruação. Para quem deseja gestação biológica futura, a preservação de oócitos antes do início é uma opção a considerar. (WPATH SOC-8)",
+      "A fertilidade pode recuperar após a interrupção da testosterona, mas a reversibilidade é incerta e variável entre indivíduos — não é garantida. A testosterona não é contraceptivo: gestação é possível mesmo sem menstruação, pois a ovulação pode persistir. Para quem deseja gestação biológica futura, a criopreservação de oócitos antes do início da hormonização é a opção de maior segurança. (WPATH SOC-8; Coleman et al., J Sex Med 2022;19(3):S1–S259; Hembree WC et al., JCEM 2017;102(11):3869–903)",
   },
 ];
