@@ -55,6 +55,7 @@ function Control({ label, value, min, max, step, unit, hint, source, onChange }:
         </span>
       </div>
       <Slider
+        aria-label={`${label}${unit ? ` (${unit})` : ""}`}
         value={[value]}
         min={min}
         max={max}
@@ -243,8 +244,10 @@ export function PkCalculator() {
       <CardHeader className="px-4 pt-5 md:px-6 md:pt-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div className="min-w-0">
-            <CardTitle className="font-serif text-xl font-medium tracking-tight sm:text-2xl md:text-3xl">
-              Concentração no sangue ao longo do tempo
+            <CardTitle asChild>
+              <h2 className="font-serif text-xl font-medium tracking-tight sm:text-2xl md:text-3xl">
+                Concentração no sangue ao longo do tempo
+              </h2>
             </CardTitle>
             <CardDescription className="mt-2 text-sm leading-relaxed">
               Simulação da testosterona sérica após injecções intramusculares de undecilato de
@@ -393,6 +396,7 @@ export function PkCalculator() {
             <div className="border-t border-border/50 pt-3 space-y-3">
               <label className="flex items-start gap-3 cursor-pointer">
                 <Switch
+                  aria-label="Activar titulação individual a partir de medição sérica"
                   checked={individualMode}
                   onCheckedChange={setIndividualMode}
                   className="mt-0.5"
@@ -570,6 +574,7 @@ export function PkCalculator() {
                 </p>
               </div>
               <Switch
+                aria-label="Dose de ataque (loading) — segunda dose 6 semanas após a primeira"
                 checked={params.loading ?? true}
                 onCheckedChange={(v) => update({ loading: v })}
               />
@@ -598,7 +603,11 @@ export function PkCalculator() {
                   individual na depuração e na velocidade de absorção/eliminação.
                 </p>
               </div>
-              <Switch checked={showBand} onCheckedChange={setShowBand} />
+              <Switch
+                aria-label="Mostrar faixa de variação populacional no gráfico"
+                checked={showBand}
+                onCheckedChange={setShowBand}
+              />
             </div>
 
             {showBand ? (

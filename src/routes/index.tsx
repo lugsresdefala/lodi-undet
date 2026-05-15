@@ -24,8 +24,10 @@ export const Route = createFileRoute("/")({
         content:
           "Calculadora PK de testosterona e cronologia de efeitos. Página educativa, não dosimétrica.",
       },
+      { property: "og:url", content: "https://lodi-undet.lovable.app/" },
     ],
     links: [
+      { rel: "canonical", href: "https://lodi-undet.lovable.app/" },
       {
         rel: "preconnect",
         href: "https://fonts.googleapis.com",
@@ -38,6 +40,36 @@ export const Route = createFileRoute("/")({
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap",
+      },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "MedicalWebPage",
+          name: "lodi-t — Referência sobre hormonização com testosterona",
+          description:
+            "Modelo farmacocinético do undecilato de testosterona e cronologia de efeitos descritos pela Endocrine Society 2017 e WPATH SOC-8.",
+          url: "https://lodi-undet.lovable.app/",
+          inLanguage: "pt-PT",
+          about: {
+            "@type": "MedicalCondition",
+            name: "Hormonização masculinizante com testosterona",
+          },
+          citation: [
+            {
+              "@type": "CreativeWork",
+              name: "Endocrine Society Clinical Practice Guideline 2017 — Endocrine Treatment of Gender-Dysphoric/Gender-Incongruent Persons",
+              url: "https://academic.oup.com/jcem/article/102/11/3869/4157558",
+            },
+            {
+              "@type": "CreativeWork",
+              name: "WPATH Standards of Care, version 8 (SOC-8)",
+              url: "https://www.wpath.org/soc8",
+            },
+          ],
+        }),
       },
     ],
   }),
