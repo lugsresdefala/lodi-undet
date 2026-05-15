@@ -78,7 +78,7 @@ export function PkCalculator() {
   // === Modo individual: titulação a partir de medição sérica ===
   const [individualMode, setIndividualMode] = useState<boolean>(false);
   const [measuredValue, setMeasuredValue] = useState<number>(550); // ng/dL medido no paciente
-  const [sampleDayAfterDose, setSampleDayAfterDose] = useState<number>(84); // dia da colheita no intervalo actual
+  const [sampleDayAfterDose, setSampleDayAfterDose] = useState<number>(84); // dia da colheita no intervalo atual
   const [dosesBeforeSample, setDosesBeforeSample] = useState<number>(4); // n.º de doses no MESMO esquema antes da colheita
 
   // === Controlos do gráfico ===
@@ -281,7 +281,7 @@ export function PkCalculator() {
                 Concentração sérica prevista por este modelo
               </h3>
               <span className="text-xs text-muted-foreground">
-                para os parâmetros actuais, no último intervalo
+                para os parâmetros atuais, no último intervalo
               </span>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed mt-1">
@@ -350,12 +350,12 @@ export function PkCalculator() {
                 Intervalo populacional a partir de uma Cmédia-alvo
               </h3>
               <span className="text-xs text-muted-foreground">
-                intervalo actual: {params.intervalDays} dias
+                intervalo atual: {params.intervalDays} dias
               </span>
             </div>
             <div className="rounded-md border border-amber-500/40 bg-amber-500/10 p-2.5 text-xs leading-relaxed text-foreground/90">
               <strong>Não é uma recomendação individual.</strong> O cálculo assume a depuração
-              metabólica do modelo actual (padrão: 17,5 L/kg/d, retro-calculada da coorte ENIGI de
+              metabólica do modelo atual (padrão: 17,5 L/kg/d, retro-calculada da coorte ENIGI de
               homens trans em TU IM; Defreyne et al., Andrology 2018). Como a variabilidade
               inter-individual de Cl é alta (CV ~30–50%), o τ que produz a Cmédia-alvo num
               indivíduo concreto só pode ser determinado por{" "}
@@ -400,7 +400,7 @@ export function PkCalculator() {
                 <span className="text-sm">
                   <span className="font-medium text-foreground">Titulação individual</span>
                   <span className="block text-xs text-muted-foreground leading-relaxed">
-                    Tenho uma medição sérica de testosterona total feita no esquema actual (
+                    Tenho uma medição sérica de testosterona total feita no esquema atual (
                     {params.doseMg} mg cada {params.intervalDays} dias).
                   </span>
                 </span>
@@ -786,7 +786,7 @@ export function PkCalculator() {
                 }}
               />
 
-              {/* Cmédia actual */}
+              {/* Cmédia atual */}
               <ReferenceLine
                 y={metrics.cmean}
                 stroke="var(--color-chart-2)"

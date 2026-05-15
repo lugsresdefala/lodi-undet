@@ -13,7 +13,7 @@ export function MedicalDisclaimer() {
         acompanhamento clínico. As janelas temporais e o modelo farmacocinético são
         aproximações baseadas em literatura agregada (WPATH SOC-8, Endocrine Society
         2017); a variação individual é grande. Os efeitos descritos não são
-        intrinsecamente bons ou maus: o significado de cada um depende dos objectivos
+        intrinsecamente bons ou maus: o significado de cada um depende dos objetivos
         e expectativas de cada pessoa.
       </p>
     </aside>
