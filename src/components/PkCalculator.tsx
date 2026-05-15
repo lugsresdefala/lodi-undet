@@ -244,11 +244,9 @@ export function PkCalculator() {
       <CardHeader className="px-4 pt-5 md:px-6 md:pt-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div className="min-w-0">
-            <CardTitle asChild>
-              <h2 className="font-serif text-xl font-medium tracking-tight sm:text-2xl md:text-3xl">
-                Concentração no sangue ao longo do tempo
-              </h2>
-            </CardTitle>
+            <h2 className="font-serif text-xl font-medium leading-none tracking-tight sm:text-2xl md:text-3xl">
+              Concentração no sangue ao longo do tempo
+            </h2>
             <CardDescription className="mt-2 text-sm leading-relaxed">
               Simulação da testosterona sérica após injecções intramusculares de undecilato de
               testosterona em óleo de rícino (1000 mg / 4 mL, tipo Nebido/Reandron). Usa um modelo
