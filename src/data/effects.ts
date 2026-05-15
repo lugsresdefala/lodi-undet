@@ -105,7 +105,7 @@ export const EFFECTS: EffectEntry[] = [
     maxMonths: [12, 24],
     reversible: true,
     notes:
-      "Pode haver ressecamento e maior fragilidade da mucosa. Quando incómodo, hidratantes ou estrogénio tópico em baixa dose aliviam sem comprometer a masculinização.",
+      "Pode haver ressecamento e maior fragilidade da mucosa. Quando incômodo, hidratantes ou estrogénio tópico em baixa dose aliviam sem comprometer a masculinização.",
   },
   {
     id: "voice",
@@ -115,7 +115,7 @@ export const EFFECTS: EffectEntry[] = [
     maxMonths: [12, 24],
     reversible: false,
     notes:
-      "Início típico aos 6–12 meses. Mudança permanente das pregas vocais. Acompanhamento fonoaudiológico pode optimizar projecção e ressonância. (Endocrine Society 2017)",
+      "Início típico aos 6–12 meses. Mudança permanente das pregas vocais. Acompanhamento fonoaudiológico pode otimizar projeção e ressonância. (Endocrine Society 2017)",
   },
   {
     id: "libido",
