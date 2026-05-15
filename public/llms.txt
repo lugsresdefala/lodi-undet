@@ -1,0 +1,12 @@
+# lodi-t
+
+> Referência clínica sobre hormonização com testosterona: modelo farmacocinético do undecilato de testosterona (Nebido/Reandron) e cronologia de efeitos descritos pela Endocrine Society 2017 e WPATH SOC-8. Página educativa, não dosimétrica.
+
+## Pages
+
+- [Início](/): Calculadora farmacocinética interactiva, cronologia de efeitos e cartões por sistema corporal.
+
+## Optional
+
+- [Endocrine Society 2017](https://academic.oup.com/jcem/article/102/11/3869/4157558): Guideline de cuidado endocrinológico em pessoas trans.
+- [WPATH SOC-8](https://www.wpath.org/soc8): Standards of Care, versão 8.

@@ -2,6 +2,30 @@ import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/r
 
 import appCss from "../styles.css?url";
 
+const SITE_TITLE = "lodi-t — Hormonização com testosterona, referência clínica";
+const SITE_DESCRIPTION =
+  "Modelo farmacocinético do undecilato de testosterona para ajustar intervalos posológicos individualizados. Endocrine Society 2017, WPATH SOC-8.";
+const SITE_URL = "https://lodi-undet.lovable.app";
+const OG_IMAGE =
+  "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/65a6ecf9-c43e-4b68-8bf7-1850b798668d";
+
+const ORG_JSONLD = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "lodi-t",
+  url: SITE_URL,
+  description: SITE_DESCRIPTION,
+};
+
+const SITE_JSONLD = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "lodi-t",
+  url: SITE_URL,
+  description: SITE_DESCRIPTION,
+  inLanguage: "pt-PT",
+};
+
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -29,23 +53,33 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "LODI - LÓGICA PAA DOSE INDIVIDUALIZADA" },
-      { name: "description", content: "Modelo farmacocinético do undecilato de testosteronapara ajuste indiidualizado dos intervalos posológocos." },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "LODI - LÓGICA PAA DOSE INDIVIDUALIZADA" },
-      { property: "og:description", content: "Modelo farmacocinético do undecilato de testosteronapara ajuste indiidualizado dos intervalos posológocos." },
+      { title: SITE_TITLE },
+      { name: "description", content: SITE_DESCRIPTION },
+      { name: "author", content: "lodi-t" },
+      { property: "og:title", content: SITE_TITLE },
+      { property: "og:description", content: SITE_DESCRIPTION },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "LODI - LÓGICA PAA DOSE INDIVIDUALIZADA" },
-      { name: "twitter:description", content: "Modelo farmacocinético do undecilato de testosteronapara ajuste indiidualizado dos intervalos posológocos." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/65a6ecf9-c43e-4b68-8bf7-1850b798668d" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/65a6ecf9-c43e-4b68-8bf7-1850b798668d" },
+      { property: "og:site_name", content: "lodi-t" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: SITE_TITLE },
+      { name: "twitter:description", content: SITE_DESCRIPTION },
+      { property: "og:image", content: OG_IMAGE },
+      { name: "twitter:image", content: OG_IMAGE },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
+      },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(ORG_JSONLD),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(SITE_JSONLD),
       },
     ],
   }),
@@ -56,7 +90,7 @@ export const Route = createRootRoute({
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="pt-PT">
       <head>
         <HeadContent />
       </head>
