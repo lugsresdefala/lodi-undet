@@ -1,3 +1,10 @@
+/**
+ * Versão do modelo farmacocinético.
+ * Incrementar sempre que os parâmetros padrão, equações ou calibração mudarem.
+ * Ver docs/MODEL.md para detalhes da versão actual.
+ */
+export const MODEL_VERSION = "2.1";
+
 // Modelo farmacocinético do undecilato de testosterona (TU) IM em óleo de rícino
 // (formulação tipo Nebido/Reandron 1000 mg / 4 mL).
 //
@@ -125,13 +132,13 @@ export function singleDoseConcentration(t: number, p: PkParams): number {
   const D_T = p.doseMg * MW_RATIO_T_TU; // mg testosterona equivalente
   const F = p.bioavailability;
   // Conversão: mg/L → ng/dL  (×100 000)
-  const base = (F * D_T) / Cl * 100_000;
+  const base = ((F * D_T) / Cl) * 100_000;
   // Caso degenerado ka ≈ ke: limite analítico C(t) = base·k²·t·e^(−k·t).
   if (Math.abs(ka - ke) < 1e-6) {
     const k = (ka + ke) / 2;
     return base * k * k * t * Math.exp(-k * t);
   }
-  return (base * ka * ke) / (ka - ke) * (Math.exp(-ke * t) - Math.exp(-ka * t));
+  return ((base * ka * ke) / (ka - ke)) * (Math.exp(-ke * t) - Math.exp(-ka * t));
 }
 
 /** Tmax analítico de dose única (dias). */
@@ -146,7 +153,7 @@ export function singleDoseTmax(p: PkParams): number {
 export function steadyStateMean(p: PkParams): number {
   const Cl = p.clearanceLPerKgPerDay * p.weightKg;
   const D_T = p.doseMg * MW_RATIO_T_TU;
-  return (p.bioavailability * D_T) / (Cl * p.intervalDays) * 100_000;
+  return ((p.bioavailability * D_T) / (Cl * p.intervalDays)) * 100_000;
 }
 
 /** Sobreposição linear (princípio da superposição) das doses do esquema. */
@@ -344,4 +351,127 @@ export function computeMetrics(series: PkSeriesPoint[], p: PkParams): PkMetrics 
  */
 export function ngdlToNmol(ngdl: number): number {
   return ngdl * 0.03467;
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Validação de parâmetros PK
+// ──────────────────────────────────────────────────────────────────────────
+
+export interface PkValidation {
+  /** true se os parâmetros são suficientemente válidos para uma simulação. */
+  valid: boolean;
+  /** Erros que impedem a simulação (parâmetros fora de intervalo fisicamente possível). */
+  errors: string[];
+  /** Avisos que não impedem a simulação mas indicam valores atípicos. */
+  warnings: string[];
+}
+
+/**
+ * Valida os parâmetros PK e devolve erros/avisos estruturados.
+ * Aceita Partial<PkParams> para ser útil em fluxos de formulário progressivos.
+ */
+export function validatePkParams(p: Partial<PkParams>): PkValidation {
+  const errors: string[] = [];
+  const warnings: string[] = [];
+
+  if (p.doseMg !== undefined) {
+    if (p.doseMg <= 0) errors.push("doseMg deve ser positivo.");
+    else if (p.doseMg < 100)
+      warnings.push(
+        `doseMg = ${p.doseMg} mg é muito baixo para TU IM; formulações típicas: 250–1000 mg.`,
+      );
+    else if (p.doseMg > 2000)
+      warnings.push(
+        `doseMg = ${p.doseMg} mg excede as doses documentadas na literatura (máx. ≈ 1000 mg/aplicação).`,
+      );
+  }
+
+  if (p.intervalDays !== undefined) {
+    if (p.intervalDays <= 0) errors.push("intervalDays deve ser positivo.");
+    else if (p.intervalDays < 28)
+      warnings.push(
+        `intervalDays = ${p.intervalDays} d é muito curto para TU IM (mín. documentado ≈ 42 d).`,
+      );
+    else if (p.intervalDays > 180)
+      warnings.push(
+        `intervalDays = ${p.intervalDays} d excede o máximo documentado na literatura (~168 d).`,
+      );
+  }
+
+  if (p.weightKg !== undefined) {
+    if (p.weightKg <= 0) errors.push("weightKg deve ser positivo.");
+    else if (p.weightKg < 30)
+      warnings.push(
+        `weightKg = ${p.weightKg} kg é muito baixo; a clearance pode estar subestimada.`,
+      );
+    else if (p.weightKg > 200)
+      warnings.push(`weightKg = ${p.weightKg} kg é muito elevado; verifique o valor.`);
+  }
+
+  if (p.absorptionHalfLifeD !== undefined && p.eliminationHalfLifeD !== undefined) {
+    if (p.absorptionHalfLifeD <= 0) errors.push("absorptionHalfLifeD deve ser positivo.");
+    else if (p.eliminationHalfLifeD <= 0) errors.push("eliminationHalfLifeD deve ser positivo.");
+    else if (p.absorptionHalfLifeD > p.eliminationHalfLifeD)
+      errors.push(
+        "absorptionHalfLifeD não pode exceder eliminationHalfLifeD em cinética flip-flop (ka deve ser > ke).",
+      );
+  } else {
+    if (p.absorptionHalfLifeD !== undefined && p.absorptionHalfLifeD <= 0)
+      errors.push("absorptionHalfLifeD deve ser positivo.");
+    if (p.eliminationHalfLifeD !== undefined) {
+      if (p.eliminationHalfLifeD <= 0) errors.push("eliminationHalfLifeD deve ser positivo.");
+      else if (p.eliminationHalfLifeD < 10)
+        warnings.push(
+          `eliminationHalfLifeD = ${p.eliminationHalfLifeD} d é muito curto para TU IM (esperado ≈ 20–50 d).`,
+        );
+      else if (p.eliminationHalfLifeD > 100)
+        warnings.push(
+          `eliminationHalfLifeD = ${p.eliminationHalfLifeD} d excede os valores reportados na literatura.`,
+        );
+    }
+  }
+
+  if (p.bioavailability !== undefined) {
+    if (p.bioavailability <= 0 || p.bioavailability > 1)
+      errors.push("bioavailability deve estar em ]0, 1].");
+  }
+
+  if (p.clearanceLPerKgPerDay !== undefined) {
+    if (p.clearanceLPerKgPerDay <= 0) errors.push("clearanceLPerKgPerDay deve ser positivo.");
+    else if (p.clearanceLPerKgPerDay < 5)
+      warnings.push(
+        `clearanceLPerKgPerDay = ${p.clearanceLPerKgPerDay} L/kg/d é muito baixo (mín. plausível ≈ 8 L/kg/d).`,
+      );
+    else if (p.clearanceLPerKgPerDay > 50)
+      warnings.push(
+        `clearanceLPerKgPerDay = ${p.clearanceLPerKgPerDay} L/kg/d é muito elevado (máx. reportado ~30 L/kg/d).`,
+      );
+  }
+
+  if (p.doses !== undefined) {
+    if (p.doses < 1) errors.push("doses deve ser ≥ 1.");
+    else if (p.doses > 52)
+      warnings.push(`doses = ${p.doses}: simulação de mais de 52 aplicações pode ser lenta.`);
+  }
+
+  return { valid: errors.length === 0, errors, warnings };
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Intervalo sugerido a partir de Cmédia-alvo
+// ──────────────────────────────────────────────────────────────────────────
+
+/**
+ * Calcula o intervalo posológico que produz uma Cmédia-alvo dada, assumindo os
+ * parâmetros populacionais do modelo (sem calibração individual).
+ *
+ * Baseado em: Css_avg = F · D_T / (Cl · τ) · 1e5  →  τ = F · D_T / (Cl · C_alvo) · 1e5
+ *
+ * @returns intervalo em dias; 0 se targetCmeanNgdl ≤ 0.
+ */
+export function computeIntervalForTarget(targetCmeanNgdl: number, p: PkParams): number {
+  if (targetCmeanNgdl <= 0) return 0;
+  const Cl = p.clearanceLPerKgPerDay * p.weightKg;
+  const D_T = p.doseMg * MW_RATIO_T_TU;
+  return ((p.bioavailability * D_T) / (Cl * targetCmeanNgdl)) * 100_000;
 }

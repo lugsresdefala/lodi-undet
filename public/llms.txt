@@ -4,9 +4,12 @@
 
 ## Pages
 
-- [Início](/): Calculadora farmacocinética interactiva, cronologia de efeitos e cartões por sistema corporal.
+- [Início](/): Calculadora farmacocinética interactiva, comparação de cenários posológicos, cronologia de efeitos e cartões por sistema corporal. Exportação de resultados em JSON e CSV.
+- [Metodologia](/metodologia): Documentação técnica do modelo farmacocinético: equações, parâmetros, calibração, Monte Carlo e limitações.
 
 ## Optional
 
 - [Endocrine Society 2017](https://academic.oup.com/jcem/article/102/11/3869/4157558): Guideline de cuidado endocrinológico em pessoas trans.
 - [WPATH SOC-8](https://www.wpath.org/soc8): Standards of Care, versão 8.
+- [Schubert 2004](https://doi.org/10.1210/jc.2004-0935): Parâmetros PK do TU 1000 mg IM.
+- [Defreyne/ENIGI 2018](https://doi.org/10.1111/andr.12480): Calibração da clearance em homens trans.

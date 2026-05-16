@@ -114,10 +114,9 @@ function Index() {
                 Lógica para Dose Individualizada — Notas, cronologia e farmacocinética.
               </h1>
               <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground">
-                Modelo farmacocinético do undecilato de testosterona para ajuste
-                individualizado dos intervalos posológicos. Janelas temporais de efeitos
-                descritas na literatura (Endocrine Society 2017, WPATH SOC-8). Página
-                educativa, não dosimétrica.
+                Modelo farmacocinético do undecilato de testosterona para ajuste individualizado dos
+                intervalos posológicos. Janelas temporais de efeitos descritas na literatura
+                (Endocrine Society 2017, WPATH SOC-8). Página educativa, não dosimétrica.
               </p>
             </div>
             <div className="relative mx-auto w-full max-w-sm">
