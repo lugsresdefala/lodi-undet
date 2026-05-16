@@ -159,6 +159,7 @@ function Index() {
           >
             diversidadebarrafunda.org ↗
           </a>
+          <p>Tiago José de Oliveira Gomes — CRM 164375</p>
           <p className="font-mono uppercase tracking-[0.18em]">
             WPATH SOC-8 · Endocrine Society 2017
           </p>
