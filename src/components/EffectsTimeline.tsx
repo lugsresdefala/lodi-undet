@@ -25,11 +25,7 @@ export function EffectsTimeline() {
         </div>
 
         <div className="flex flex-wrap gap-1.5">
-          <FilterChip
-            label="Tudo"
-            active={active === "all"}
-            onClick={() => setActive("all")}
-          />
+          <FilterChip label="Tudo" active={active === "all"} onClick={() => setActive("all")} />
           {(Object.keys(SYSTEMS) as System[]).map((s) => (
             <FilterChip
               key={s}
@@ -44,9 +40,7 @@ export function EffectsTimeline() {
 
       {/* Axis */}
       <div className="grid grid-cols-[180px_1fr] gap-x-4 border-b border-border pb-2 md:grid-cols-[220px_1fr]">
-        <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-          Efeito
-        </div>
+        <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Efeito</div>
         <div className="relative h-4">
           {TICKS.map((m) => (
             <div

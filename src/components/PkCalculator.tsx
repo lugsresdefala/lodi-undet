@@ -16,11 +16,13 @@ import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
+import { ExportButton } from "@/components/ExportButton";
 import {
   computeMetrics,
   DEFAULT_PK,
   doseTimes,
   generatePkSeries,
+  MODEL_VERSION,
   ngdlToNmol,
   simulatePopulation,
   singleDoseTmax,
@@ -88,6 +90,10 @@ export function PkCalculator() {
   const [nSubjects, setNSubjects] = useState<number>(200);
   const [cvPct, setCvPct] = useState<number>(35);
 
+  // === Modo comparação de cenários ===
+  const [compareMode, setCompareMode] = useState<boolean>(false);
+  const [compareInterval, setCompareInterval] = useState<number>(112); // intervalo de comparação
+
   const series = useMemo(() => generatePkSeries(params, { stepDays: 1 }), [params]);
   const metrics = useMemo(() => computeMetrics(series, params), [series, params]);
   const tmax = useMemo(() => singleDoseTmax(params), [params]);
@@ -96,6 +102,20 @@ export function PkCalculator() {
     const times = doseTimes(params);
     return times[times.length - 1] ?? 0;
   }, [params]);
+
+  // Série e métricas do cenário de comparação
+  const compareParams = useMemo<PkParams>(
+    () => ({ ...params, intervalDays: compareInterval }),
+    [params, compareInterval],
+  );
+  const compareSeries = useMemo(
+    () => (compareMode ? generatePkSeries(compareParams, { stepDays: 1 }) : []),
+    [compareMode, compareParams],
+  );
+  const compareMetrics = useMemo(
+    () => (compareMode ? computeMetrics(compareSeries, compareParams) : null),
+    [compareSeries, compareParams, compareMode],
+  );
 
   const population = useMemo(
     () =>
@@ -106,16 +126,28 @@ export function PkCalculator() {
   );
 
   const chartData = useMemo(() => {
-    if (!showBand || population.length !== series.length) return series;
-    return series.map((pt, i) => ({
+    // Base: serie determinística + bandas populacionais
+    const base =
+      !showBand || population.length !== series.length
+        ? series
+        : series.map((pt, i) => ({
+            ...pt,
+            p05: population[i]?.p05,
+            p25: population[i]?.p25,
+            p50: population[i]?.p50,
+            p75: population[i]?.p75,
+            p95: population[i]?.p95,
+          }));
+
+    if (!compareMode || compareSeries.length === 0) return base;
+
+    // Mesclar série de comparação como campo extra "concentration2"
+    const compareByDay = new Map(compareSeries.map((pt) => [pt.day, pt.concentration]));
+    return base.map((pt) => ({
       ...pt,
-      p05: population[i]?.p05,
-      p25: population[i]?.p25,
-      p50: population[i]?.p50,
-      p75: population[i]?.p75,
-      p95: population[i]?.p95,
+      concentration2: compareByDay.get(pt.day) ?? null,
     }));
-  }, [series, population, showBand]);
+  }, [series, population, showBand, compareMode, compareSeries]);
 
   const bandLow = bandRange === "p5-p95" ? "p05" : "p25";
   const bandHigh = bandRange === "p5-p95" ? "p95" : "p75";
@@ -209,7 +241,10 @@ export function PkCalculator() {
         msg: "Colheita em vale: representativa do mínimo, mas extrapolar Cmédia depende fortemente da forma da curva — confirmar com pelo menos uma segunda medição em momento diferente.",
       });
     }
-    if (individualResult && (individualResult.exposureRatio < 0.5 || individualResult.exposureRatio > 2)) {
+    if (
+      individualResult &&
+      (individualResult.exposureRatio < 0.5 || individualResult.exposureRatio > 2)
+    ) {
       warnings.push({
         level: "warn",
         msg: `Factor individual extremo (${(individualResult.exposureRatio * 100).toFixed(0)}%): verifique se a dose, intervalo e dia da colheita inseridos correspondem ao realmente praticado.`,
@@ -358,10 +393,9 @@ export function PkCalculator() {
               <strong>Não é uma recomendação individual.</strong> O cálculo assume a depuração
               metabólica do modelo atual (padrão: 17,5 L/kg/d, retro-calculada da coorte ENIGI de
               homens trans em TU IM; Defreyne et al., Andrology 2018). Como a variabilidade
-              inter-individual de Cl é alta (CV ~30–50%), o τ que produz a Cmédia-alvo num
-              indivíduo concreto só pode ser determinado por{" "}
-              <em>titulação com análises séricas</em> (vale antes da dose seguinte, Endocrine
-              Society 2017).
+              inter-individual de Cl é alta (CV ~30–50%), o τ que produz a Cmédia-alvo num indivíduo
+              concreto só pode ser determinado por <em>titulação com análises séricas</em> (vale
+              antes da dose seguinte, Endocrine Society 2017).
             </div>
             <Control
               label="Concentração média alvo"
@@ -661,6 +695,100 @@ export function PkCalculator() {
             ) : null}
           </section>
 
+          {/* === Comparação de cenários === */}
+          <section
+            aria-labelledby="compare-heading"
+            className="rounded-lg border border-[color:var(--color-chart-5)]/40 bg-[color:var(--color-chart-5)]/8 p-4 space-y-3"
+          >
+            <div className="flex items-center justify-between gap-2">
+              <h3 id="compare-heading" className="text-sm font-semibold text-foreground">
+                Comparar cenários
+              </h3>
+              <Switch
+                aria-label="Activar comparação de dois cenários posológicos"
+                checked={compareMode}
+                onCheckedChange={setCompareMode}
+              />
+            </div>
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              Sobrepõe uma segunda curva com um intervalo diferente para comparação visual directa.
+              Útil para avaliar o impacto de encurtar ou prolongar o intervalo nas métricas.
+            </p>
+            {compareMode && (
+              <div className="space-y-4 pt-1">
+                <Control
+                  label="Intervalo do cenário de comparação"
+                  unit="dias"
+                  value={compareInterval}
+                  min={42}
+                  max={168}
+                  step={1}
+                  hint={`Cenário A (actual): ${params.intervalDays} d · Cenário B (comparação): ${compareInterval} d`}
+                  onChange={setCompareInterval}
+                />
+                {compareMetrics && (
+                  <div className="overflow-x-auto rounded-md border border-border/70 bg-card/70">
+                    <table className="w-full border-collapse text-xs">
+                      <thead>
+                        <tr className="border-b border-border/60">
+                          <th className="px-3 py-2 text-left font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                            Métrica
+                          </th>
+                          <th className="px-3 py-2 text-right font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                            A · {params.intervalDays} d
+                          </th>
+                          <th className="px-3 py-2 text-right font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                            B · {compareInterval} d
+                          </th>
+                          <th className="px-3 py-2 text-right font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                            Δ
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border/50">
+                        {(
+                          [
+                            { label: "Cmax", a: metrics.cmax, b: compareMetrics.cmax },
+                            { label: "Cmédia", a: metrics.cmean, b: compareMetrics.cmean },
+                            { label: "Ctrough", a: metrics.ctrough, b: compareMetrics.ctrough },
+                          ] as const
+                        ).map(({ label, a, b }) => {
+                          const delta = b - a;
+                          return (
+                            <tr key={label}>
+                              <td className="px-3 py-1.5 font-medium">{label}</td>
+                              <td className="px-3 py-1.5 text-right font-mono tabular-nums">
+                                {Math.round(a)}
+                              </td>
+                              <td className="px-3 py-1.5 text-right font-mono tabular-nums">
+                                {Math.round(b)}
+                              </td>
+                              <td
+                                className={`px-3 py-1.5 text-right font-mono tabular-nums ${
+                                  Math.abs(delta) < 10
+                                    ? "text-muted-foreground"
+                                    : delta < 0
+                                      ? "text-[color:var(--color-system-body)]"
+                                      : "text-destructive"
+                                }`}
+                              >
+                                {delta >= 0 ? "+" : ""}
+                                {Math.round(delta)}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                    <p className="px-3 py-2 text-[11px] text-muted-foreground">
+                      Valores em ng/dL · Δ = B − A
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+          </section>
+
           {/* === Parâmetros PK (avançado) === */}
           <details className="group rounded-lg border border-border/60 bg-muted/20 open:bg-muted/30">
             <summary className="flex cursor-pointer items-baseline justify-between gap-2 px-4 py-3 text-sm font-medium text-foreground/80 transition hover:text-foreground">
@@ -902,10 +1030,33 @@ export function PkCalculator() {
                   />
                 </>
               ) : null}
+
+              {compareMode ? (
+                <Area
+                  type="monotone"
+                  dataKey="concentration2"
+                  name={`Cenário B · ${compareInterval} d`}
+                  stroke="var(--color-chart-5)"
+                  strokeWidth={2}
+                  strokeDasharray="6 3"
+                  fill="none"
+                  isAnimationActive={false}
+                  connectNulls
+                />
+              ) : null}
             </AreaChart>
           </ResponsiveContainer>
         </div>
       </CardContent>
+
+      <div className="border-t border-border/60 px-4 pb-4 pt-3 md:px-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <ExportButton params={params} metrics={metrics} series={series} />
+          <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/70">
+            modelo v{MODEL_VERSION}
+          </span>
+        </div>
+      </div>
 
       <div className="border-t border-border/60 px-4 py-4 text-[11px] leading-relaxed text-muted-foreground md:px-6">
         <span className="font-mono uppercase tracking-[0.16em] text-foreground/70">Fontes —</span>{" "}
@@ -913,10 +1064,9 @@ export function PkCalculator() {
         aparente 33,9 d). Behre HM, Nieschlag E. <em>Eur J Endocrinol</em> 1999;140(5):414–9
         (cinética flip-flop do TU IM). Wang C et al. <em>JCEM</em> 2004;89(2):534–43 (MCR da T ≈
         1500 L/d em homens cis). Defreyne J et al. <em>Andrology</em> 2018;6(3):441–51; Pelusi C et
-        al. <em>Andrology</em> 2014;2(4):516–21 (coorte ENIGI; calibração Cl = 17,5 L/kg/d em
-        homens trans). Hembree WC et al. <em>JCEM</em> 2017;102(11):3869–903 (Endocrine Society
-        CPG). Travison TG et al. <em>JCEM</em> 2017;102(4):1161–73 (intervalo harmonizado
-        264–916 ng/dL).{" "}
+        al. <em>Andrology</em> 2014;2(4):516–21 (coorte ENIGI; calibração Cl = 17,5 L/kg/d em homens
+        trans). Hembree WC et al. <em>JCEM</em> 2017;102(11):3869–903 (Endocrine Society CPG).
+        Travison TG et al. <em>JCEM</em> 2017;102(4):1161–73 (intervalo harmonizado 264–916 ng/dL).{" "}
         <span className="italic">Página educativa; não constitui orientação posológica.</span>
       </div>
     </Card>

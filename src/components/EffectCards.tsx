@@ -27,9 +27,9 @@ export function EffectCards() {
             Efeitos por sistema
           </h2>
           <p className="mt-1 max-w-xl text-sm text-muted-foreground">
-            Descrição de cada efeito, janela temporal aproximada e reversibilidade.
-            Sem juízo de valor: cada efeito pode ser desejado, neutro ou indesejado
-            consoante os objetivos de cada pessoa.
+            Descrição de cada efeito, janela temporal aproximada e reversibilidade. Sem juízo de
+            valor: cada efeito pode ser desejado, neutro ou indesejado consoante os objetivos de
+            cada pessoa.
           </p>
         </div>
 
