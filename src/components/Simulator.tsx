@@ -686,30 +686,30 @@ export default function Simulator() {
                       {config.mostrarMonteCarlo && resultadoMC ? (
                         <>
                           <span className="flex items-center gap-1.5">
-                            <span className="inline-block w-3 h-2 rounded-sm bg-violet-500/20" />
+                            <span className="inline-block w-3 h-2 rounded-sm bg-chart-5/20" />
                             faixa onde caem 9 em cada 10 pacientes
                           </span>
                           <span className="flex items-center gap-1.5">
-                            <span className="inline-block w-3 h-2 rounded-sm bg-violet-500/40" />
+                            <span className="inline-block w-3 h-2 rounded-sm bg-chart-5/40" />
                             faixa onde caem 5 em cada 10 (a metade típica)
                           </span>
                           <span className="flex items-center gap-1.5">
-                            <span className="inline-block w-3 h-0.5 bg-cyan-400" />
+                            <span className="inline-block w-3 h-0.5 bg-chart-2" />
                             paciente médio
                           </span>
                         </>
                       ) : (
                         <span className="flex items-center gap-1.5">
-                          <span className="inline-block w-3 h-0.5 bg-cyan-400" />
+                          <span className="inline-block w-3 h-0.5 bg-chart-2" />
                           concentração de testosterona
                         </span>
                       )}
                       <span className="flex items-center gap-1.5">
-                        <span className="inline-block w-3 h-2 rounded-sm bg-emerald-500/20" />
+                        <span className="inline-block w-3 h-2 rounded-sm bg-system-body/20" />
                         faixa normal ({EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL} ng/dL)
                       </span>
                       <span className="flex items-center gap-1.5">
-                        <span className="inline-block w-0.5 h-3 border-l border-dashed border-pink-400" />
+                        <span className="inline-block w-0.5 h-3 border-l border-dashed border-chart-4" />
                         injeção
                       </span>
                     </div>
