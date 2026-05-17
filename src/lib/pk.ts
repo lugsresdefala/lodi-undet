@@ -57,7 +57,7 @@ export const DEFAULT_PK: PkParams = {
   intervalDays: 84, // 12 semanas
   weightKg: 70,
   absorptionHalfLifeD: 20, // depósito rápido Nebido (ln2/ka_rapido_pop ≈ 19,8 d)
-  eliminationHalfLifeD: 107, // depósito lento Nebido (flip-flop, ln2/ka_lento_pop ≈ 107 d)
+  eliminationHalfLifeD: 90, // meia-vida de libertação Nebido SmPC 5.2: 90±40 d
   bioavailability: 1.0,
   clearanceLPerKgPerDay: 17.5,
   fracRapido: 0.07, // calibrado (Schubert 2004 / Behre 1999)

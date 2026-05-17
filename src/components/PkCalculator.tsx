@@ -178,8 +178,8 @@ export function PkCalculator() {
 
   // Validações: a calibração só é fiável em estado estacionário e com timing
   // bem definido. Regra prática (Rowland & Tozer): ≈4–5 × t½ aparente para
-  // atingir 90–97% de Css. Com t½ ≈ 33 d isto significa ~130–165 dias no
-  // MESMO esquema (dose + τ) antes da colheita.
+  // atingir 90–97% de Css. Com t½ de libertação ≈90 d isto significa ~360–450 dias
+  // no MESMO esquema (dose + τ) antes da colheita.
   const individualWarnings = useMemo(() => {
     if (!individualMode) return [] as { level: "error" | "warn"; msg: string }[];
     const warnings: { level: "error" | "warn"; msg: string }[] = [];
@@ -251,8 +251,9 @@ export function PkCalculator() {
               Simulação da testosterona sérica após injecções intramusculares de undecilato de
               testosterona em óleo de rícino (1000 mg / 4 mL, tipo Nebido/Reandron). Usa um modelo
               farmacocinético calibrado para o perfil observado por Schubert et al. (JCEM 2004):
-              pico aos 7–14 dias e meia-vida aparente de ~33 dias. Inclui dose de ataque às 6
-              semanas segundo Endocrine Society 2017.
+              pico aos 7–14 dias e libertação terminal prolongada, com meia-vida de libertação
+              de 90±40 dias na ficha técnica do Nebido. Inclui dose de ataque às 6 semanas segundo
+              Endocrine Society 2017.
             </CardDescription>
           </div>
           <span
@@ -688,8 +689,8 @@ export function PkCalculator() {
                 min={40}
                 max={130}
                 step={1}
-                hint="Em depósitos IM em óleo de rícino (Nebido/Reandron) a meia-vida aparente é dominada por flip-flop: ≈ 90–110 dias (Behre 1999, Schubert 2004). Não confundir com a meia-vida intrínseca da testosterona em circulação (~1,5 d)."
-                source="Behre 1999 · Schubert 2004"
+                hint="Em depósitos IM em óleo de rícino (Nebido/Reandron), a ficha técnica descreve meia-vida de libertação de 90±40 dias; o slider ajusta esse componente lento do depósito. Não confundir com a meia-vida intrínseca da testosterona em circulação (~1 h após IV)."
+                source="SmPC Nebido 5.2"
                 onChange={(v) => update({ eliminationHalfLifeD: v })}
               />
               <Control
@@ -920,8 +921,9 @@ export function PkCalculator() {
 
       <div className="border-t border-border/60 px-4 py-4 text-[11px] leading-relaxed text-muted-foreground md:px-6">
         <span className="font-mono uppercase tracking-[0.16em] text-foreground/70">Fontes —</span>{" "}
-        Schubert M et al. <em>JCEM</em> 2004;89(11):5429–34 (PK do TU 1000 mg IM; Tmax ≈ 7 d, t½
-        aparente 33,9 d). Behre HM, Nieschlag E. <em>Eur J Endocrinol</em> 1999;140(5):414–9
+        Nebido SmPC secção 5.2 (meia-vida de libertação da formulação depot: 90±40 d). Schubert M
+        et al. <em>JCEM</em> 2004;89(11):5429–34 (PK do TU 1000 mg IM; Tmax ≈ 7 d; estado estacionário
+        entre a 3.ª e 5.ª administração). Behre HM, Nieschlag E. <em>Eur J Endocrinol</em> 1999;140(5):414–9
         (cinética flip-flop do TU IM). Wang C et al. <em>JCEM</em> 2004;89(2):534–43 (MCR da T ≈
         1500 L/d em homens cis). Defreyne J et al. <em>Andrology</em> 2018;6(3):441–51; Pelusi C et
         al. <em>Andrology</em> 2014;2(4):516–21 (coorte ENIGI; calibração Cl = 17,5 L/kg/d em
