@@ -4,6 +4,7 @@ import lodiLogo from "@/assets/lodi-logo.png";
 import { EffectCards } from "@/components/EffectCards";
 import { EffectsTimeline } from "@/components/EffectsTimeline";
 import { MedicalDisclaimer } from "@/components/MedicalDisclaimer";
+import { PatientPanel } from "@/components/PatientPanel";
 import { PkCalculator } from "@/components/PkCalculator";
 
 export const Route = createFileRoute("/")({
@@ -92,6 +93,9 @@ function Index() {
             <a href="#calculadora" className="transition-colors hover:text-foreground">
               Calculadora
             </a>
+            <a href="#paciente" className="transition-colors hover:text-foreground">
+              Paciente
+            </a>
             <a href="#cronologia" className="transition-colors hover:text-foreground">
               Cronologia
             </a>
@@ -137,6 +141,10 @@ function Index() {
 
         <section id="calculadora" className="scroll-mt-24">
           <PkCalculator />
+        </section>
+
+        <section id="paciente" className="scroll-mt-24">
+          <PatientPanel />
         </section>
 
         <section id="cronologia" className="scroll-mt-24">
