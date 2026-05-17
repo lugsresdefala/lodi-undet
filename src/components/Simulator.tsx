@@ -713,18 +713,23 @@ export default function Simulator() {
                         injeção
                       </span>
                     </div>
-                    <ResponsiveContainer width="100%" height={380}>
-                      <ComposedChart data={dadosGrafico} margin={{ top: 10, right: 50, left: 0, bottom: 30 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" strokeOpacity={0.5} />
+                    <div className="h-[430px] w-full rounded-lg bg-[linear-gradient(180deg,color-mix(in_oklab,var(--color-background)_95%,var(--color-chart-2)),var(--color-background))] px-1 pb-1 pt-2">
+                      <ResponsiveContainer width="100%" height="100%">
+                      <ComposedChart data={dadosGrafico} margin={{ top: 12, right: 54, left: 0, bottom: 32 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" strokeOpacity={0.55} />
                         <XAxis
                           dataKey="semana"
                           tickFormatter={xTickFormatter}
                           label={{ value: "Tempo (semanas desde a 1ª injeção)", position: "insideBottom", offset: -15, fontSize: 11 }}
-                          tick={{ fontSize: 10 }}
+                          tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }}
+                          axisLine={{ stroke: "var(--color-border)" }}
+                          tickLine={{ stroke: "var(--color-border)" }}
                           interval={Math.max(0, Math.floor(dadosGrafico.length / 8))}
                         />
                         <YAxis
-                          tick={{ fontSize: 10 }}
+                          tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }}
+                          axisLine={{ stroke: "var(--color-border)" }}
+                          tickLine={{ stroke: "var(--color-border)" }}
                           width={60}
                           label={{ value: `Testosterona (${unLabel})`, angle: -90, position: "insideLeft", fontSize: 11, offset: 12 }}
                         />
@@ -735,10 +740,10 @@ export default function Simulator() {
                         {/* Zona eugonadal */}
                         <ReferenceArea
                           y1={eugMin} y2={eugMax}
-                          fill="#10b981" fillOpacity={0.10}
+                          fill="var(--color-system-body)" fillOpacity={0.14}
                         />
-                        <ReferenceLine y={eugMin} stroke="#34d399" strokeDasharray="4 4" strokeWidth={1} label={{ value: `mín. normal (${eugMin.toFixed(config.unidade === "nmol" ? 1 : 0)})`, position: "right", fontSize: 9, fill: "#34d399" }} />
-                        <ReferenceLine y={eugMax} stroke="#34d399" strokeDasharray="4 4" strokeWidth={1} label={{ value: `máx. normal (${eugMax.toFixed(config.unidade === "nmol" ? 1 : 0)})`, position: "right", fontSize: 9, fill: "#34d399" }} />
+                        <ReferenceLine y={eugMin} stroke="var(--color-system-body)" strokeDasharray="4 4" strokeWidth={1.2} label={{ value: `mín. normal (${eugMin.toFixed(config.unidade === "nmol" ? 1 : 0)})`, position: "right", fontSize: 9, fill: "var(--color-system-body)" }} />
+                        <ReferenceLine y={eugMax} stroke="var(--color-system-body)" strokeDasharray="4 4" strokeWidth={1.2} label={{ value: `máx. normal (${eugMax.toFixed(config.unidade === "nmol" ? 1 : 0)})`, position: "right", fontSize: 9, fill: "var(--color-system-body)" }} />
 
                         {/* Marcadores de doses */}
                         {doses.map((d, i) => (
