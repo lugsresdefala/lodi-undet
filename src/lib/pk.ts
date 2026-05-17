@@ -326,7 +326,7 @@ export function simulatePopulation(
   }));
 }
 
-/** ng/dL → nmol/L (factor do motor: 1/28,84 ≈ 0,03467). */
+/** ng/dL → nmol/L (fator do motor: 1/28,84 ≈ 0,03467). */
 export function ngdlToNmol(ngdl: number): number {
   return ngdl * NGDL_TO_NMOL;
 }
