@@ -671,26 +671,37 @@ export function PkCalculator() {
             </summary>
             <div className="space-y-4 px-4 pb-4 pt-1">
               <Control
-                label="Meia-vida de absorção"
+                label="Meia-vida de absorção (depósito rápido)"
                 unit="dias"
                 value={params.absorptionHalfLifeD}
-                min={2}
-                max={20}
-                step={0.1}
-                hint="Tempo para metade do fármaco ser libertada do depósito intramuscular. Determina a velocidade de subida até ao pico (7–14 dias, Schubert 2004)."
-                source="Schubert 2004"
+                min={5}
+                max={40}
+                step={0.5}
+                hint="Velocidade do componente rápido do depósito IM (ln 2 / ka_rápido). Para Nebido (óleo de rícino) ronda 18–22 dias e determina, junto com a fracção rápida, a forma do pico inicial."
+                source="motor bicompartmental — Schubert 2004"
                 onChange={(v) => update({ absorptionHalfLifeD: v })}
               />
               <Control
                 label="Meia-vida aparente terminal"
                 unit="dias"
                 value={params.eliminationHalfLifeD}
-                min={20}
-                max={50}
-                step={0.5}
-                hint="Tempo para a concentração cair para metade na fase descendente. Para o undecilato IM (~33 dias) reflecte a libertação lenta do depósito, não a eliminação intrínseca da testosterona."
-                source="Schubert 2004 / Behre 1999"
+                min={40}
+                max={130}
+                step={1}
+                hint="Em depósitos IM em óleo de rícino (Nebido/Reandron) a meia-vida aparente é dominada por flip-flop: ≈ 90–110 dias (Behre 1999, Schubert 2004). Não confundir com a meia-vida intrínseca da testosterona em circulação (~1,5 d)."
+                source="Behre 1999 · Schubert 2004"
                 onChange={(v) => update({ eliminationHalfLifeD: v })}
+              />
+              <Control
+                label="Fracção no depósito rápido"
+                unit="%"
+                value={Math.round(params.fracRapido * 100)}
+                min={2}
+                max={40}
+                step={1}
+                hint="Modelo bicompartmental: fracção da dose que entra no depósito de libertação rápida (responsável pelo pico precoce). O restante alimenta o depósito lento, que determina a acumulação ao longo das doses. Calibrado em ~7% para Nebido."
+                source="motor bicompartmental — Schubert 2004"
+                onChange={(v) => update({ fracRapido: v / 100 })}
               />
               <Control
                 label="Depuração metabólica"
