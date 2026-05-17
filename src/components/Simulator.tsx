@@ -703,56 +703,61 @@ export default function Simulator() {
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="grafico" className="space-y-4">
-                <Card className="lodi-card">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm">
-                      Testosterona no sangue — {config.doseMg} mg a cada{" "}
-                      {(config.intervaloDias / 7).toFixed(0)} semanas
-                    </CardTitle>
-                    <CardDescription className="text-xs">
-                      Cada injeção causa uma subida e depois uma descida. Repetidas, vão se
-                      sobrepondo até atingir um padrão estável. A faixa{" "}
-                      <span className="text-emerald-400 font-medium">verde</span> mostra os valores
-                      normais para um homem adulto ({EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL} ng/dL
-                      · referência harmonizada CDC). Linhas tracejadas magenta marcam o dia de cada
-                      injeção.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="p-2">
+              <TabsContent value="grafico" className="space-y-5">
+                <section className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
+                  <div className="border-b border-border/70 px-4 py-4 sm:px-5">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                      <div>
+                        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                          Curva farmacocinética
+                        </p>
+                        <h3 className="mt-2 font-serif text-2xl font-medium tracking-tight text-foreground">
+                          Testosterona no sangue
+                        </h3>
+                      </div>
+                      <div className="font-mono text-[11px] text-muted-foreground sm:text-right">
+                        {config.doseMg} mg · {config.cargaSchubert ? "Schubert 0/6/12 sem" : `${(config.intervaloDias / 7).toFixed(0)} em ${(config.intervaloDias / 7).toFixed(0)} sem`}
+                      </div>
+                    </div>
+                    <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted-foreground">
+                      A curva mostra picos após cada injeção e queda progressiva até a próxima dose.
+                      A faixa verde marca {EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL} ng/dL.
+                    </p>
+                  </div>
+                  <div className="p-3 sm:p-5">
                     {/* Legenda customizada do gráfico */}
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 px-2 pb-2 text-[11px] text-muted-foreground">
+                    <div className="flex flex-wrap items-center gap-x-5 gap-y-2 pb-3 text-[11px] text-muted-foreground">
                       {config.mostrarMonteCarlo && resultadoMC ? (
                         <>
                           <span className="flex items-center gap-1.5">
-                            <span className="inline-block w-3 h-2 rounded-sm bg-chart-5/20" />
+                            <span className="inline-block h-2 w-4 rounded-sm bg-chart-5/15" />
                             faixa onde caem 9 em cada 10 pacientes
                           </span>
                           <span className="flex items-center gap-1.5">
-                            <span className="inline-block w-3 h-2 rounded-sm bg-chart-5/40" />
+                            <span className="inline-block h-2 w-4 rounded-sm bg-chart-5/30" />
                             faixa onde caem 5 em cada 10 (a metade típica)
                           </span>
                           <span className="flex items-center gap-1.5">
-                            <span className="inline-block w-3 h-0.5 bg-chart-2" />
+                            <span className="inline-block h-0.5 w-4 bg-chart-2" />
                             paciente médio
                           </span>
                         </>
                       ) : (
                         <span className="flex items-center gap-1.5">
-                          <span className="inline-block w-3 h-0.5 bg-chart-2" />
+                          <span className="inline-block h-0.5 w-4 bg-chart-2" />
                           concentração de testosterona
                         </span>
                       )}
                       <span className="flex items-center gap-1.5">
-                        <span className="inline-block w-3 h-2 rounded-sm bg-system-body/20" />
+                        <span className="inline-block h-2 w-4 rounded-sm bg-system-body/20" />
                         faixa normal ({EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL} ng/dL)
                       </span>
                       <span className="flex items-center gap-1.5">
-                        <span className="inline-block w-0.5 h-3 border-l border-dashed border-chart-4" />
+                        <span className="inline-block h-3 w-0.5 border-l border-dashed border-chart-4" />
                         injeção
                       </span>
                     </div>
-                    <div className="h-[430px] w-full rounded-lg bg-[linear-gradient(180deg,color-mix(in_oklab,var(--color-background)_95%,var(--color-chart-2)),var(--color-background))] px-1 pb-1 pt-2">
+                    <div className="h-[420px] w-full rounded-md bg-background p-1 sm:h-[500px] sm:p-3">
                       <ResponsiveContainer width="100%" height="100%">
                         <ComposedChart
                           data={dadosGrafico}
