@@ -7,7 +7,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ReferenceLine,
   ResponsiveContainer,
   ReferenceArea,
@@ -21,7 +20,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Activity, AlertTriangle, CheckCircle2, TrendingUp, Clock, Sun, Moon } from "lucide-react";
+import { Activity, AlertTriangle, CheckCircle2, TrendingUp, Clock } from "lucide-react";
 import {
   simularPerfil,
   simularMonteCarlo,
@@ -153,58 +152,18 @@ function CustomTooltipMC({
   );
 }
 
-type Tema = "light" | "dark";
-
 export default function Simulator() {
   const [config, setConfig] = useState<ConfigSimulador>(CONFIG_INICIAL);
   const [isCalculating, setIsCalculating] = useState(false);
   const [aba, setAba] = useState("grafico");
-  const [tema, setTema] = useState<Tema>("light");
-  const [temaExplicito, setTemaExplicito] = useState(false);
 
   useEffect(() => {
+    document.documentElement.classList.remove("dark");
     try {
-      const temaSalvo = localStorage.getItem("lodi-theme");
-      if (temaSalvo === "light" || temaSalvo === "dark") {
-        setTema(temaSalvo);
-        setTemaExplicito(true);
-        return;
-      }
+      localStorage.removeItem("lodi-theme");
     } catch {
-      // ignora armazenamento indisponível
+      // ignora armazenamento indisponível no navegador
     }
-
-    if (window.matchMedia?.("(prefers-color-scheme: dark)").matches) {
-      setTema("dark");
-    }
-  }, []);
-
-  useEffect(() => {
-    const root = document.documentElement;
-    if (tema === "dark") root.classList.add("dark");
-    else root.classList.remove("dark");
-    if (temaExplicito) {
-      try {
-        localStorage.setItem("lodi-theme", tema);
-      } catch {
-        /* ignore */
-      }
-    }
-  }, [tema, temaExplicito]);
-
-  // Acompanhar a preferência do sistema enquanto o usuário não fizer uma escolha explícita
-  useEffect(() => {
-    if (temaExplicito) return;
-    if (typeof window === "undefined" || !window.matchMedia) return;
-    const mql = window.matchMedia("(prefers-color-scheme: dark)");
-    const handler = (e: MediaQueryListEvent) => setTema(e.matches ? "dark" : "light");
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
-  }, [temaExplicito]);
-
-  const alternarTema = useCallback(() => {
-    setTemaExplicito(true);
-    setTema((t) => (t === "dark" ? "light" : "dark"));
   }, []);
 
   const doses = useMemo(
