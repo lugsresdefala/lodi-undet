@@ -93,6 +93,9 @@ function Index() {
             <a href="#calculadora" className="transition-colors hover:text-foreground">
               Calculadora
             </a>
+            <a href="#paciente" className="transition-colors hover:text-foreground">
+              Paciente
+            </a>
             <a href="#cronologia" className="transition-colors hover:text-foreground">
               Cronologia
             </a>
