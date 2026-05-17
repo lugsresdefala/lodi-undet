@@ -750,7 +750,7 @@ export default function Simulator() {
                           <ReferenceLine
                             key={i}
                             x={d.diaDose / 7}
-                            stroke="#ec4899"
+                            stroke="var(--color-chart-4)"
                             strokeWidth={1}
                             strokeDasharray="2 4"
                             opacity={0.45}
@@ -762,7 +762,7 @@ export default function Simulator() {
                             type="monotone"
                             dataKey="bandaIC90"
                             stroke="none"
-                            fill="#a855f7"
+                            fill="var(--color-chart-5)"
                             fillOpacity={0.14}
                             name="9 em 10 pacientes"
                             isAnimationActive={false}
@@ -775,7 +775,7 @@ export default function Simulator() {
                             type="monotone"
                             dataKey="bandaIQ50"
                             stroke="none"
-                            fill="#a855f7"
+                            fill="var(--color-chart-5)"
                             fillOpacity={0.28}
                             name="metade típica"
                             isAnimationActive={false}
@@ -786,8 +786,8 @@ export default function Simulator() {
                         <Line
                           type="monotone"
                           dataKey="conc"
-                          stroke="#22d3ee"
-                          strokeWidth={2.2}
+                          stroke="var(--color-chart-2)"
+                          strokeWidth={2.6}
                           dot={false}
                           isAnimationActive={false}
                           name={config.mostrarMonteCarlo && resultadoMC ? "paciente médio" : "testosterona"}
