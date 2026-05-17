@@ -1,84 +1,52 @@
-// Modelo farmacocinético do undecilato de testosterona (TU) IM em óleo de rícino
-// (formulação tipo Nebido/Reandron 1000 mg / 4 mL).
+// Adaptador que expõe a API pública usada por src/components/PkCalculator.tsx,
+// mas implementada inteiramente sobre o motor bicompartmental importado de
+// lugsresdefala/Compartment-Model (src/lib/pk-engine.ts):
 //
-// Base na literatura:
-//   • Schubert M et al. JCEM 2004;89(11):5429–34 — perfil PK após 1000 mg IM TU
-//     em castor oil em homens hipogonadais: Tmax mediano ≈ 7 d, t½ aparente
-//     terminal 33,9 ± 26,6 d (elevada variabilidade), Cmax ≈ 23–37 nmol/L
-//     (≈660–1070 ng/dL).
-//   • Behre HM, Nieschlag E. Eur J Endocrinol 1999;140(5):414–9 — primeira
-//     descrição da cinética de tipo "flip-flop" para TU IM 1000 mg: a libertação
-//     a partir do depósito lipofílico é a etapa limitante; o t½ aparente reflecte
-//     a taxa de libertação do depot, não a eliminação intrínseca da T (t½ real
-//     da T livre ≈ 10–100 min).
-//   • Wang C et al. JCEM 2004;89(2):534–43 — clearance metabólica da testosterona
-//     (MCR) medida por diluição isotópica em homens cis eugonadais: MCR ≈ 1500 L/d
-//     (~21 L/kg/d a 70 kg).
-//   • Defreyne J et al. J Sex Med 2017;14(5):e345; Defreyne J et al. Andrology
-//     2018;6(3):441–51 (coorte ENIGI, n = 53 homens trans) e Pelusi C et al.
-//     Andrology 2014;2(4):516–21 — em homens trans em hormonização masculinizante
-//     com TU IM 1000 mg q10–14 sem, Cmédia em estado estacionário situa-se
-//     ~600–700 ng/dL (Cmin ~13–15 nmol/L ≈ 375–430 ng/dL; Cmax ~28–32 nmol/L
-//     ≈ 810–920 ng/dL). A clearance efectiva retro-calculada a partir destas
-//     concentrações observadas é ~17–18 L/kg/d, inferior à MCR de homens cis
-//     eugonadais (Wang 2004). Este modelo está calibrado por defeito para esta
-//     população (Cl = 17,5 L/kg/d).
-//   • Endocrine Society Clinical Practice Guideline 2017 (Hembree WC et al.
-//     JCEM 2017;102(11):3869–903) / SmPC Nebido — esquema posológico:
-//     1000 mg em t = 0, repetir às 6 semanas (42 d), depois a cada 10–14 semanas.
-//   • Travison TG et al. JCEM 2017;102(4):1161–73 — intervalo harmonizado de
-//     testosterona total em homens saudáveis dos 19–39 anos: 264–916 ng/dL
-//     (percentis 2,5–97,5 em 4 coortes EUA/UE combinadas).
+//   • Absorção bifásica paralela (depósito rápido + lento) → compartimento
+//     central → eliminação, integrada por Runge-Kutta de 4ª ordem.
+//   • Variabilidade interindividual log-normal (Monte Carlo) parametrizada
+//     pelo CV escolhido na UI.
 //
-// IMPLEMENTAÇÃO. Modelo Bateman de um compartimento, expresso em forma de
-// clearance (Cl) em vez de volume de distribuição. Esta forma é numericamente
-// estável em cinética flip-flop, onde o Vd aparente perde significado físico:
+// As variáveis clínicas controladas na UI (dose, intervalo, peso, t½ de
+// absorção, t½ aparente terminal, depuração, biodisponibilidade) são mapeadas
+// em ParametrosPK do motor:
 //
-//   C(t) = (F · D_T · ka · ke) / (Cl · (ka − ke)) · (e^(−ke·t) − e^(−ka·t))
+//   ka_rapido = ln2 / absorptionHalfLifeD
+//   ka_lento  = ln2 / eliminationHalfLifeD          (rate-limiting → flip-flop)
+//   frac_rapido, ke ← valores populacionais do motor (Schubert/Behre/Aveed)
+//   S = S_pop · F · (W_ref · Cl_ref) / (peso · depuração)
+//      W_ref = 70 kg, Cl_ref = 17,5 L/kg/d  (ENIGI/Defreyne 2018, Pelusi 2014)
 //
-// onde:
-//   D_T  = dose efectiva de testosterona (mg) = dose_TU × 0,6315 (razão MW T/TU:
-//          288,43 g/mol / 456,71 g/mol)
-//   ka   = constante de absorção (libertação rápida inicial do depot IM)
-//   ke   = constante aparente terminal (dominada pela libertação lenta do depot)
-//   F    = biodisponibilidade (IM ≈ 1,0)
-//   Cl   = clearance metabólica efectiva da testosterona (L/dia)
-//
-// Em cinética flip-flop (ka > ke), a cauda terminal é governada por ke e o pico
-// analítico surge em Tmax = ln(ka/ke)/(ka − ke). Com os parâmetros padrão
-// (t½_abs = 4 d → ka ≈ 0,173 d⁻¹; t½_elim = 33 d → ke ≈ 0,021 d⁻¹), o modelo
-// produz Tmax ≈ 14 d. O Tmax mediano reportado por Schubert 2004 é ~7 d, o que
-// corresponderia a t½_abs ≈ 1,5 d; contudo, esse valor gera Cmax >900 ng/dL por
-// dose única, acima do intervalo ENIGI observado (~810–920 ng/dL em estado
-// estacionário). Os parâmetros padrão constituem um compromisso calibrado para
-// compatibilidade simultânea com o Cmax e a Cmédia da coorte ENIGI, à custa de
-// um Tmax ligeiramente mais tardio do que o mediano de Schubert 2004.
-//
-// AVISO: ferramenta educativa; não substitui monitorização sérica nem ajuste
-// clínico individual. A variabilidade inter-individual é elevada (CV 30–50% para
-// Cl, ka e ke; Schubert 2004, Behre 1999, Zitzmann M, Nieschlag E. Nat Clin
-// Pract Urol 2007;4(3):160–70).
+// Esta forma preserva a semântica dos sliders: aumentar peso ou depuração
+// reduz S (e portanto a concentração); aumentar t½ terminal abranda ka_lento
+// (cauda mais alta e prolongada).
+
+import {
+  PARAMETROS_POPULACIONAIS,
+  NGDL_TO_NMOL,
+  simularPerfil,
+  type DoseAgendada,
+  type ParametrosPK,
+} from "./pk-engine";
 
 export interface PkParams {
   /** Dose de undecilato de testosterona em mg (Nebido/Reandron padrão = 1000 mg). */
   doseMg: number;
   /** Intervalo posológico em dias (Endocrine Society 2017: 70–98 d em manutenção). */
   intervalDays: number;
-  /** Peso corporal em kg — escala a clearance metabólica. */
+  /** Peso corporal em kg — escala a depuração total. */
   weightKg: number;
-  /** t½ de subida (libertação rápida do depósito IM); típico 3–6 d. */
+  /** t½ do componente de absorção rápida do depósito IM (dias). */
   absorptionHalfLifeD: number;
-  /** t½ aparente terminal (flip-flop); Schubert 2004 ≈ 33,9 d. */
+  /** t½ aparente terminal (flip-flop, dominado pelo depósito lento) (dias). */
   eliminationHalfLifeD: number;
   /** Biodisponibilidade (IM ≈ 1,0). */
   bioavailability: number;
-  /** Clearance metabólica efectiva da testosterona em L/kg/dia.
-   *  Default 17,5 calibrado para homens trans em hormonização (ENIGI/Defreyne 2018,
-   *  Pelusi 2014). Em homens cis eugonadais (Wang 2004) é ~21 L/kg/d. */
+  /** Depuração metabólica efectiva da testosterona em L/kg/dia. */
   clearanceLPerKgPerDay: number;
   /** Número de doses simuladas (incluindo loading). */
   doses?: number;
-  /** Esquema de loading (Endocrine Society / Nebido): 0, 6w, depois intervalo. */
+  /** Esquema de loading (Endocrine Society / Nebido): 0, 6 sem, depois intervalo. */
   loading?: boolean;
 }
 
@@ -95,69 +63,44 @@ export const DEFAULT_PK: PkParams = {
 };
 
 const LN2 = Math.LN2;
-/** Razão de peso molecular: testosterona (288,4) / undecilato (456,7). */
-const MW_RATIO_T_TU = 0.6315;
+const REF_WEIGHT_KG = 70;
+const REF_CL_LKGD = 17.5;
+
+/** Mapeia PkParams da UI → ParametrosPK do motor bicompartmental. */
+function toParametros(p: PkParams): ParametrosPK {
+  const ka_rapido = LN2 / Math.max(0.1, p.absorptionHalfLifeD);
+  const ka_lento = LN2 / Math.max(1, p.eliminationHalfLifeD);
+  const scale =
+    (p.bioavailability * REF_WEIGHT_KG * REF_CL_LKGD) /
+    Math.max(1, p.weightKg * p.clearanceLPerKgPerDay);
+  return {
+    ka_rapido,
+    ka_lento,
+    frac_rapido: PARAMETROS_POPULACIONAIS.frac_rapido,
+    ke: PARAMETROS_POPULACIONAIS.ke,
+    S: PARAMETROS_POPULACIONAIS.S * scale,
+  };
+}
 
 /** Tempos das doses, em dias, considerando esquema de loading. */
 export function doseTimes(p: PkParams): number[] {
   const n = p.doses ?? 6;
   const times: number[] = [0];
   if (p.loading) {
-    // Endocrine Society 2017 / Nebido SmPC: segunda dose às 6 semanas (42 d).
-    times.push(42);
-    for (let i = 2; i < n; i++) {
-      times.push(times[i - 1] + p.intervalDays);
-    }
+    times.push(42); // Endocrine Society 2017 / Nebido SmPC: 2ª dose às 6 sem
+    for (let i = 2; i < n; i++) times.push(times[i - 1] + p.intervalDays);
   } else {
-    for (let i = 1; i < n; i++) {
-      times.push(i * p.intervalDays);
-    }
+    for (let i = 1; i < n; i++) times.push(i * p.intervalDays);
   }
   return times;
 }
 
-/** Concentração após uma única dose, em ng/dL. */
-export function singleDoseConcentration(t: number, p: PkParams): number {
-  if (t <= 0) return 0;
-  const ka = LN2 / p.absorptionHalfLifeD;
-  const ke = LN2 / p.eliminationHalfLifeD;
-  const Cl = p.clearanceLPerKgPerDay * p.weightKg; // L/dia
-  const D_T = p.doseMg * MW_RATIO_T_TU; // mg testosterona equivalente
-  const F = p.bioavailability;
-  // Conversão: mg/L → ng/dL  (×100 000)
-  const base = (F * D_T) / Cl * 100_000;
-  // Caso degenerado ka ≈ ke: limite analítico C(t) = base·k²·t·e^(−k·t).
-  if (Math.abs(ka - ke) < 1e-6) {
-    const k = (ka + ke) / 2;
-    return base * k * k * t * Math.exp(-k * t);
-  }
-  return (base * ka * ke) / (ka - ke) * (Math.exp(-ke * t) - Math.exp(-ka * t));
-}
-
-/** Tmax analítico de dose única (dias). */
-export function singleDoseTmax(p: PkParams): number {
-  const ka = LN2 / p.absorptionHalfLifeD;
-  const ke = LN2 / p.eliminationHalfLifeD;
-  if (Math.abs(ka - ke) < 1e-6) return 1 / ((ka + ke) / 2);
-  return Math.log(ka / ke) / (ka - ke);
-}
-
-/** Css média esperada em estado estacionário (ng/dL). */
-export function steadyStateMean(p: PkParams): number {
-  const Cl = p.clearanceLPerKgPerDay * p.weightKg;
-  const D_T = p.doseMg * MW_RATIO_T_TU;
-  return (p.bioavailability * D_T) / (Cl * p.intervalDays) * 100_000;
-}
-
-/** Sobreposição linear (princípio da superposição) das doses do esquema. */
-export function steadyStateConcentration(t: number, p: PkParams): number {
-  const times = doseTimes(p);
-  let sum = 0;
-  for (const t0 of times) {
-    const tau = t - t0;
-    if (tau > 0) sum += singleDoseConcentration(tau, p);
-  }
-  return sum;
+function buildDoses(p: PkParams): DoseAgendada[] {
+  return doseTimes(p).map((diaDose, i) => ({
+    diaDose,
+    doseMg: p.doseMg,
+    rotulo: `Injeção ${i + 1}`,
+  }));
 }
 
 export interface PkSeriesPoint {
@@ -168,128 +111,73 @@ export interface PkSeriesPoint {
 
 export function generatePkSeries(p: PkParams, opts?: { stepDays?: number }): PkSeriesPoint[] {
   const step = opts?.stepDays ?? 1;
-  const times = doseTimes(p);
-  const lastDose = times[times.length - 1];
-  const totalDays = lastDose + p.intervalDays;
-  const markerSet = new Set(times);
-  const series: PkSeriesPoint[] = [];
-  for (let t = 0; t <= totalDays; t += step) {
-    series.push({
-      day: t,
-      concentration: Math.max(0, steadyStateConcentration(t, p)),
-      doseMarker: markerSet.has(t),
-    });
-  }
-  return series;
+  const params = toParametros(p);
+  const doses = buildDoses(p);
+  const lastDose = doses[doses.length - 1].diaDose;
+  const horizonteDias = lastDose + p.intervalDays;
+  const perfil = simularPerfil(doses, params, { passoDias: step, horizonteDias });
+  const markers = new Set(doses.map((d) => d.diaDose));
+  return perfil.map((pt) => ({
+    day: pt.dia,
+    concentration: Math.max(0, pt.ngdl),
+    doseMarker: markers.has(pt.dia),
+  }));
 }
 
-// ──────────────────────────────────────────────────────────────────────────
-// Simulação populacional (Monte Carlo)
-// Variabilidade inter-individual log-normal aplicada a Cl, ka, ke.
-// CV (coef. variação) ~ 30–50% é o reportado em estudos de TU IM
-// (Schubert 2004;89:5429–34; Behre & Nieschlag 1999;140:414–9;
-// Zitzmann M & Nieschlag E, Nat Clin Pract Urol 2007;4(3):160–70).
-// Aqui parametrizado pelo utilizador.
-//
-// O factor de escala 0,7 aplicado ao CV de ka e ke reflecte o pressuposto de
-// que a clearance sistémica (determinada por enzimas hepáticas e composição
-// corporal) exibe maior variabilidade inter-individual do que os parâmetros de
-// libertação do depot (ka, ke), que dependem predominantemente do volume e
-// vascularização do local de injecção. Este rácio é uma escolha de modelação;
-// na ausência de dados de variância conjunta publicados para TU IM, assume-se
-// independência log-normal entre os três parâmetros.
-// ──────────────────────────────────────────────────────────────────────────
-
-/** Amostra normal padrão (Box–Muller). */
-function randn(rng: () => number): number {
-  const u = Math.max(rng(), 1e-12);
-  const v = rng();
-  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
-}
-
-/** PRNG determinístico (mulberry32) — reprodutibilidade entre renders. */
-export function seededRng(seed: number): () => number {
-  let a = seed >>> 0;
-  return function () {
-    a |= 0;
-    a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-/** Amostra log-normal com mediana = median e CV aproximado. */
-function lognormal(median: number, cv: number, rng: () => number): number {
-  const sigma = Math.sqrt(Math.log(1 + cv * cv));
-  return median * Math.exp(sigma * randn(rng));
-}
-
-export interface PopulationSeriesPoint {
-  day: number;
-  p05: number;
-  p25: number;
-  p50: number;
-  p75: number;
-  p95: number;
-}
-
-export interface PopulationSimOptions {
-  /** Número de indivíduos simulados. */
-  nSubjects: number;
-  /** CV inter-individual (0.30 = 30%). */
-  cv: number;
-  stepDays?: number;
-  seed?: number;
-}
-
-/** Simula coorte e devolve percentis por dia. */
-export function simulatePopulation(
-  p: PkParams,
-  opts: PopulationSimOptions,
-): PopulationSeriesPoint[] {
-  const step = opts.stepDays ?? 1;
-  const n = Math.max(1, Math.floor(opts.nSubjects));
-  const cv = Math.max(0, opts.cv);
-  const rng = seededRng(opts.seed ?? 42);
-
-  const times = doseTimes(p);
-  const totalDays = times[times.length - 1] + p.intervalDays;
-  const days: number[] = [];
-  for (let t = 0; t <= totalDays; t += step) days.push(t);
-
-  // matriz [nDays][nSubjects]
-  const matrix: number[][] = days.map(() => new Array<number>(n));
-
-  for (let s = 0; s < n; s++) {
-    const subject: PkParams = {
-      ...p,
-      clearanceLPerKgPerDay: lognormal(p.clearanceLPerKgPerDay, cv, rng),
-      absorptionHalfLifeD: lognormal(p.absorptionHalfLifeD, cv * 0.7, rng),
-      eliminationHalfLifeD: lognormal(p.eliminationHalfLifeD, cv * 0.7, rng),
-    };
-    for (let i = 0; i < days.length; i++) {
-      matrix[i][s] = Math.max(0, steadyStateConcentration(days[i], subject));
+/** Tmax de dose única (dias) — calculado numericamente sobre o motor. */
+export function singleDoseTmax(p: PkParams): number {
+  const params = toParametros(p);
+  const perfil = simularPerfil(
+    [{ diaDose: 0, doseMg: p.doseMg }],
+    params,
+    { passoDias: 0.5, horizonteDias: 365 },
+  );
+  let tmax = 0;
+  let cmax = 0;
+  for (const pt of perfil) {
+    if (pt.ngdl > cmax) {
+      cmax = pt.ngdl;
+      tmax = pt.dia;
     }
   }
+  return tmax;
+}
 
-  const pct = (arr: number[], q: number) => {
-    const sorted = [...arr].sort((a, b) => a - b);
-    const idx = (sorted.length - 1) * q;
-    const lo = Math.floor(idx);
-    const hi = Math.ceil(idx);
-    if (lo === hi) return sorted[lo];
-    return sorted[lo] + (sorted[hi] - sorted[lo]) * (idx - lo);
-  };
-
-  return days.map((day, i) => ({
-    day,
-    p05: pct(matrix[i], 0.05),
-    p25: pct(matrix[i], 0.25),
-    p50: pct(matrix[i], 0.5),
-    p75: pct(matrix[i], 0.75),
-    p95: pct(matrix[i], 0.95),
+/** Css média esperada em estado estacionário (ng/dL), medida no último intervalo de uma série de 14 doses. */
+export function steadyStateMean(p: PkParams): number {
+  const params = toParametros(p);
+  const nDoses = 14;
+  const doses: DoseAgendada[] = Array.from({ length: nDoses }, (_, i) => ({
+    diaDose: i * p.intervalDays,
+    doseMg: p.doseMg,
   }));
+  const horizonte = p.intervalDays * (nDoses + 1);
+  const perfil = simularPerfil(doses, params, { passoDias: 0.5, horizonteDias: horizonte });
+  const tIni = doses[nDoses - 2].diaDose;
+  const tFim = doses[nDoses - 1].diaDose;
+  const ss = perfil.filter((pt) => pt.dia >= tIni && pt.dia < tFim);
+  if (ss.length === 0) return 0;
+  return ss.reduce((a, pt) => a + pt.ngdl, 0) / ss.length;
+}
+
+/** Concentração no esquema completo (com loading) num dado dia. */
+export function steadyStateConcentration(t: number, p: PkParams): number {
+  const params = toParametros(p);
+  const doses = buildDoses(p);
+  const lastDose = doses[doses.length - 1].diaDose;
+  const horizonteDias = Math.max(t + 1, lastDose + p.intervalDays);
+  const perfil = simularPerfil(doses, params, { passoDias: 0.5, horizonteDias });
+  // ponto mais próximo de t
+  let best = perfil[0];
+  let dmin = Infinity;
+  for (const pt of perfil) {
+    const d = Math.abs(pt.dia - t);
+    if (d < dmin) {
+      dmin = d;
+      best = pt;
+    }
+  }
+  return Math.max(0, best.ngdl);
 }
 
 export interface PkMetrics {
@@ -306,17 +194,17 @@ export function computeMetrics(series: PkSeriesPoint[], p: PkParams): PkMetrics 
   const times = doseTimes(p);
   const startDay = times[times.length - 1];
   const endDay = startDay + p.intervalDays;
-  const window = series.filter((pt) => pt.day >= startDay && pt.day <= endDay);
-  if (window.length === 0) {
+  const win = series.filter((pt) => pt.day >= startDay && pt.day <= endDay);
+  if (win.length === 0) {
     return { cmax: 0, cmaxDay: 0, ctrough: 0, ctroughDay: 0, cmean: 0, inRange: false };
   }
   let cmax = -Infinity;
   let ctrough = Infinity;
   let cmaxDay = startDay;
   let ctroughDay = startDay;
-  let trapSum = 0;
-  for (let i = 0; i < window.length; i++) {
-    const pt = window[i];
+  let trap = 0;
+  for (let i = 0; i < win.length; i++) {
+    const pt = win[i];
     if (pt.concentration > cmax) {
       cmax = pt.concentration;
       cmaxDay = pt.day;
@@ -325,23 +213,117 @@ export function computeMetrics(series: PkSeriesPoint[], p: PkParams): PkMetrics 
       ctrough = pt.concentration;
       ctroughDay = pt.day;
     }
-    // Integração trapezoidal: peso 0,5 nos extremos, 1 nos pontos interiores.
-    // Calcula AUC/τ, que é a verdadeira média temporal (Rowland & Tozer, 5ª ed.).
-    const w = i === 0 || i === window.length - 1 ? 0.5 : 1;
-    trapSum += w * pt.concentration;
+    const w = i === 0 || i === win.length - 1 ? 0.5 : 1;
+    trap += w * pt.concentration;
   }
-  // window.length - 1 = número de intervalos de 1 d = τ (em dias inteiros)
-  const cmean = window.length > 1 ? trapSum / (window.length - 1) : window[0].concentration;
+  const cmean = win.length > 1 ? trap / (win.length - 1) : win[0].concentration;
   // Intervalo harmonizado adulto (Travison TG et al. JCEM 2017;102:1161–73): 264–916 ng/dL.
   const inRange = cmean >= 264 && cmean <= 916;
   return { cmax, cmaxDay, ctrough, ctroughDay, cmean, inRange };
 }
 
-/**
- * Conversão ng/dL → nmol/L para testosterona.
- * Factor = 10 / MW_T = 10 / 288,43 = 0,03467 nmol·dL/(ng·L).
- * (1 ng/dL = 10 ng/L; 1 nmol/L = 288,43 ng/L para T com MW = 288,43 g/mol.)
- */
+// ──────────────────────────────────────────────────────────────────────────
+// Monte Carlo populacional (envolve o motor bicompartmental).
+// Variabilidade log-normal aplicada a ka_rapido, ka_lento, frac_rapido, ke, S
+// em torno dos parâmetros derivados de PkParams. ka_lento/frac/ke recebem
+// CV × 0,7 (depósito IM tipicamente menos variável que F/V/clearance).
+// ──────────────────────────────────────────────────────────────────────────
+
+export interface PopulationSeriesPoint {
+  day: number;
+  p05: number;
+  p25: number;
+  p50: number;
+  p75: number;
+  p95: number;
+}
+
+export interface PopulationSimOptions {
+  nSubjects: number;
+  cv: number;
+  stepDays?: number;
+  seed?: number;
+}
+
+function seededRng(seed: number): () => number {
+  let a = seed >>> 0;
+  return function () {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function randn(rng: () => number): number {
+  const u = Math.max(rng(), 1e-12);
+  const v = rng();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+
+function lognormal(median: number, cv: number, rng: () => number): number {
+  const sigma = Math.sqrt(Math.log(1 + cv * cv));
+  return median * Math.exp(sigma * randn(rng));
+}
+
+function percentile(arr: number[], q: number): number {
+  const s = [...arr].sort((a, b) => a - b);
+  const idx = q * (s.length - 1);
+  const lo = Math.floor(idx);
+  const hi = Math.ceil(idx);
+  if (lo === hi) return s[lo];
+  return s[lo] + (s[hi] - s[lo]) * (idx - lo);
+}
+
+export function simulatePopulation(
+  p: PkParams,
+  opts: PopulationSimOptions,
+): PopulationSeriesPoint[] {
+  const step = opts.stepDays ?? 1;
+  const cv = Math.max(0, opts.cv);
+  const rng = seededRng(opts.seed ?? 42);
+  const N = Math.max(1, Math.floor(opts.nSubjects));
+
+  const doses = buildDoses(p);
+  const lastDose = doses[doses.length - 1].diaDose;
+  const horizonteDias = lastDose + p.intervalDays;
+  const base = toParametros(p);
+
+  // Eixo temporal de referência
+  const referencia = simularPerfil(doses, base, { passoDias: step, horizonteDias });
+  const days = referencia.map((pt) => pt.dia);
+  const nT = days.length;
+  const matrix: number[][] = Array.from({ length: nT }, () => new Array<number>(N));
+
+  for (let s = 0; s < N; s++) {
+    const subj: ParametrosPK = {
+      ka_rapido: lognormal(base.ka_rapido, cv, rng),
+      ka_lento: lognormal(base.ka_lento, cv * 0.7, rng),
+      frac_rapido: Math.min(
+        0.85,
+        Math.max(0.05, lognormal(base.frac_rapido, cv * 0.5, rng)),
+      ),
+      ke: lognormal(base.ke, cv * 0.5, rng),
+      S: lognormal(base.S, cv, rng),
+    };
+    const perfil = simularPerfil(doses, subj, { passoDias: step, horizonteDias });
+    for (let i = 0; i < nT; i++) {
+      matrix[i][s] = Math.max(0, perfil[i]?.ngdl ?? 0);
+    }
+  }
+
+  return days.map((day, i) => ({
+    day,
+    p05: percentile(matrix[i], 0.05),
+    p25: percentile(matrix[i], 0.25),
+    p50: percentile(matrix[i], 0.5),
+    p75: percentile(matrix[i], 0.75),
+    p95: percentile(matrix[i], 0.95),
+  }));
+}
+
+/** ng/dL → nmol/L (factor do motor: 1/28,84 ≈ 0,03467). */
 export function ngdlToNmol(ngdl: number): number {
-  return ngdl * 0.03467;
+  return ngdl * NGDL_TO_NMOL;
 }
