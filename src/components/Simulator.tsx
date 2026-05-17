@@ -757,42 +757,43 @@ export default function Simulator() {
                         injeção
                       </span>
                     </div>
-                    <div className="h-[420px] w-full rounded-md bg-background p-1 sm:h-[500px] sm:p-3">
+                    <div className="-mx-3 overflow-x-auto px-3 pb-2 sm:mx-0 sm:px-0">
+                      <div className="h-[460px] min-w-[760px] rounded-md border border-border/60 bg-[linear-gradient(180deg,color-mix(in_oklab,var(--color-background)_92%,var(--color-chart-2)),var(--color-background)_42%,color-mix(in_oklab,var(--color-background)_94%,var(--color-chart-1)))] p-3 sm:h-[520px] sm:min-w-0 sm:p-4">
                       <ResponsiveContainer width="100%" height="100%">
                         <ComposedChart
                           data={dadosGrafico}
-                          margin={{ top: 12, right: 54, left: 0, bottom: 32 }}
+                          margin={{ top: 18, right: 26, left: 8, bottom: 44 }}
                         >
                           <CartesianGrid
                             strokeDasharray="3 3"
                             stroke="var(--color-border)"
-                            strokeOpacity={0.55}
+                            strokeOpacity={0.42}
                           />
                           <XAxis
                             dataKey="semana"
                             tickFormatter={xTickFormatter}
-                            label={{
-                              value: "Tempo (semanas desde a 1ª injeção)",
-                              position: "insideBottom",
-                              offset: -15,
-                              fontSize: 11,
-                            }}
-                            tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }}
+                            ticks={xTicks}
+                            interval={0}
+                            minTickGap={12}
+                            label={{ value: "Semanas desde a 1ª injeção", position: "insideBottom", offset: -24, fontSize: 11, fill: "var(--color-muted-foreground)" }}
+                            tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
                             axisLine={{ stroke: "var(--color-border)" }}
                             tickLine={{ stroke: "var(--color-border)" }}
-                            interval={Math.max(0, Math.floor(dadosGrafico.length / 8))}
                           />
                           <YAxis
-                            tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }}
+                            domain={[0, yMax]}
+                            tickCount={6}
+                            tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
                             axisLine={{ stroke: "var(--color-border)" }}
                             tickLine={{ stroke: "var(--color-border)" }}
-                            width={60}
+                            width={66}
                             label={{
                               value: `Testosterona (${unLabel})`,
                               angle: -90,
                               position: "insideLeft",
                               fontSize: 11,
-                              offset: 12,
+                              fill: "var(--color-muted-foreground)",
+                              offset: 8,
                             }}
                           />
                           <Tooltip content={<CustomTooltipMC unidade={config.unidade} />} />
