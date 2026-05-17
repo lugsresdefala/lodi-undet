@@ -759,7 +759,7 @@ export default function Simulator() {
                     </div>
                     <div className="-mx-3 overflow-x-auto px-3 pb-2 sm:mx-0 sm:px-0">
                       <div className="h-[460px] min-w-[760px] rounded-md border border-border/60 bg-[linear-gradient(180deg,color-mix(in_oklab,var(--color-background)_92%,var(--color-chart-2)),var(--color-background)_42%,color-mix(in_oklab,var(--color-background)_94%,var(--color-chart-1)))] p-3 sm:h-[520px] sm:min-w-0 sm:p-4">
-                      <ResponsiveContainer width="100%" height="100%">
+                        <ResponsiveContainer width="100%" height="100%">
                         <ComposedChart
                           data={dadosGrafico}
                           margin={{ top: 18, right: 26, left: 8, bottom: 44 }}
@@ -890,7 +890,8 @@ export default function Simulator() {
                             travellerWidth={6}
                           />
                         </ComposedChart>
-                      </ResponsiveContainer>
+                        </ResponsiveContainer>
+                      </div>
                     </div>
                   </div>
                 </section>
