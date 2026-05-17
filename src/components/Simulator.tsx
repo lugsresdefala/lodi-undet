@@ -129,22 +129,31 @@ function CustomTooltipMC({
   unidade,
 }: {
   active?: boolean;
-  payload?: { value: number; name: string; color?: string }[];
+  payload?: { value: number | [number, number]; name: string; color?: string }[];
   label?: number;
   unidade: UnidadeConc;
 }) {
   if (!active || !payload || !payload.length) return null;
-  const key = unidade === "ngdl" ? "ngdl" : "nmol";
   const unit = unidade === "ngdl" ? "ng/dL" : "nmol/L";
   const semana = label !== undefined ? Math.round(label) : "-";
+  const casas = unidade === "nmol" ? 1 : 0;
+  const formatarValor = (valor: number | [number, number]) => {
+    if (Array.isArray(valor)) {
+      return `${valor[0].toFixed(casas)}–${valor[1].toFixed(casas)} ${unit}`;
+    }
+    return `${valor.toFixed(casas)} ${unit}`;
+  };
+
   return (
-    <div className="bg-popover border border-popover-border rounded-lg p-3 shadow-lg text-xs min-w-[160px]">
-      <div className="font-medium text-foreground mb-2">Semana {semana}</div>
+    <div className="min-w-[190px] rounded-md border border-border bg-popover/95 p-3 text-xs shadow-lg backdrop-blur">
+      <div className="mb-2 font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+        Semana {semana}
+      </div>
       {payload.map((p, i) => (
-        <div key={i} className="flex justify-between gap-3 text-muted-foreground">
-          <span>{p.name}</span>
-          <span className="font-mono text-foreground">
-            {typeof p.value === "number" ? p.value.toFixed(unidade === "nmol" ? 1 : 0) : "-"} {unit}
+        <div key={i} className="flex items-baseline justify-between gap-4 py-0.5 text-muted-foreground">
+          <span className="max-w-[9rem] truncate">{p.name}</span>
+          <span className="font-mono text-[11px] font-medium text-foreground">
+            {formatarValor(p.value)}
           </span>
         </div>
       ))}
