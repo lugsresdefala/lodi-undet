@@ -129,22 +129,31 @@ function CustomTooltipMC({
   unidade,
 }: {
   active?: boolean;
-  payload?: { value: number; name: string; color?: string }[];
+  payload?: { value: number | [number, number]; name: string; color?: string }[];
   label?: number;
   unidade: UnidadeConc;
 }) {
   if (!active || !payload || !payload.length) return null;
-  const key = unidade === "ngdl" ? "ngdl" : "nmol";
   const unit = unidade === "ngdl" ? "ng/dL" : "nmol/L";
   const semana = label !== undefined ? Math.round(label) : "-";
+  const casas = unidade === "nmol" ? 1 : 0;
+  const formatarValor = (valor: number | [number, number]) => {
+    if (Array.isArray(valor)) {
+      return `${valor[0].toFixed(casas)}–${valor[1].toFixed(casas)} ${unit}`;
+    }
+    return `${valor.toFixed(casas)} ${unit}`;
+  };
+
   return (
-    <div className="bg-popover border border-popover-border rounded-lg p-3 shadow-lg text-xs min-w-[160px]">
-      <div className="font-medium text-foreground mb-2">Semana {semana}</div>
+    <div className="min-w-[190px] rounded-md border border-border bg-popover/95 p-3 text-xs shadow-lg backdrop-blur">
+      <div className="mb-2 font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+        Semana {semana}
+      </div>
       {payload.map((p, i) => (
-        <div key={i} className="flex justify-between gap-3 text-muted-foreground">
-          <span>{p.name}</span>
-          <span className="font-mono text-foreground">
-            {typeof p.value === "number" ? p.value.toFixed(unidade === "nmol" ? 1 : 0) : "-"} {unit}
+        <div key={i} className="flex items-baseline justify-between gap-4 py-0.5 text-muted-foreground">
+          <span className="max-w-[9rem] truncate">{p.name}</span>
+          <span className="font-mono text-[11px] font-medium text-foreground">
+            {formatarValor(p.value)}
           </span>
         </div>
       ))}
@@ -337,6 +346,17 @@ export default function Simulator() {
   );
 
   const xTickFormatter = (v: number) => `sem ${Math.round(v)}`;
+
+  const yMax = useMemo(() => {
+    const valores = dadosGrafico.flatMap((p) => {
+      const bandas: number[] = [];
+      if ("bandaIC90" in p && Array.isArray(p.bandaIC90)) bandas.push(p.bandaIC90[1]);
+      if ("bandaIQ50" in p && Array.isArray(p.bandaIQ50)) bandas.push(p.bandaIQ50[1]);
+      return [p.conc, ...bandas];
+    });
+    const max = Math.max(eugMax, ...valores);
+    return Math.ceil((max * 1.08) / 100) * 100;
+  }, [dadosGrafico, eugMax]);
 
   // Ticks de eixo X: a cada 12 semanas (≈ 3 meses) para legibilidade
   const xTicks = useMemo(() => {
@@ -683,91 +703,97 @@ export default function Simulator() {
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="grafico" className="space-y-4">
-                <Card className="lodi-card">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm">
-                      Testosterona no sangue — {config.doseMg} mg a cada{" "}
-                      {(config.intervaloDias / 7).toFixed(0)} semanas
-                    </CardTitle>
-                    <CardDescription className="text-xs">
-                      Cada injeção causa uma subida e depois uma descida. Repetidas, vão se
-                      sobrepondo até atingir um padrão estável. A faixa{" "}
-                      <span className="text-emerald-400 font-medium">verde</span> mostra os valores
-                      normais para um homem adulto ({EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL} ng/dL
-                      · referência harmonizada CDC). Linhas tracejadas magenta marcam o dia de cada
-                      injeção.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="p-2">
+              <TabsContent value="grafico" className="space-y-5">
+                <section className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
+                  <div className="border-b border-border/70 px-4 py-4 sm:px-5">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                      <div>
+                        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                          Curva farmacocinética
+                        </p>
+                        <h3 className="mt-2 font-serif text-2xl font-medium tracking-tight text-foreground">
+                          Testosterona no sangue
+                        </h3>
+                      </div>
+                      <div className="font-mono text-[11px] text-muted-foreground sm:text-right">
+                        {config.doseMg} mg · {config.cargaSchubert ? "Schubert 0/6/12 sem" : `${(config.intervaloDias / 7).toFixed(0)} em ${(config.intervaloDias / 7).toFixed(0)} sem`}
+                      </div>
+                    </div>
+                    <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted-foreground">
+                      A curva mostra picos após cada injeção e queda progressiva até a próxima dose.
+                      A faixa verde marca {EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL} ng/dL.
+                    </p>
+                  </div>
+                  <div className="p-3 sm:p-5">
                     {/* Legenda customizada do gráfico */}
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 px-2 pb-2 text-[11px] text-muted-foreground">
+                    <div className="flex flex-wrap items-center gap-x-5 gap-y-2 pb-3 text-[11px] text-muted-foreground">
                       {config.mostrarMonteCarlo && resultadoMC ? (
                         <>
                           <span className="flex items-center gap-1.5">
-                            <span className="inline-block w-3 h-2 rounded-sm bg-chart-5/20" />
+                            <span className="inline-block h-2 w-4 rounded-sm bg-chart-5/15" />
                             faixa onde caem 9 em cada 10 pacientes
                           </span>
                           <span className="flex items-center gap-1.5">
-                            <span className="inline-block w-3 h-2 rounded-sm bg-chart-5/40" />
+                            <span className="inline-block h-2 w-4 rounded-sm bg-chart-5/30" />
                             faixa onde caem 5 em cada 10 (a metade típica)
                           </span>
                           <span className="flex items-center gap-1.5">
-                            <span className="inline-block w-3 h-0.5 bg-chart-2" />
+                            <span className="inline-block h-0.5 w-4 bg-chart-2" />
                             paciente médio
                           </span>
                         </>
                       ) : (
                         <span className="flex items-center gap-1.5">
-                          <span className="inline-block w-3 h-0.5 bg-chart-2" />
+                          <span className="inline-block h-0.5 w-4 bg-chart-2" />
                           concentração de testosterona
                         </span>
                       )}
                       <span className="flex items-center gap-1.5">
-                        <span className="inline-block w-3 h-2 rounded-sm bg-system-body/20" />
+                        <span className="inline-block h-2 w-4 rounded-sm bg-system-body/20" />
                         faixa normal ({EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL} ng/dL)
                       </span>
                       <span className="flex items-center gap-1.5">
-                        <span className="inline-block w-0.5 h-3 border-l border-dashed border-chart-4" />
+                        <span className="inline-block h-3 w-0.5 border-l border-dashed border-chart-4" />
                         injeção
                       </span>
                     </div>
-                    <div className="h-[430px] w-full rounded-lg bg-[linear-gradient(180deg,color-mix(in_oklab,var(--color-background)_95%,var(--color-chart-2)),var(--color-background))] px-1 pb-1 pt-2">
-                      <ResponsiveContainer width="100%" height="100%">
+                    <div className="-mx-3 overflow-x-auto px-3 pb-2 sm:mx-0 sm:px-0">
+                      <div className="h-[460px] min-w-[760px] rounded-md border border-border/60 bg-[linear-gradient(180deg,color-mix(in_oklab,var(--color-background)_92%,var(--color-chart-2)),var(--color-background)_42%,color-mix(in_oklab,var(--color-background)_94%,var(--color-chart-1)))] p-3 sm:h-[520px] sm:min-w-0 sm:p-4">
+                        <ResponsiveContainer width="100%" height="100%">
                         <ComposedChart
                           data={dadosGrafico}
-                          margin={{ top: 12, right: 54, left: 0, bottom: 32 }}
+                          margin={{ top: 18, right: 26, left: 8, bottom: 44 }}
                         >
                           <CartesianGrid
                             strokeDasharray="3 3"
                             stroke="var(--color-border)"
-                            strokeOpacity={0.55}
+                            strokeOpacity={0.42}
                           />
                           <XAxis
                             dataKey="semana"
                             tickFormatter={xTickFormatter}
-                            label={{
-                              value: "Tempo (semanas desde a 1ª injeção)",
-                              position: "insideBottom",
-                              offset: -15,
-                              fontSize: 11,
-                            }}
-                            tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }}
+                            ticks={xTicks}
+                            interval={0}
+                            minTickGap={12}
+                            label={{ value: "Semanas desde a 1ª injeção", position: "insideBottom", offset: -24, fontSize: 11, fill: "var(--color-muted-foreground)" }}
+                            tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
                             axisLine={{ stroke: "var(--color-border)" }}
                             tickLine={{ stroke: "var(--color-border)" }}
-                            interval={Math.max(0, Math.floor(dadosGrafico.length / 8))}
                           />
                           <YAxis
-                            tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }}
+                            domain={[0, yMax]}
+                            tickCount={6}
+                            tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
                             axisLine={{ stroke: "var(--color-border)" }}
                             tickLine={{ stroke: "var(--color-border)" }}
-                            width={60}
+                            width={66}
                             label={{
                               value: `Testosterona (${unLabel})`,
                               angle: -90,
                               position: "insideLeft",
                               fontSize: 11,
-                              offset: 12,
+                              fill: "var(--color-muted-foreground)",
+                              offset: 8,
                             }}
                           />
                           <Tooltip content={<CustomTooltipMC unidade={config.unidade} />} />
@@ -864,10 +890,11 @@ export default function Simulator() {
                             travellerWidth={6}
                           />
                         </ComposedChart>
-                      </ResponsiveContainer>
+                        </ResponsiveContainer>
+                      </div>
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </section>
 
                 {/* Como ler o gráfico */}
                 <div className="rounded-xl border border-blue-500/20 bg-blue-50 dark:bg-blue-950/20 p-3 text-xs text-blue-900 dark:text-blue-200 space-y-1.5">
