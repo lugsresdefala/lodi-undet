@@ -347,6 +347,17 @@ export default function Simulator() {
 
   const xTickFormatter = (v: number) => `sem ${Math.round(v)}`;
 
+  const yMax = useMemo(() => {
+    const valores = dadosGrafico.flatMap((p) => {
+      const bandas: number[] = [];
+      if ("bandaIC90" in p && Array.isArray(p.bandaIC90)) bandas.push(p.bandaIC90[1]);
+      if ("bandaIQ50" in p && Array.isArray(p.bandaIQ50)) bandas.push(p.bandaIQ50[1]);
+      return [p.conc, ...bandas];
+    });
+    const max = Math.max(eugMax, ...valores);
+    return Math.ceil((max * 1.08) / 100) * 100;
+  }, [dadosGrafico, eugMax]);
+
   // Ticks de eixo X: a cada 12 semanas (≈ 3 meses) para legibilidade
   const xTicks = useMemo(() => {
     const maxSemana = Math.ceil(horDias / 7);
