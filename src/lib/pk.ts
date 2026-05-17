@@ -44,6 +44,8 @@ export interface PkParams {
   bioavailability: number;
   /** Depuração metabólica efectiva da testosterona em L/kg/dia. */
   clearanceLPerKgPerDay: number;
+  /** Fracção da dose alocada ao depósito de libertação rápida (0–1). */
+  fracRapido: number;
   /** Número de doses simuladas (incluindo loading). */
   doses?: number;
   /** Esquema de loading (Endocrine Society / Nebido): 0, 6 sem, depois intervalo. */
@@ -54,10 +56,11 @@ export const DEFAULT_PK: PkParams = {
   doseMg: 1000,
   intervalDays: 84, // 12 semanas
   weightKg: 70,
-  absorptionHalfLifeD: 4,
-  eliminationHalfLifeD: 33,
+  absorptionHalfLifeD: 20, // depósito rápido Nebido (ln2/ka_rapido_pop ≈ 19,8 d)
+  eliminationHalfLifeD: 107, // depósito lento Nebido (flip-flop, ln2/ka_lento_pop ≈ 107 d)
   bioavailability: 1.0,
   clearanceLPerKgPerDay: 17.5,
+  fracRapido: 0.07, // calibrado (Schubert 2004 / Behre 1999)
   doses: 6,
   loading: true,
 };
@@ -76,7 +79,7 @@ function toParametros(p: PkParams): ParametrosPK {
   return {
     ka_rapido,
     ka_lento,
-    frac_rapido: PARAMETROS_POPULACIONAIS.frac_rapido,
+    frac_rapido: Math.min(0.85, Math.max(0.02, p.fracRapido)),
     ke: PARAMETROS_POPULACIONAIS.ke,
     S: PARAMETROS_POPULACIONAIS.S * scale,
   };
