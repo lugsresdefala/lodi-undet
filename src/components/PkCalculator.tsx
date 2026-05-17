@@ -145,7 +145,7 @@ export function PkCalculator() {
   // === Titulação individual ===
   // Uma medição isolada só é utilizável se o dia pós-dose for conhecido e o
   // esquema estiver em estado estacionário. O modelo é então calibrado por um
-  // factor individual no mesmo tempo de colheita; isto estima a exposição média
+  // fator individual no mesmo tempo de colheita; isto estima a exposição média
   // desse indivíduo, não "converte" genericamente vale em média.
   const individualResult = useMemo(() => {
     if (!individualMode || measuredValue <= 0 || targetCmean <= 0) return null;
@@ -200,7 +200,7 @@ export function PkCalculator() {
     if (sampleDayAfterDose <= 3) {
       warnings.push({
         level: "warn",
-        msg: "Colheita muito próxima da injecção (≤3 d): fase de subida com elevada variabilidade; o factor individual pode estar inflacionado.",
+        msg: "Colheita muito próxima da injeção (≤3 d): fase de subida com elevada variabilidade; o fator individual pode estar inflacionado.",
       });
     }
     if (sampleDayAfterDose >= params.intervalDays - 1) {
@@ -421,7 +421,7 @@ export function PkCalculator() {
                     onChange={setMeasuredValue}
                   />
                   <Control
-                    label="Dia da colheita após a última injecção"
+                    label="Dia da colheita após a última injeção"
                     unit="dias"
                     value={Math.min(sampleDayAfterDose, params.intervalDays)}
                     min={1}
@@ -467,7 +467,7 @@ export function PkCalculator() {
                           {Math.round(individualResult.predictedAtSample)} ng/dL
                         </span>{" "}
                         <span className="text-[11px]">
-                          → factor individual {(individualResult.exposureRatio * 100).toFixed(0)}%
+                          → fator individual {(individualResult.exposureRatio * 100).toFixed(0)}%
                         </span>
                       </div>
                       <div className="text-muted-foreground">
@@ -530,13 +530,13 @@ export function PkCalculator() {
               <span className="text-xs text-muted-foreground">parâmetros que pode ajustar</span>
             </div>
             <Control
-              label="Dose por injecção"
+              label="Dose por injeção"
               unit="mg"
               value={params.doseMg}
               min={250}
               max={1500}
               step={10}
-              hint="Quantidade de undecilato de testosterona (TU) por injecção intramuscular. Apresentação padrão: 1000 mg em 4 mL de óleo de rícino."
+              hint="Quantidade de undecilato de testosterona (TU) por injeção intramuscular. Apresentação padrão: 1000 mg em 4 mL de óleo de rícino."
               source="SmPC Nebido / Reandron"
               onChange={(v) => update({ doseMg: v })}
             />
