@@ -891,8 +891,8 @@ export default function Simulator() {
                         </ComposedChart>
                       </ResponsiveContainer>
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </section>
 
                 {/* Como ler o gráfico */}
                 <div className="rounded-xl border border-blue-500/20 bg-blue-50 dark:bg-blue-950/20 p-3 text-xs text-blue-900 dark:text-blue-200 space-y-1.5">
