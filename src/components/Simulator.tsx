@@ -796,12 +796,13 @@ export default function Simulator() {
                         <Brush
                           dataKey="semana"
                           height={16}
-                          stroke="hsl(var(--border))"
+                          stroke="var(--color-border)"
                           tickFormatter={xTickFormatter}
                           travellerWidth={6}
                         />
                       </ComposedChart>
-                    </ResponsiveContainer>
+                      </ResponsiveContainer>
+                    </div>
                   </CardContent>
                 </Card>
 
