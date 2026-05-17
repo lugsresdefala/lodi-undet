@@ -4,6 +4,7 @@ import lodiLogo from "@/assets/lodi-logo.png";
 import { EffectCards } from "@/components/EffectCards";
 import { EffectsTimeline } from "@/components/EffectsTimeline";
 import { MedicalDisclaimer } from "@/components/MedicalDisclaimer";
+import { PatientPanel } from "@/components/PatientPanel";
 import { PkCalculator } from "@/components/PkCalculator";
 
 export const Route = createFileRoute("/")({
