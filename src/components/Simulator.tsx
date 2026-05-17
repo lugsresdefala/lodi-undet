@@ -379,9 +379,9 @@ export default function Simulator() {
   }, [horDias]);
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col">
+    <div className="rounded-xl border border-border/70 bg-card/80 text-foreground shadow-sm overflow-hidden">
       {/* Header */}
-      <header className="border-b border-border px-4 sm:px-6 py-3 flex items-center justify-between gap-3 bg-card/40 backdrop-blur">
+      <header className="border-b border-border/70 px-4 sm:px-6 py-3 flex items-center justify-between gap-3 bg-muted/25">
         <div className="flex items-center gap-3 sm:gap-4 min-w-0">
           <img src={lodiLogo} alt="L.O.D.I." className="h-14 w-auto select-none" draggable={false} />
           <p className="hidden md:block text-xs text-muted-foreground/80 leading-snug">
@@ -408,9 +408,9 @@ export default function Simulator() {
         </div>
       </header>
 
-      <div className="flex flex-1 overflow-hidden flex-col lg:flex-row">
+      <div className="flex flex-col gap-6 p-4 lg:p-5">
         {/* Painel de controles */}
-        <aside className="w-full lg:w-72 border-b lg:border-b-0 lg:border-r border-border p-4 flex flex-col gap-4 bg-card overflow-y-auto">
+        <aside className="grid gap-5 lg:grid-cols-[1fr_1fr_0.7fr]">
           <div>
             <h2 className="text-sm font-semibold mb-3 text-foreground">Esquema de doses</h2>
 
@@ -561,7 +561,7 @@ export default function Simulator() {
         </aside>
 
         {/* Área principal */}
-        <main className="flex-1 flex flex-col overflow-y-auto">
+        <main className="flex flex-col rounded-xl border border-border/70 bg-background/55">
           {/* Métricas clínicas — linguagem clara */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 border-b border-border">
             {(() => {
