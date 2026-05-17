@@ -27,8 +27,10 @@
  *
  * REFERÊNCIAS DE CALIBRAÇÃO
  * -------------------------
+ * • Nebido SmPC, secção 5.2  (formulação depot em óleo de rícino/benzilbenzoato)
+ *     libertação IM caracterizada por meia-vida de 90±40 d
  * • Behre HM et al. Eur J Endocrinol 1999;140:414–419  (PK 1ª dose 1000 mg)
- *     Cmax ≈ 14 nmol/L (~404 ng/dL), Tmax ≈ 7–11 d, t½ aparente ≈ 33,9 d
+ *     Cmax ≈ 14 nmol/L (~404 ng/dL), Tmax ≈ 7–11 d
  * • Schubert M et al. JCEM 2004;89(11):5429–5434  (PK no estado estacionário)
  *     Regime: 1000 mg em 0, 6 sem, depois q12sem
  *     Trough SS ≈ 14–17 nmol/L (~404–490 ng/dL)
@@ -323,10 +325,10 @@ export function calcularMetricas(
   const cavgSS = ssPts.length > 0 ? sumSS / ssPts.length : 0;
   if (!isFinite(cminSS)) cminSS = 0;
 
-  // --- t½ aparente terminal: regressão log-linear nos últimos 60 dias do perfil ---
+  // --- t½ aparente terminal: regressão log-linear na cauda após a última dose ---
   const ultimaDose = dosesSorted[nDoses - 1].diaDose;
   const trecho = perfil.filter(p => p.dia > ultimaDose + 30 && p.ngdl > 5);
-  let t12 = 33;
+  let t12 = ALVOS_CALIBRACAO.t12AparenteDias;
   if (trecho.length > 10) {
     const xs = trecho.map(p => p.dia);
     const ys = trecho.map(p => Math.log(p.ngdl));
