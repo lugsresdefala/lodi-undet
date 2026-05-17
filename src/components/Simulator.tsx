@@ -7,7 +7,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ReferenceLine,
   ResponsiveContainer,
   ReferenceArea,
@@ -21,15 +20,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import {
-  Activity,
-  AlertTriangle,
-  CheckCircle2,
-  TrendingUp,
-  Clock,
-  Sun,
-  Moon,
-} from "lucide-react";
+import { Activity, AlertTriangle, CheckCircle2, TrendingUp, Clock } from "lucide-react";
 import {
   simularPerfil,
   simularMonteCarlo,
@@ -63,12 +54,12 @@ interface ConfigSimulador {
   unidade: UnidadeConc;
   mostrarMonteCarlo: boolean;
   nSimulacoesMC: number;
-  cargaSchubert: boolean;  // regime de carga clássico EU: 0, 6 sem, q12sem
+  cargaSchubert: boolean; // regime de carga clássico EU: 0, 6 sem, q12sem
 }
 
 const CONFIG_INICIAL: ConfigSimulador = {
   doseMg: 1000,
-  intervaloDias: 84,  // 12 semanas
+  intervaloDias: 84, // 12 semanas
   nDoses: 8,
   unidade: "ngdl",
   mostrarMonteCarlo: true,
@@ -131,7 +122,12 @@ function MetricCard({
   );
 }
 
-function CustomTooltipMC({ active, payload, label, unidade }: {
+function CustomTooltipMC({
+  active,
+  payload,
+  label,
+  unidade,
+}: {
   active?: boolean;
   payload?: { value: number; name: string; color?: string }[];
   label?: number;
@@ -147,66 +143,35 @@ function CustomTooltipMC({ active, payload, label, unidade }: {
       {payload.map((p, i) => (
         <div key={i} className="flex justify-between gap-3 text-muted-foreground">
           <span>{p.name}</span>
-          <span className="font-mono text-foreground">{typeof p.value === "number" ? p.value.toFixed(unidade === "nmol" ? 1 : 0) : "-"} {unit}</span>
+          <span className="font-mono text-foreground">
+            {typeof p.value === "number" ? p.value.toFixed(unidade === "nmol" ? 1 : 0) : "-"} {unit}
+          </span>
         </div>
       ))}
     </div>
   );
 }
 
-type Tema = "light" | "dark";
-
-function getTemaInicial(): Tema {
-  if (typeof document === "undefined") return "dark";
-  return document.documentElement.classList.contains("dark") ? "dark" : "light";
-}
-
-function getTemaExplicitoInicial(): boolean {
-  if (typeof localStorage === "undefined") return false;
-  try {
-    const t = localStorage.getItem("lodi-theme");
-    return t === "light" || t === "dark";
-  } catch {
-    return false;
-  }
-}
-
 export default function Simulator() {
   const [config, setConfig] = useState<ConfigSimulador>(CONFIG_INICIAL);
   const [isCalculating, setIsCalculating] = useState(false);
   const [aba, setAba] = useState("grafico");
-  const [tema, setTema] = useState<Tema>(getTemaInicial);
-  const [temaExplicito, setTemaExplicito] = useState<boolean>(getTemaExplicitoInicial);
 
   useEffect(() => {
-    const root = document.documentElement;
-    if (tema === "dark") root.classList.add("dark");
-    else root.classList.remove("dark");
-    if (temaExplicito) {
-      try { localStorage.setItem("lodi-theme", tema); } catch { /* ignore */ }
+    document.documentElement.classList.remove("dark");
+    try {
+      localStorage.removeItem("lodi-theme");
+    } catch {
+      // ignora armazenamento indisponível no navegador
     }
-  }, [tema, temaExplicito]);
-
-  // Acompanhar a preferência do sistema enquanto o usuário não fizer uma escolha explícita
-  useEffect(() => {
-    if (temaExplicito) return;
-    if (typeof window === "undefined" || !window.matchMedia) return;
-    const mql = window.matchMedia("(prefers-color-scheme: dark)");
-    const handler = (e: MediaQueryListEvent) => setTema(e.matches ? "dark" : "light");
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
-  }, [temaExplicito]);
-
-  const alternarTema = useCallback(() => {
-    setTemaExplicito(true);
-    setTema(t => (t === "dark" ? "light" : "dark"));
   }, []);
 
   const doses = useMemo(
-    () => config.cargaSchubert
-      ? gerarCronogramaSchubert(config.doseMg, config.nDoses)
-      : gerarCronograma(config.doseMg, config.intervaloDias, config.nDoses),
-    [config.doseMg, config.intervaloDias, config.nDoses, config.cargaSchubert]
+    () =>
+      config.cargaSchubert
+        ? gerarCronogramaSchubert(config.doseMg, config.nDoses)
+        : gerarCronograma(config.doseMg, config.intervaloDias, config.nDoses),
+    [config.doseMg, config.intervaloDias, config.nDoses, config.cargaSchubert],
   );
 
   const horDias = useMemo(() => {
@@ -220,12 +185,12 @@ export default function Simulator() {
         passoDias: 0.5,
         horizonteDias: horDias,
       }),
-    [doses, horDias]
+    [doses, horDias],
   );
 
   const metricas: MetricasPK = useMemo(
     () => calcularMetricas(perfilMediano, doses),
-    [perfilMediano, doses]
+    [perfilMediano, doses],
   );
 
   // Métricas clínicas adicionais: 1ª dose isolada e steady-state
@@ -236,20 +201,24 @@ export default function Simulator() {
     const perfilDoseUnica = simularPerfil(
       [{ diaDose: 0, doseMg: doses[0]?.doseMg ?? 1000 }],
       PARAMETROS_POPULACIONAIS,
-      { passoDias: 0.5, horizonteDias: 200 }
+      { passoDias: 0.5, horizonteDias: 200 },
     );
-    let cmax1a = 0, tmax1a = 0;
+    let cmax1a = 0,
+      tmax1a = 0;
     for (const p of perfilDoseUnica) {
-      if (p.ngdl > cmax1a) { cmax1a = p.ngdl; tmax1a = p.dia; }
+      if (p.ngdl > cmax1a) {
+        cmax1a = p.ngdl;
+        tmax1a = p.dia;
+      }
     }
 
     // Cmin / Cmax SS: último intervalo entre as 2 últimas doses
     const nD = doses.length;
     const tIni = nD >= 2 ? doses[nD - 2].diaDose : 0;
     const tFim = nD >= 1 ? doses[nD - 1].diaDose : 0;
-    const ssRegiao = perfilMediano.filter(p => p.dia >= tIni && p.dia < tFim);
-    const cminSS = ssRegiao.length > 0 ? Math.min(...ssRegiao.map(p => p.ngdl)) : 0;
-    const cmaxSS = ssRegiao.length > 0 ? Math.max(...ssRegiao.map(p => p.ngdl)) : 0;
+    const ssRegiao = perfilMediano.filter((p) => p.dia >= tIni && p.dia < tFim);
+    const cminSS = ssRegiao.length > 0 ? Math.min(...ssRegiao.map((p) => p.ngdl)) : 0;
+    const cmaxSS = ssRegiao.length > 0 ? Math.max(...ssRegiao.map((p) => p.ngdl)) : 0;
 
     return { cmax1a, tmax1a, cminSS, cmaxSS };
   }, [perfilMediano, doses]);
@@ -290,7 +259,7 @@ export default function Simulator() {
   const executarMC = useCallback(async () => {
     setIsCalculating(true);
     setMcConcluido(false);
-    await new Promise(r => setTimeout(r, 10));
+    await new Promise((r) => setTimeout(r, 10));
     const resultado = simularMonteCarlo(doses, config.nSimulacoesMC, {
       passoDias: 1,
       horizonteDias: horDias,
@@ -307,7 +276,9 @@ export default function Simulator() {
       setMcConcluido(false);
       return;
     }
-    const t = setTimeout(() => { void executarMC(); }, 200);
+    const t = setTimeout(() => {
+      void executarMC();
+    }, 200);
     return () => clearTimeout(t);
   }, [config.mostrarMonteCarlo, doses, config.nSimulacoesMC, executarMC]);
 
@@ -322,7 +293,7 @@ export default function Simulator() {
     if (!config.mostrarMonteCarlo || !resultadoMC) {
       return perfilMediano
         .filter((_, i) => i % 3 === 0)
-        .map(pt => ({ semana: pt.semana, dia: pt.dia, conc: pt[chave] }));
+        .map((pt) => ({ semana: pt.semana, dia: pt.dia, conc: pt[chave] }));
     }
 
     // Para bandas: area com dataKey=[low, high] onde low é o valor baixo e high o alto
@@ -358,11 +329,11 @@ export default function Simulator() {
 
   const statusCmax = statusEugonadal(
     config.unidade === "ngdl" ? metricas.cmaxNgdl : metricas.cmaxNmol,
-    config.unidade
+    config.unidade,
   );
   const statusCmin = statusEugonadal(
     config.unidade === "ngdl" ? metricas.cminNgdl : metricas.cminNmol,
-    config.unidade
+    config.unidade,
   );
 
   const xTickFormatter = (v: number) => `sem ${Math.round(v)}`;
@@ -377,38 +348,34 @@ export default function Simulator() {
   }, [horDias]);
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col">
+    <div className="rounded-xl border border-border/70 bg-card/80 text-foreground shadow-sm overflow-hidden">
       {/* Header */}
-      <header className="border-b border-border px-4 sm:px-6 py-3 flex items-center justify-between gap-3 bg-card/40 backdrop-blur">
+      <header className="border-b border-border/70 px-4 sm:px-6 py-3 flex items-center justify-between gap-3 bg-muted/25">
         <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-          <img src={lodiLogo} alt="L.O.D.I." className="h-14 w-auto select-none" draggable={false} />
+          <img
+            src={lodiLogo}
+            alt="L.O.D.I."
+            className="h-14 w-auto select-none"
+            draggable={false}
+          />
           <p className="hidden md:block text-xs text-muted-foreground/80 leading-snug">
             Simulação farmacocinética de undecilato de testosterona (Nebido)
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
-          <Button
-            type="button"
+          <Badge
             variant="outline"
-            size="icon"
-            onClick={alternarTema}
-            data-testid="button-tema"
-            aria-label={tema === "dark" ? "Mudar para tema claro" : "Mudar para tema escuro"}
-            title={tema === "dark" ? "Mudar para tema claro" : "Mudar para tema escuro"}
-            className="h-8 w-8"
+            className="text-[10px] gap-1 border-accent/40 text-accent uppercase tracking-wider"
           >
-            {tema === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-          </Button>
-          <Badge variant="outline" className="text-[10px] gap-1 border-accent/40 text-accent uppercase tracking-wider">
             <Activity className="w-3 h-3" />
             Uso educacional
           </Badge>
         </div>
       </header>
 
-      <div className="flex flex-1 overflow-hidden flex-col lg:flex-row">
+      <div className="flex flex-col gap-6 p-4 lg:p-5">
         {/* Painel de controles */}
-        <aside className="w-full lg:w-72 border-b lg:border-b-0 lg:border-r border-border p-4 flex flex-col gap-4 bg-card overflow-y-auto">
+        <aside className="grid gap-5 lg:grid-cols-[1fr_1fr_0.7fr]">
           <div>
             <h2 className="text-sm font-semibold mb-3 text-foreground">Esquema de doses</h2>
 
@@ -420,45 +387,58 @@ export default function Simulator() {
                 </div>
                 <Slider
                   data-testid="slider-dose"
-                  min={250} max={1000} step={50}
+                  min={250}
+                  max={1000}
+                  step={50}
                   value={[config.doseMg]}
-                  onValueChange={([v]) => setConfig(c => ({ ...c, doseMg: v, }))}
+                  onValueChange={([v]) => setConfig((c) => ({ ...c, doseMg: v }))}
                 />
                 <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>250 mg</span><span>1000 mg</span>
+                  <span>250 mg</span>
+                  <span>1000 mg</span>
                 </div>
               </div>
 
               <div className="rounded-lg border border-border bg-muted/30 p-3 space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label className="text-xs font-medium text-foreground">Regime de carga (Schubert)</Label>
+                  <Label className="text-xs font-medium text-foreground">
+                    Regime de carga (Schubert)
+                  </Label>
                   <Switch
                     data-testid="switch-carga"
                     checked={config.cargaSchubert}
-                    onCheckedChange={v => setConfig(c => ({ ...c, cargaSchubert: v }))}
+                    onCheckedChange={(v) => setConfig((c) => ({ ...c, cargaSchubert: v }))}
                   />
                 </div>
                 <p className="text-[11px] leading-snug text-muted-foreground">
-                  Protocolo clínico padrão do Nebido: 1ª injeção, 2ª em 6 semanas (carga), depois a cada 12 semanas. Acelera o estado estacionário (Schubert et al., JCEM 2004).
+                  Protocolo clínico padrão do Nebido: 1ª injeção, 2ª em 6 semanas (carga), depois a
+                  cada 12 semanas. Acelera o estado estacionário (Schubert et al., JCEM 2004).
                 </p>
               </div>
 
-              <div className={`space-y-2 ${config.cargaSchubert ? "opacity-50 pointer-events-none" : ""}`}>
+              <div
+                className={`space-y-2 ${config.cargaSchubert ? "opacity-50 pointer-events-none" : ""}`}
+              >
                 <div className="flex justify-between">
                   <Label className="text-xs text-muted-foreground">Tempo entre injeções</Label>
                   <span className="text-xs font-mono font-medium">
-                    {config.cargaSchubert ? "12 semanas (Schubert)" : `${(config.intervaloDias / 7).toFixed(0)} semanas`}
+                    {config.cargaSchubert
+                      ? "12 semanas (Schubert)"
+                      : `${(config.intervaloDias / 7).toFixed(0)} semanas`}
                   </span>
                 </div>
                 <Slider
                   data-testid="slider-intervalo"
-                  min={42} max={168} step={7}
+                  min={42}
+                  max={168}
+                  step={7}
                   value={[config.intervaloDias]}
-                  onValueChange={([v]) => setConfig(c => ({ ...c, intervaloDias: v }))}
+                  onValueChange={([v]) => setConfig((c) => ({ ...c, intervaloDias: v }))}
                   disabled={config.cargaSchubert}
                 />
                 <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>6 sem</span><span>24 sem</span>
+                  <span>6 sem</span>
+                  <span>24 sem</span>
                 </div>
               </div>
 
@@ -469,18 +449,21 @@ export default function Simulator() {
                 </div>
                 <Slider
                   data-testid="slider-ndoses"
-                  min={2} max={12} step={1}
+                  min={2}
+                  max={12}
+                  step={1}
                   value={[config.nDoses]}
-                  onValueChange={([v]) => setConfig(c => ({ ...c, nDoses: v }))}
+                  onValueChange={([v]) => setConfig((c) => ({ ...c, nDoses: v }))}
                 />
                 <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>2</span><span>12</span>
+                  <span>2</span>
+                  <span>12</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <Separator />
+          <Separator className="lg:hidden" />
 
           <div>
             <h2 className="text-sm font-semibold mb-3">Como exibir</h2>
@@ -488,39 +471,66 @@ export default function Simulator() {
               <div className="flex items-center justify-between">
                 <Label className="text-xs text-muted-foreground">Unidade de medida</Label>
                 <div className="flex items-center gap-2 text-xs">
-                  <span className={config.unidade === "ngdl" ? "text-foreground font-medium" : "text-muted-foreground"}>ng/dL</span>
+                  <span
+                    className={
+                      config.unidade === "ngdl"
+                        ? "text-foreground font-medium"
+                        : "text-muted-foreground"
+                    }
+                  >
+                    ng/dL
+                  </span>
                   <Switch
                     data-testid="switch-unidade"
                     checked={config.unidade === "nmol"}
-                    onCheckedChange={v => setConfig(c => ({ ...c, unidade: v ? "nmol" : "ngdl" }))}
+                    onCheckedChange={(v) =>
+                      setConfig((c) => ({ ...c, unidade: v ? "nmol" : "ngdl" }))
+                    }
                   />
-                  <span className={config.unidade === "nmol" ? "text-foreground font-medium" : "text-muted-foreground"}>nmol/L</span>
+                  <span
+                    className={
+                      config.unidade === "nmol"
+                        ? "text-foreground font-medium"
+                        : "text-muted-foreground"
+                    }
+                  >
+                    nmol/L
+                  </span>
                 </div>
               </div>
 
               <div className="rounded-lg border border-border bg-muted/30 p-3 space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label className="text-xs font-medium text-foreground">Mostrar variação entre pacientes</Label>
+                  <Label className="text-xs font-medium text-foreground">
+                    Mostrar variação entre pacientes
+                  </Label>
                   <Switch
                     data-testid="switch-mc"
                     checked={config.mostrarMonteCarlo}
-                    onCheckedChange={v => setConfig(c => ({ ...c, mostrarMonteCarlo: v }))}
+                    onCheckedChange={(v) => setConfig((c) => ({ ...c, mostrarMonteCarlo: v }))}
                   />
                 </div>
                 <p className="text-[11px] leading-snug text-muted-foreground">
-                  Pessoas diferentes respondem de forma diferente à mesma dose. Ative para ver a faixa esperada na população (de quem responde menos a quem responde mais).
+                  Pessoas diferentes respondem de forma diferente à mesma dose. Ative para ver a
+                  faixa esperada na população (de quem responde menos a quem responde mais).
                 </p>
                 {config.mostrarMonteCarlo && (
                   <div className="pt-2 space-y-2 border-t border-border">
                     <div className="flex justify-between">
-                      <Label className="text-[11px] text-muted-foreground">Quantos pacientes simular</Label>
-                      <span className="text-[11px] font-mono font-medium">{config.nSimulacoesMC}</span>
+                      <Label className="text-[11px] text-muted-foreground">
+                        Quantos pacientes simular
+                      </Label>
+                      <span className="text-[11px] font-mono font-medium">
+                        {config.nSimulacoesMC}
+                      </span>
                     </div>
                     <Slider
                       data-testid="slider-mc"
-                      min={50} max={500} step={50}
+                      min={50}
+                      max={500}
+                      step={50}
                       value={[config.nSimulacoesMC]}
-                      onValueChange={([v]) => setConfig(c => ({ ...c, nSimulacoesMC: v }))}
+                      onValueChange={([v]) => setConfig((c) => ({ ...c, nSimulacoesMC: v }))}
                     />
                     <div className="flex justify-between text-[11px] text-muted-foreground">
                       <span>50</span>
@@ -540,7 +550,7 @@ export default function Simulator() {
             </div>
           </div>
 
-          <Separator />
+          <Separator className="lg:hidden" />
 
           {/* Cronograma de doses */}
           <div>
@@ -559,13 +569,14 @@ export default function Simulator() {
         </aside>
 
         {/* Área principal */}
-        <main className="flex-1 flex flex-col overflow-y-auto">
+        <main className="flex flex-col rounded-xl border border-border/70 bg-background/55">
           {/* Métricas clínicas — linguagem clara */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 border-b border-border">
             {(() => {
-              const val = config.unidade === "ngdl"
-                ? (metricasClinicas?.cmax1a ?? metricas.cmaxNgdl)
-                : (metricasClinicas?.cmax1a ?? metricas.cmaxNgdl) * NGDL_TO_NMOL;
+              const val =
+                config.unidade === "ngdl"
+                  ? (metricasClinicas?.cmax1a ?? metricas.cmaxNgdl)
+                  : (metricasClinicas?.cmax1a ?? metricas.cmaxNgdl) * NGDL_TO_NMOL;
               const st = statusEugonadal(val, config.unidade);
               return (
                 <MetricCard
@@ -578,9 +589,10 @@ export default function Simulator() {
               );
             })()}
             {(() => {
-              const val = config.unidade === "ngdl"
-                ? (metricasClinicas?.cminSS ?? metricas.cminNgdl)
-                : (metricasClinicas?.cminSS ?? metricas.cminNgdl) * NGDL_TO_NMOL;
+              const val =
+                config.unidade === "ngdl"
+                  ? (metricasClinicas?.cminSS ?? metricas.cminNgdl)
+                  : (metricasClinicas?.cminSS ?? metricas.cminNgdl) * NGDL_TO_NMOL;
               const st = statusEugonadal(val, config.unidade);
               return (
                 <MetricCard
@@ -593,9 +605,10 @@ export default function Simulator() {
               );
             })()}
             {(() => {
-              const val = config.unidade === "ngdl"
-                ? (metricasClinicas?.cmaxSS ?? metricas.cmaxNgdl)
-                : (metricasClinicas?.cmaxSS ?? metricas.cmaxNgdl) * NGDL_TO_NMOL;
+              const val =
+                config.unidade === "ngdl"
+                  ? (metricasClinicas?.cmaxSS ?? metricas.cmaxNgdl)
+                  : (metricasClinicas?.cmaxSS ?? metricas.cmaxNgdl) * NGDL_TO_NMOL;
               const st = statusEugonadal(val, config.unidade);
               return (
                 <MetricCard
@@ -628,7 +641,7 @@ export default function Simulator() {
                 <MetricCard
                   label="Pico SS (Cmax)"
                   value={`${Math.round(resultadoMC.metricasPopulacionais.cmaxSSMediaNgdl)} ± ${Math.round(resultadoMC.metricasPopulacionais.cmaxSSDpNgdl)} ng/dL`}
-                  sub={`Schubert 2004: ~${ALVOS_CALIBRACAO.cmaxSSNgdl} ng/dL · CV ${(resultadoMC.metricasPopulacionais.cmaxSSDpNgdl / Math.max(1, resultadoMC.metricasPopulacionais.cmaxSSMediaNgdl) * 100).toFixed(0)}%`}
+                  sub={`Schubert 2004: ~${ALVOS_CALIBRACAO.cmaxSSNgdl} ng/dL · CV ${((resultadoMC.metricasPopulacionais.cmaxSSDpNgdl / Math.max(1, resultadoMC.metricasPopulacionais.cmaxSSMediaNgdl)) * 100).toFixed(0)}%`}
                 />
                 <MetricCard
                   label="Vale SS (Cmin)"
@@ -658,24 +671,32 @@ export default function Simulator() {
           <div className="flex-1 p-4">
             <Tabs value={aba} onValueChange={setAba}>
               <TabsList className="mb-4">
-                <TabsTrigger value="grafico" data-testid="tab-grafico">Gráfico ao longo do tempo</TabsTrigger>
+                <TabsTrigger value="grafico" data-testid="tab-grafico">
+                  Gráfico ao longo do tempo
+                </TabsTrigger>
                 <TabsTrigger value="paciente" data-testid="tab-paciente">
                   <UserCog className="w-3.5 h-3.5 mr-1.5" />
                   Ajustar para um paciente
                 </TabsTrigger>
-                <TabsTrigger value="info" data-testid="tab-info">Como funciona</TabsTrigger>
+                <TabsTrigger value="info" data-testid="tab-info">
+                  Como funciona
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="grafico" className="space-y-4">
                 <Card className="lodi-card">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm">
-                      Testosterona no sangue — {config.doseMg} mg a cada {(config.intervaloDias / 7).toFixed(0)} semanas
+                      Testosterona no sangue — {config.doseMg} mg a cada{" "}
+                      {(config.intervaloDias / 7).toFixed(0)} semanas
                     </CardTitle>
                     <CardDescription className="text-xs">
-                      Cada injeção causa uma subida e depois uma descida. Repetidas, vão se sobrepondo até atingir um padrão estável.
-                      A faixa <span className="text-emerald-400 font-medium">verde</span> mostra os valores normais para um homem adulto ({EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL} ng/dL · referência harmonizada CDC).
-                      Linhas tracejadas magenta marcam o dia de cada injeção.
+                      Cada injeção causa uma subida e depois uma descida. Repetidas, vão se
+                      sobrepondo até atingir um padrão estável. A faixa{" "}
+                      <span className="text-emerald-400 font-medium">verde</span> mostra os valores
+                      normais para um homem adulto ({EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL} ng/dL
+                      · referência harmonizada CDC). Linhas tracejadas magenta marcam o dia de cada
+                      injeção.
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="p-2">
@@ -684,117 +705,167 @@ export default function Simulator() {
                       {config.mostrarMonteCarlo && resultadoMC ? (
                         <>
                           <span className="flex items-center gap-1.5">
-                            <span className="inline-block w-3 h-2 rounded-sm bg-violet-500/20" />
+                            <span className="inline-block w-3 h-2 rounded-sm bg-chart-5/20" />
                             faixa onde caem 9 em cada 10 pacientes
                           </span>
                           <span className="flex items-center gap-1.5">
-                            <span className="inline-block w-3 h-2 rounded-sm bg-violet-500/40" />
+                            <span className="inline-block w-3 h-2 rounded-sm bg-chart-5/40" />
                             faixa onde caem 5 em cada 10 (a metade típica)
                           </span>
                           <span className="flex items-center gap-1.5">
-                            <span className="inline-block w-3 h-0.5 bg-cyan-400" />
+                            <span className="inline-block w-3 h-0.5 bg-chart-2" />
                             paciente médio
                           </span>
                         </>
                       ) : (
                         <span className="flex items-center gap-1.5">
-                          <span className="inline-block w-3 h-0.5 bg-cyan-400" />
+                          <span className="inline-block w-3 h-0.5 bg-chart-2" />
                           concentração de testosterona
                         </span>
                       )}
                       <span className="flex items-center gap-1.5">
-                        <span className="inline-block w-3 h-2 rounded-sm bg-emerald-500/20" />
+                        <span className="inline-block w-3 h-2 rounded-sm bg-system-body/20" />
                         faixa normal ({EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL} ng/dL)
                       </span>
                       <span className="flex items-center gap-1.5">
-                        <span className="inline-block w-0.5 h-3 border-l border-dashed border-pink-400" />
+                        <span className="inline-block w-0.5 h-3 border-l border-dashed border-chart-4" />
                         injeção
                       </span>
                     </div>
-                    <ResponsiveContainer width="100%" height={380}>
-                      <ComposedChart data={dadosGrafico} margin={{ top: 10, right: 50, left: 0, bottom: 30 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" strokeOpacity={0.5} />
-                        <XAxis
-                          dataKey="semana"
-                          tickFormatter={xTickFormatter}
-                          label={{ value: "Tempo (semanas desde a 1ª injeção)", position: "insideBottom", offset: -15, fontSize: 11 }}
-                          tick={{ fontSize: 10 }}
-                          interval={Math.max(0, Math.floor(dadosGrafico.length / 8))}
-                        />
-                        <YAxis
-                          tick={{ fontSize: 10 }}
-                          width={60}
-                          label={{ value: `Testosterona (${unLabel})`, angle: -90, position: "insideLeft", fontSize: 11, offset: 12 }}
-                        />
-                        <Tooltip
-                          content={<CustomTooltipMC unidade={config.unidade} />}
-                        />
-
-                        {/* Zona eugonadal */}
-                        <ReferenceArea
-                          y1={eugMin} y2={eugMax}
-                          fill="#10b981" fillOpacity={0.10}
-                        />
-                        <ReferenceLine y={eugMin} stroke="#34d399" strokeDasharray="4 4" strokeWidth={1} label={{ value: `mín. normal (${eugMin.toFixed(config.unidade === "nmol" ? 1 : 0)})`, position: "right", fontSize: 9, fill: "#34d399" }} />
-                        <ReferenceLine y={eugMax} stroke="#34d399" strokeDasharray="4 4" strokeWidth={1} label={{ value: `máx. normal (${eugMax.toFixed(config.unidade === "nmol" ? 1 : 0)})`, position: "right", fontSize: 9, fill: "#34d399" }} />
-
-                        {/* Marcadores de doses */}
-                        {doses.map((d, i) => (
-                          <ReferenceLine
-                            key={i}
-                            x={d.diaDose / 7}
-                            stroke="#ec4899"
-                            strokeWidth={1}
-                            strokeDasharray="2 4"
-                            opacity={0.45}
+                    <div className="h-[430px] w-full rounded-lg bg-[linear-gradient(180deg,color-mix(in_oklab,var(--color-background)_95%,var(--color-chart-2)),var(--color-background))] px-1 pb-1 pt-2">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <ComposedChart
+                          data={dadosGrafico}
+                          margin={{ top: 12, right: 54, left: 0, bottom: 32 }}
+                        >
+                          <CartesianGrid
+                            strokeDasharray="3 3"
+                            stroke="var(--color-border)"
+                            strokeOpacity={0.55}
                           />
-                        ))}
+                          <XAxis
+                            dataKey="semana"
+                            tickFormatter={xTickFormatter}
+                            label={{
+                              value: "Tempo (semanas desde a 1ª injeção)",
+                              position: "insideBottom",
+                              offset: -15,
+                              fontSize: 11,
+                            }}
+                            tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }}
+                            axisLine={{ stroke: "var(--color-border)" }}
+                            tickLine={{ stroke: "var(--color-border)" }}
+                            interval={Math.max(0, Math.floor(dadosGrafico.length / 8))}
+                          />
+                          <YAxis
+                            tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }}
+                            axisLine={{ stroke: "var(--color-border)" }}
+                            tickLine={{ stroke: "var(--color-border)" }}
+                            width={60}
+                            label={{
+                              value: `Testosterona (${unLabel})`,
+                              angle: -90,
+                              position: "insideLeft",
+                              fontSize: 11,
+                              offset: 12,
+                            }}
+                          />
+                          <Tooltip content={<CustomTooltipMC unidade={config.unidade} />} />
 
-                        {config.mostrarMonteCarlo && resultadoMC && (
-                          <Area
-                            type="monotone"
-                            dataKey="bandaIC90"
-                            stroke="none"
-                            fill="#a855f7"
+                          {/* Zona eugonadal */}
+                          <ReferenceArea
+                            y1={eugMin}
+                            y2={eugMax}
+                            fill="var(--color-system-body)"
                             fillOpacity={0.14}
-                            name="9 em 10 pacientes"
-                            isAnimationActive={false}
-                            dot={false}
-                            activeDot={false}
                           />
-                        )}
-                        {config.mostrarMonteCarlo && resultadoMC && (
-                          <Area
-                            type="monotone"
-                            dataKey="bandaIQ50"
-                            stroke="none"
-                            fill="#a855f7"
-                            fillOpacity={0.28}
-                            name="metade típica"
-                            isAnimationActive={false}
-                            dot={false}
-                            activeDot={false}
+                          <ReferenceLine
+                            y={eugMin}
+                            stroke="var(--color-system-body)"
+                            strokeDasharray="4 4"
+                            strokeWidth={1.2}
+                            label={{
+                              value: `mín. normal (${eugMin.toFixed(config.unidade === "nmol" ? 1 : 0)})`,
+                              position: "right",
+                              fontSize: 9,
+                              fill: "var(--color-system-body)",
+                            }}
                           />
-                        )}
-                        <Line
-                          type="monotone"
-                          dataKey="conc"
-                          stroke="#22d3ee"
-                          strokeWidth={2.2}
-                          dot={false}
-                          isAnimationActive={false}
-                          name={config.mostrarMonteCarlo && resultadoMC ? "paciente médio" : "testosterona"}
-                        />
+                          <ReferenceLine
+                            y={eugMax}
+                            stroke="var(--color-system-body)"
+                            strokeDasharray="4 4"
+                            strokeWidth={1.2}
+                            label={{
+                              value: `máx. normal (${eugMax.toFixed(config.unidade === "nmol" ? 1 : 0)})`,
+                              position: "right",
+                              fontSize: 9,
+                              fill: "var(--color-system-body)",
+                            }}
+                          />
 
-                        <Brush
-                          dataKey="semana"
-                          height={16}
-                          stroke="hsl(var(--border))"
-                          tickFormatter={xTickFormatter}
-                          travellerWidth={6}
-                        />
-                      </ComposedChart>
-                    </ResponsiveContainer>
+                          {/* Marcadores de doses */}
+                          {doses.map((d, i) => (
+                            <ReferenceLine
+                              key={i}
+                              x={d.diaDose / 7}
+                              stroke="var(--color-chart-4)"
+                              strokeWidth={1}
+                              strokeDasharray="2 4"
+                              opacity={0.45}
+                            />
+                          ))}
+
+                          {config.mostrarMonteCarlo && resultadoMC && (
+                            <Area
+                              type="monotone"
+                              dataKey="bandaIC90"
+                              stroke="none"
+                              fill="var(--color-chart-5)"
+                              fillOpacity={0.14}
+                              name="9 em 10 pacientes"
+                              isAnimationActive={false}
+                              dot={false}
+                              activeDot={false}
+                            />
+                          )}
+                          {config.mostrarMonteCarlo && resultadoMC && (
+                            <Area
+                              type="monotone"
+                              dataKey="bandaIQ50"
+                              stroke="none"
+                              fill="var(--color-chart-5)"
+                              fillOpacity={0.28}
+                              name="metade típica"
+                              isAnimationActive={false}
+                              dot={false}
+                              activeDot={false}
+                            />
+                          )}
+                          <Line
+                            type="monotone"
+                            dataKey="conc"
+                            stroke="var(--color-chart-2)"
+                            strokeWidth={2.6}
+                            dot={false}
+                            isAnimationActive={false}
+                            name={
+                              config.mostrarMonteCarlo && resultadoMC
+                                ? "paciente médio"
+                                : "testosterona"
+                            }
+                          />
+
+                          <Brush
+                            dataKey="semana"
+                            height={16}
+                            stroke="var(--color-border)"
+                            tickFormatter={xTickFormatter}
+                            travellerWidth={6}
+                          />
+                        </ComposedChart>
+                      </ResponsiveContainer>
+                    </div>
                   </CardContent>
                 </Card>
 
@@ -802,18 +873,34 @@ export default function Simulator() {
                 <div className="rounded-xl border border-blue-500/20 bg-blue-50 dark:bg-blue-950/20 p-3 text-xs text-blue-900 dark:text-blue-200 space-y-1.5">
                   <p className="font-semibold">Como ler este gráfico</p>
                   <ul className="list-disc list-inside space-y-1 leading-relaxed">
-                    <li><strong>Subidas e descidas:</strong> cada injeção faz a testosterona subir até um pico, depois cair lentamente até a próxima dose.</li>
-                    <li><strong>Acúmulo:</strong> as primeiras injeções não atingem o nível normal; com doses repetidas, os valores se acumulam até estabilizar.</li>
-                    <li><strong>Faixa verde:</strong> intervalo de testosterona considerado normal para um homem adulto. O ideal é a curva ficar dentro dela.</li>
+                    <li>
+                      <strong>Subidas e descidas:</strong> cada injeção faz a testosterona subir até
+                      um pico, depois cair lentamente até a próxima dose.
+                    </li>
+                    <li>
+                      <strong>Acúmulo:</strong> as primeiras injeções não atingem o nível normal;
+                      com doses repetidas, os valores se acumulam até estabilizar.
+                    </li>
+                    <li>
+                      <strong>Faixa verde:</strong> intervalo de testosterona considerado normal
+                      para um homem adulto. O ideal é a curva ficar dentro dela.
+                    </li>
                     {config.mostrarMonteCarlo && (
-                      <li><strong>Áreas violeta:</strong> mostram que pacientes diferentes respondem de forma diferente — alguns ficam mais altos, outros mais baixos com a mesma dose.</li>
+                      <li>
+                        <strong>Áreas violeta:</strong> mostram que pacientes diferentes respondem
+                        de forma diferente — alguns ficam mais altos, outros mais baixos com a mesma
+                        dose.
+                      </li>
                     )}
                   </ul>
                 </div>
 
                 {/* Aviso clínico */}
                 <div className="rounded-xl border border-amber-500/20 bg-amber-50 dark:bg-amber-950/20 p-3 text-xs text-amber-700 dark:text-amber-300">
-                  <strong>Importante:</strong> esta ferramenta é apenas educacional. Não substitui consulta médica, exames de sangue, nem ajuste individualizado de tratamento. O ajuste real de dose deve ser feito com base em exames laboratoriais reais e avaliação médica.
+                  <strong>Importante:</strong> esta ferramenta é apenas educacional. Não substitui
+                  consulta médica, exames de sangue, nem ajuste individualizado de tratamento. O
+                  ajuste real de dose deve ser feito com base em exames laboratoriais reais e
+                  avaliação médica.
                 </div>
               </TabsContent>
 
@@ -827,7 +914,9 @@ export default function Simulator() {
                         Dados do paciente
                       </CardTitle>
                       <CardDescription className="text-xs">
-                        Informe a dose atual, o intervalo entre injeções e <strong>pelo menos um valor laboratorial</strong> (pico ou vale) medido após o paciente já estar estabilizado (a partir da 4ª-5ª injeção).
+                        Informe a dose atual, o intervalo entre injeções e{" "}
+                        <strong>pelo menos um valor laboratorial</strong> (pico ou vale) medido após
+                        o paciente já estar estabilizado (a partir da 4ª-5ª injeção).
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
@@ -836,18 +925,28 @@ export default function Simulator() {
                           <Label className="text-xs">Dose atual (mg)</Label>
                           <Input
                             data-testid="input-dose"
-                            type="number" inputMode="decimal" min={50} step={50}
+                            type="number"
+                            inputMode="decimal"
+                            min={50}
+                            step={50}
                             value={pacienteIn.doseMg}
-                            onChange={e => setPacienteIn(p => ({ ...p, doseMg: e.target.value }))}
+                            onChange={(e) =>
+                              setPacienteIn((p) => ({ ...p, doseMg: e.target.value }))
+                            }
                           />
                         </div>
                         <div className="space-y-1.5">
                           <Label className="text-xs">Intervalo atual (semanas)</Label>
                           <Input
                             data-testid="input-intervalo"
-                            type="number" inputMode="decimal" min={4} step={1}
+                            type="number"
+                            inputMode="decimal"
+                            min={4}
+                            step={1}
                             value={pacienteIn.intervaloSemanas}
-                            onChange={e => setPacienteIn(p => ({ ...p, intervaloSemanas: e.target.value }))}
+                            onChange={(e) =>
+                              setPacienteIn((p) => ({ ...p, intervaloSemanas: e.target.value }))
+                            }
                           />
                         </div>
                       </div>
@@ -859,34 +958,50 @@ export default function Simulator() {
                           1) Exames do paciente (ng/dL)
                         </p>
                         <p className="text-[11px] text-muted-foreground leading-snug">
-                          Informe pelo menos UM dos dois valores abaixo (preferencialmente os dois). O sistema usa essas medidas para identificar o metabolismo individual deste paciente.
+                          Informe pelo menos UM dos dois valores abaixo (preferencialmente os dois).
+                          O sistema usa essas medidas para identificar o metabolismo individual
+                          deste paciente.
                         </p>
 
                         <div className="space-y-1.5">
                           <Label className="text-xs flex items-center justify-between">
                             <span>Pico medido (Cmax)</span>
-                            <span className="text-[10px] text-muted-foreground">~1 sem após injeção</span>
+                            <span className="text-[10px] text-muted-foreground">
+                              ~1 sem após injeção
+                            </span>
                           </Label>
                           <Input
                             data-testid="input-cmax"
-                            type="number" inputMode="decimal" min={0} step={10}
+                            type="number"
+                            inputMode="decimal"
+                            min={0}
+                            step={10}
                             placeholder="ex.: 950"
                             value={pacienteIn.cmaxObs}
-                            onChange={e => setPacienteIn(p => ({ ...p, cmaxObs: e.target.value }))}
+                            onChange={(e) =>
+                              setPacienteIn((p) => ({ ...p, cmaxObs: e.target.value }))
+                            }
                           />
                         </div>
 
                         <div className="space-y-1.5">
                           <Label className="text-xs flex items-center justify-between">
                             <span>Vale medido (Cmin)</span>
-                            <span className="text-[10px] text-muted-foreground">imediatamente antes da próxima dose</span>
+                            <span className="text-[10px] text-muted-foreground">
+                              imediatamente antes da próxima dose
+                            </span>
                           </Label>
                           <Input
                             data-testid="input-cmin"
-                            type="number" inputMode="decimal" min={0} step={10}
+                            type="number"
+                            inputMode="decimal"
+                            min={0}
+                            step={10}
                             placeholder="ex.: 380"
                             value={pacienteIn.cminObs}
-                            onChange={e => setPacienteIn(p => ({ ...p, cminObs: e.target.value }))}
+                            onChange={(e) =>
+                              setPacienteIn((p) => ({ ...p, cminObs: e.target.value }))
+                            }
                           />
                         </div>
                       </div>
@@ -899,21 +1014,29 @@ export default function Simulator() {
                         </p>
                         <Label className="text-xs flex items-center justify-between">
                           <span>Cavg-alvo (ng/dL)</span>
-                          <span className="text-[10px] text-muted-foreground">faixa: {EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL}</span>
+                          <span className="text-[10px] text-muted-foreground">
+                            faixa: {EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL}
+                          </span>
                         </Label>
                         <Input
                           data-testid="input-cavg-alvo"
-                          type="number" inputMode="decimal" min={EUGONADAL_MIN_NGDL} max={EUGONADAL_MAX_NGDL} step={10}
+                          type="number"
+                          inputMode="decimal"
+                          min={EUGONADAL_MIN_NGDL}
+                          max={EUGONADAL_MAX_NGDL}
+                          step={10}
                           placeholder="600"
                           value={pacienteIn.cavgAlvo}
-                          onChange={e => setPacienteIn(p => ({ ...p, cavgAlvo: e.target.value }))}
+                          onChange={(e) =>
+                            setPacienteIn((p) => ({ ...p, cavgAlvo: e.target.value }))
+                          }
                         />
                         <div className="flex gap-1.5 flex-wrap pt-1">
-                          {[400, 500, 600, 700, 800].map(v => (
+                          {[400, 500, 600, 700, 800].map((v) => (
                             <button
                               key={v}
                               type="button"
-                              onClick={() => setPacienteIn(p => ({ ...p, cavgAlvo: String(v) }))}
+                              onClick={() => setPacienteIn((p) => ({ ...p, cavgAlvo: String(v) }))}
                               className={`text-[10px] px-2 py-0.5 rounded-md border transition-all ${
                                 pacienteIn.cavgAlvo === String(v)
                                   ? "lodi-chip-active bg-primary text-primary-foreground border-primary"
@@ -925,7 +1048,9 @@ export default function Simulator() {
                           ))}
                         </div>
                         <p className="text-[11px] text-muted-foreground leading-snug">
-                          Meta de testosterona média no sangue deste paciente. Faixa fisiológica média: 500–700 ng/dL. O sistema vai escolher o intervalo que mais se aproxima desta meta mantendo o vale acima de {EUGONADAL_MIN_NGDL}.
+                          Meta de testosterona média no sangue deste paciente. Faixa fisiológica
+                          média: 500–700 ng/dL. O sistema vai escolher o intervalo que mais se
+                          aproxima desta meta mantendo o vale acima de {EUGONADAL_MIN_NGDL}.
                         </p>
                       </div>
 
@@ -945,8 +1070,13 @@ export default function Simulator() {
                       <Card className="border-dashed">
                         <CardContent className="py-12 text-center text-sm text-muted-foreground">
                           <UserCog className="w-10 h-10 mx-auto mb-3 opacity-30" />
-                          <p>Preencha os dados do paciente à esquerda e clique em <strong className="text-foreground">"Calcular intervalo ideal"</strong>.</p>
-                          <p className="text-xs mt-2">É necessário pelo menos uma medida (pico, vale ou média).</p>
+                          <p>
+                            Preencha os dados do paciente à esquerda e clique em{" "}
+                            <strong className="text-foreground">"Calcular intervalo ideal"</strong>.
+                          </p>
+                          <p className="text-xs mt-2">
+                            É necessário pelo menos uma medida (pico, vale ou média).
+                          </p>
                         </CardContent>
                       </Card>
                     ) : (
@@ -966,32 +1096,51 @@ export default function Simulator() {
                               </span>
                               <span className="text-base text-muted-foreground">semanas</span>
                               <span className="text-sm text-muted-foreground">
-                                ({recomendacao.intervaloRecomendadoDias} dias) — dose {parseFloat(pacienteIn.doseMg)} mg
+                                ({recomendacao.intervaloRecomendadoDias} dias) — dose{" "}
+                                {parseFloat(pacienteIn.doseMg)} mg
                               </span>
                             </div>
-                            <p className="text-sm text-foreground leading-relaxed">{recomendacao.justificativa}</p>
+                            <p className="text-sm text-foreground leading-relaxed">
+                              {recomendacao.justificativa}
+                            </p>
 
                             {(() => {
                               const rec = recomendacao.intervalosAvaliados.find(
-                                a => a.intervaloDias === recomendacao.intervaloRecomendadoDias
+                                (a) => a.intervaloDias === recomendacao.intervaloRecomendadoDias,
                               )!;
                               return (
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2">
                                   <div className="rounded-lg bg-background border border-border p-2">
-                                    <div className="text-[10px] text-muted-foreground">Pico previsto</div>
-                                    <div className="text-sm font-semibold tabular-nums">{Math.round(rec.cmaxSSNgdl)} ng/dL</div>
+                                    <div className="text-[10px] text-muted-foreground">
+                                      Pico previsto
+                                    </div>
+                                    <div className="text-sm font-semibold tabular-nums">
+                                      {Math.round(rec.cmaxSSNgdl)} ng/dL
+                                    </div>
                                   </div>
                                   <div className="rounded-lg bg-background border border-border p-2">
-                                    <div className="text-[10px] text-muted-foreground">Vale previsto</div>
-                                    <div className="text-sm font-semibold tabular-nums">{Math.round(rec.cminSSNgdl)} ng/dL</div>
+                                    <div className="text-[10px] text-muted-foreground">
+                                      Vale previsto
+                                    </div>
+                                    <div className="text-sm font-semibold tabular-nums">
+                                      {Math.round(rec.cminSSNgdl)} ng/dL
+                                    </div>
                                   </div>
                                   <div className="rounded-lg bg-background border border-border p-2">
-                                    <div className="text-[10px] text-muted-foreground">Média prevista</div>
-                                    <div className="text-sm font-semibold tabular-nums">{Math.round(rec.cavgSSNgdl)} ng/dL</div>
+                                    <div className="text-[10px] text-muted-foreground">
+                                      Média prevista
+                                    </div>
+                                    <div className="text-sm font-semibold tabular-nums">
+                                      {Math.round(rec.cavgSSNgdl)} ng/dL
+                                    </div>
                                   </div>
                                   <div className="rounded-lg bg-background border border-border p-2">
-                                    <div className="text-[10px] text-muted-foreground">Tempo na faixa</div>
-                                    <div className={`text-sm font-semibold tabular-nums ${rec.percentEugonadal >= 90 ? "text-emerald-600" : rec.percentEugonadal >= 70 ? "text-amber-600" : "text-rose-600"}`}>
+                                    <div className="text-[10px] text-muted-foreground">
+                                      Tempo na faixa
+                                    </div>
+                                    <div
+                                      className={`text-sm font-semibold tabular-nums ${rec.percentEugonadal >= 90 ? "text-emerald-600" : rec.percentEugonadal >= 70 ? "text-amber-600" : "text-rose-600"}`}
+                                    >
                                       {rec.percentEugonadal.toFixed(0)}%
                                     </div>
                                   </div>
@@ -1004,9 +1153,13 @@ export default function Simulator() {
                         {/* Perfil individual: metabolismo + Cavg atual calculado */}
                         <Card>
                           <CardHeader className="pb-2">
-                            <CardTitle className="text-sm">Perfil deste paciente — metabolismo e situação atual</CardTitle>
+                            <CardTitle className="text-sm">
+                              Perfil deste paciente — metabolismo e situação atual
+                            </CardTitle>
                             <CardDescription className="text-xs">
-                              Calculado a partir das medidas laboratoriais informadas, no regime atual ({parseFloat(pacienteIn.doseMg)} mg a cada {parseFloat(pacienteIn.intervaloSemanas)} semanas).
+                              Calculado a partir das medidas laboratoriais informadas, no regime
+                              atual ({parseFloat(pacienteIn.doseMg)} mg a cada{" "}
+                              {parseFloat(pacienteIn.intervaloSemanas)} semanas).
                             </CardDescription>
                           </CardHeader>
                           <CardContent className="space-y-3">
@@ -1017,23 +1170,36 @@ export default function Simulator() {
                                   Concentração média atual (calculada)
                                 </div>
                                 <div className="text-2xl font-bold tabular-nums text-primary">
-                                  {Math.round(recomendacao.cenarioAtual.cavgSSNgdl)} <span className="text-sm font-normal text-muted-foreground">ng/dL</span>
+                                  {Math.round(recomendacao.cenarioAtual.cavgSSNgdl)}{" "}
+                                  <span className="text-sm font-normal text-muted-foreground">
+                                    ng/dL
+                                  </span>
                                 </div>
                               </div>
                               <div className="text-right">
-                                <div className="text-[11px] text-muted-foreground">alvo desejado</div>
+                                <div className="text-[11px] text-muted-foreground">
+                                  alvo desejado
+                                </div>
                                 <div className="text-base font-semibold tabular-nums">
                                   {Math.round(recomendacao.cavgAlvoNgdl)} ng/dL
                                 </div>
-                                <div className={`text-[11px] font-medium ${
-                                  Math.abs(recomendacao.cenarioAtual.cavgSSNgdl - recomendacao.cavgAlvoNgdl) < 50
-                                    ? "text-emerald-600 dark:text-emerald-400"
-                                    : recomendacao.cenarioAtual.cavgSSNgdl > recomendacao.cavgAlvoNgdl
-                                      ? "text-rose-600 dark:text-rose-400"
-                                      : "text-amber-600 dark:text-amber-400"
-                                }`}>
+                                <div
+                                  className={`text-[11px] font-medium ${
+                                    Math.abs(
+                                      recomendacao.cenarioAtual.cavgSSNgdl -
+                                        recomendacao.cavgAlvoNgdl,
+                                    ) < 50
+                                      ? "text-emerald-600 dark:text-emerald-400"
+                                      : recomendacao.cenarioAtual.cavgSSNgdl >
+                                          recomendacao.cavgAlvoNgdl
+                                        ? "text-rose-600 dark:text-rose-400"
+                                        : "text-amber-600 dark:text-amber-400"
+                                  }`}
+                                >
                                   {(() => {
-                                    const d = recomendacao.cenarioAtual.cavgSSNgdl - recomendacao.cavgAlvoNgdl;
+                                    const d =
+                                      recomendacao.cenarioAtual.cavgSSNgdl -
+                                      recomendacao.cavgAlvoNgdl;
                                     if (Math.abs(d) < 50) return "no alvo";
                                     return `${d > 0 ? "+" : ""}${Math.round(d)} ng/dL`;
                                   })()}
@@ -1044,15 +1210,23 @@ export default function Simulator() {
                             <div className="grid grid-cols-3 gap-2 text-xs">
                               <div className="rounded-lg border border-border bg-background p-2">
                                 <div className="text-[10px] text-muted-foreground">Pico atual</div>
-                                <div className="font-mono font-semibold">{Math.round(recomendacao.cenarioAtual.cmaxSSNgdl)} ng/dL</div>
+                                <div className="font-mono font-semibold">
+                                  {Math.round(recomendacao.cenarioAtual.cmaxSSNgdl)} ng/dL
+                                </div>
                               </div>
                               <div className="rounded-lg border border-border bg-background p-2">
                                 <div className="text-[10px] text-muted-foreground">Vale atual</div>
-                                <div className="font-mono font-semibold">{Math.round(recomendacao.cenarioAtual.cminSSNgdl)} ng/dL</div>
+                                <div className="font-mono font-semibold">
+                                  {Math.round(recomendacao.cenarioAtual.cminSSNgdl)} ng/dL
+                                </div>
                               </div>
                               <div className="rounded-lg border border-border bg-background p-2">
-                                <div className="text-[10px] text-muted-foreground">Tempo na faixa</div>
-                                <div className={`font-mono font-semibold ${recomendacao.cenarioAtual.percentEugonadal >= 90 ? "text-emerald-600" : recomendacao.cenarioAtual.percentEugonadal >= 70 ? "text-amber-600" : "text-rose-600"}`}>
+                                <div className="text-[10px] text-muted-foreground">
+                                  Tempo na faixa
+                                </div>
+                                <div
+                                  className={`font-mono font-semibold ${recomendacao.cenarioAtual.percentEugonadal >= 90 ? "text-emerald-600" : recomendacao.cenarioAtual.percentEugonadal >= 70 ? "text-amber-600" : "text-rose-600"}`}
+                                >
                                   {recomendacao.cenarioAtual.percentEugonadal.toFixed(0)}%
                                 </div>
                               </div>
@@ -1062,15 +1236,20 @@ export default function Simulator() {
 
                             <div className="text-xs">
                               <div className="flex items-center justify-between mb-1">
-                                <span className="text-muted-foreground">Sensibilidade à dose deste paciente</span>
+                                <span className="text-muted-foreground">
+                                  Sensibilidade à dose deste paciente
+                                </span>
                                 <span className="font-mono font-semibold">
                                   {(recomendacao.fatorIndividual * 100).toFixed(0)}% da média
                                 </span>
                               </div>
                               <p className="text-[11px] text-muted-foreground leading-relaxed">
-                                Este paciente {recomendacao.classificacaoSensibilidade}. Cada miligrama de undecilato
-                                gera <strong className="text-foreground">{recomendacao.fatorIndividual.toFixed(2)}×</strong> a
-                                concentração que geraria em um paciente de resposta típica.
+                                Este paciente {recomendacao.classificacaoSensibilidade}. Cada
+                                miligrama de undecilato gera{" "}
+                                <strong className="text-foreground">
+                                  {recomendacao.fatorIndividual.toFixed(2)}×
+                                </strong>{" "}
+                                a concentração que geraria em um paciente de resposta típica.
                               </p>
                             </div>
                           </CardContent>
@@ -1079,9 +1258,12 @@ export default function Simulator() {
                         {/* Tabela comparativa de intervalos */}
                         <Card>
                           <CardHeader className="pb-2">
-                            <CardTitle className="text-sm">Comparação de intervalos (para este paciente)</CardTitle>
+                            <CardTitle className="text-sm">
+                              Comparação de intervalos (para este paciente)
+                            </CardTitle>
                             <CardDescription className="text-xs">
-                              Predição de pico, vale e tempo na faixa eugonádica para diferentes espaçamentos entre as doses, mantendo a dose atual.
+                              Predição de pico, vale e tempo na faixa eugonádica para diferentes
+                              espaçamentos entre as doses, mantendo a dose atual.
                             </CardDescription>
                           </CardHeader>
                           <CardContent className="p-0">
@@ -1098,31 +1280,60 @@ export default function Simulator() {
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  {recomendacao.intervalosAvaliados.map(a => {
-                                    const eRecomendado = a.intervaloDias === recomendacao.intervaloRecomendadoDias;
+                                  {recomendacao.intervalosAvaliados.map((a) => {
+                                    const eRecomendado =
+                                      a.intervaloDias === recomendacao.intervaloRecomendadoDias;
                                     const statusBadge =
-                                      a.status === "ideal" ? <Badge className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30">ideal</Badge> :
-                                      a.status === "aceitavel" ? <Badge className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20">aceitável</Badge> :
-                                      a.status === "vale_baixo" ? <Badge className="bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/30">vale baixo</Badge> :
-                                      a.status === "pico_alto" ? <Badge className="bg-rose-500/15 text-rose-700 dark:text-rose-400 border-rose-500/30">pico alto</Badge> :
-                                      <Badge className="bg-rose-500/15 text-rose-700 dark:text-rose-400 border-rose-500/30">fora</Badge>;
+                                      a.status === "ideal" ? (
+                                        <Badge className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30">
+                                          ideal
+                                        </Badge>
+                                      ) : a.status === "aceitavel" ? (
+                                        <Badge className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20">
+                                          aceitável
+                                        </Badge>
+                                      ) : a.status === "vale_baixo" ? (
+                                        <Badge className="bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/30">
+                                          vale baixo
+                                        </Badge>
+                                      ) : a.status === "pico_alto" ? (
+                                        <Badge className="bg-rose-500/15 text-rose-700 dark:text-rose-400 border-rose-500/30">
+                                          pico alto
+                                        </Badge>
+                                      ) : (
+                                        <Badge className="bg-rose-500/15 text-rose-700 dark:text-rose-400 border-rose-500/30">
+                                          fora
+                                        </Badge>
+                                      );
                                     return (
                                       <tr
                                         key={a.intervaloDias}
                                         className={`border-t border-border ${eRecomendado ? "bg-emerald-500/5" : ""}`}
                                       >
                                         <td className="p-2 font-medium">
-                                          {eRecomendado && <span className="text-emerald-600 dark:text-emerald-400 mr-1">→</span>}
+                                          {eRecomendado && (
+                                            <span className="text-emerald-600 dark:text-emerald-400 mr-1">
+                                              →
+                                            </span>
+                                          )}
                                           {a.intervaloSemanas.toFixed(0)} sem
                                         </td>
-                                        <td className={`text-right p-2 font-mono ${a.cmaxSSNgdl > EUGONADAL_MAX_NGDL ? "text-rose-600 dark:text-rose-400" : ""}`}>
+                                        <td
+                                          className={`text-right p-2 font-mono ${a.cmaxSSNgdl > EUGONADAL_MAX_NGDL ? "text-rose-600 dark:text-rose-400" : ""}`}
+                                        >
                                           {Math.round(a.cmaxSSNgdl)}
                                         </td>
-                                        <td className={`text-right p-2 font-mono ${a.cminSSNgdl < EUGONADAL_MIN_NGDL ? "text-amber-600 dark:text-amber-400" : ""}`}>
+                                        <td
+                                          className={`text-right p-2 font-mono ${a.cminSSNgdl < EUGONADAL_MIN_NGDL ? "text-amber-600 dark:text-amber-400" : ""}`}
+                                        >
                                           {Math.round(a.cminSSNgdl)}
                                         </td>
-                                        <td className="text-right p-2 font-mono">{Math.round(a.cavgSSNgdl)}</td>
-                                        <td className="text-right p-2 font-mono">{a.percentEugonadal.toFixed(0)}%</td>
+                                        <td className="text-right p-2 font-mono">
+                                          {Math.round(a.cavgSSNgdl)}
+                                        </td>
+                                        <td className="text-right p-2 font-mono">
+                                          {a.percentEugonadal.toFixed(0)}%
+                                        </td>
                                         <td className="p-2 text-center">{statusBadge}</td>
                                       </tr>
                                     );
@@ -1131,13 +1342,20 @@ export default function Simulator() {
                               </table>
                             </div>
                             <div className="px-3 py-2 text-[11px] text-muted-foreground border-t border-border">
-                              Faixa eugonádica de referência: {EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL} ng/dL · Vale acima de {EUGONADAL_MIN_NGDL} = sem hipogonadismo entre doses.
+                              Faixa eugonádica de referência: {EUGONADAL_MIN_NGDL}–
+                              {EUGONADAL_MAX_NGDL} ng/dL · Vale acima de {EUGONADAL_MIN_NGDL} = sem
+                              hipogonadismo entre doses.
                             </div>
                           </CardContent>
                         </Card>
 
                         <div className="rounded-xl border border-amber-500/20 bg-amber-50 dark:bg-amber-950/20 p-3 text-xs text-amber-700 dark:text-amber-300">
-                          <strong>Importante:</strong> a recomendação assume que as medidas informadas foram colhidas em estado estacionário (após a 4ª–5ª injeção) e usando o regime atual. Antes do estado estacionário, os valores ainda estão subindo e não refletem a sensibilidade real. Esta ferramenta é educacional — qualquer ajuste deve ser validado com novos exames e avaliação médica.
+                          <strong>Importante:</strong> a recomendação assume que as medidas
+                          informadas foram colhidas em estado estacionário (após a 4ª–5ª injeção) e
+                          usando o regime atual. Antes do estado estacionário, os valores ainda
+                          estão subindo e não refletem a sensibilidade real. Esta ferramenta é
+                          educacional — qualquer ajuste deve ser validado com novos exames e
+                          avaliação médica.
                         </div>
                       </>
                     )}
@@ -1147,9 +1365,16 @@ export default function Simulator() {
 
               <TabsContent value="info">
                 <div className="mb-6 flex flex-col items-center text-center gap-4 py-6">
-                  <img src={lodiLogo} alt="L.O.D.I." className="h-40 w-auto select-none" draggable={false} />
+                  <img
+                    src={lodiLogo}
+                    alt="L.O.D.I."
+                    className="h-40 w-auto select-none"
+                    draggable={false}
+                  />
                   <p className="text-xs text-muted-foreground max-w-xl">
-                    Plataforma educacional de simulação farmacocinética para hormonização com undecilato de testosterona (Nebido) — modelo de 2 compartimentos com absorção de 1ª ordem e variação populacional Monte Carlo.
+                    Plataforma educacional de simulação farmacocinética para hormonização com
+                    undecilato de testosterona (Nebido) — modelo de 2 compartimentos com absorção de
+                    1ª ordem e variação populacional Monte Carlo.
                   </p>
                 </div>
                 <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
@@ -1159,13 +1384,14 @@ export default function Simulator() {
                     </CardHeader>
                     <CardContent className="text-sm space-y-3 text-muted-foreground leading-relaxed">
                       <p>
-                        Quando você toma uma injeção de undecilato de testosterona (Nebido), o medicamento fica
-                        depositado no músculo e é liberado <strong className="text-foreground">muito devagar</strong> para a corrente sanguínea
-                        — durante semanas, não minutos.
+                        Quando você toma uma injeção de undecilato de testosterona (Nebido), o
+                        medicamento fica depositado no músculo e é liberado{" "}
+                        <strong className="text-foreground">muito devagar</strong> para a corrente
+                        sanguínea — durante semanas, não minutos.
                       </p>
                       <p>
-                        Esta ferramenta calcula, dia por dia, qual a concentração esperada de testosterona no sangue,
-                        considerando:
+                        Esta ferramenta calcula, dia por dia, qual a concentração esperada de
+                        testosterona no sangue, considerando:
                       </p>
                       <ul className="list-disc list-inside space-y-1 ml-2">
                         <li>quanto entra (a injeção)</li>
@@ -1173,7 +1399,9 @@ export default function Simulator() {
                         <li>quanto é eliminado (pelo fígado)</li>
                       </ul>
                       <p>
-                        O resultado é a <strong className="text-foreground">curva neon ciano</strong> que você vê no gráfico.
+                        O resultado é a{" "}
+                        <strong className="text-foreground">curva neon ciano</strong> que você vê no
+                        gráfico.
                       </p>
                     </CardContent>
                   </Card>
@@ -1184,8 +1412,10 @@ export default function Simulator() {
                     </CardHeader>
                     <CardContent className="text-sm space-y-3 text-muted-foreground leading-relaxed">
                       <p>
-                        Duas pessoas que tomam <strong className="text-foreground">a mesma dose</strong> não têm a mesma
-                        concentração no sangue. Algumas atingem valores mais altos, outras mais baixos.
+                        Duas pessoas que tomam{" "}
+                        <strong className="text-foreground">a mesma dose</strong> não têm a mesma
+                        concentração no sangue. Algumas atingem valores mais altos, outras mais
+                        baixos.
                       </p>
                       <p>Isso depende de fatores como:</p>
                       <ul className="list-disc list-inside space-y-1 ml-2">
@@ -1194,9 +1424,11 @@ export default function Simulator() {
                         <li>local da injeção, técnica, tipo de tecido</li>
                       </ul>
                       <p>
-                        Quando a opção <em>"Mostrar variação entre pacientes"</em> está ativa, o programa simula
-                        centenas de pacientes virtuais e mostra a faixa onde a maioria cai. As <strong className="text-foreground">áreas
-                        violeta sombreadas</strong> no gráfico mostram essa variação.
+                        Quando a opção <em>"Mostrar variação entre pacientes"</em> está ativa, o
+                        programa simula centenas de pacientes virtuais e mostra a faixa onde a
+                        maioria cai. As{" "}
+                        <strong className="text-foreground">áreas violeta sombreadas</strong> no
+                        gráfico mostram essa variação.
                       </p>
                     </CardContent>
                   </Card>
@@ -1208,15 +1440,33 @@ export default function Simulator() {
                     <CardContent className="text-sm space-y-2 text-muted-foreground">
                       <div className="flex items-start gap-2">
                         <div className="w-3 h-3 rounded-full bg-amber-500 mt-1 flex-shrink-0" />
-                        <span><strong className="text-foreground">Abaixo de {EUGONADAL_MIN_NGDL} ng/dL — Hipogonádico:</strong> testosterona baixa demais. Pode causar fadiga, baixa libido, perda muscular.</span>
+                        <span>
+                          <strong className="text-foreground">
+                            Abaixo de {EUGONADAL_MIN_NGDL} ng/dL — Hipogonádico:
+                          </strong>{" "}
+                          testosterona baixa demais. Pode causar fadiga, baixa libido, perda
+                          muscular.
+                        </span>
                       </div>
                       <div className="flex items-start gap-2">
                         <div className="w-3 h-3 rounded-full bg-emerald-500 mt-1 flex-shrink-0" />
-                        <span><strong className="text-foreground">Entre {EUGONADAL_MIN_NGDL} e {EUGONADAL_MAX_NGDL} ng/dL — Faixa normal:</strong> valores típicos de um homem adulto saudável (referência harmonizada CDC / Endocrine Society). Esta é a zona-alvo do tratamento.</span>
+                        <span>
+                          <strong className="text-foreground">
+                            Entre {EUGONADAL_MIN_NGDL} e {EUGONADAL_MAX_NGDL} ng/dL — Faixa normal:
+                          </strong>{" "}
+                          valores típicos de um homem adulto saudável (referência harmonizada CDC /
+                          Endocrine Society). Esta é a zona-alvo do tratamento.
+                        </span>
                       </div>
                       <div className="flex items-start gap-2">
                         <div className="w-3 h-3 rounded-full bg-rose-500 mt-1 flex-shrink-0" />
-                        <span><strong className="text-foreground">Acima de 1000 ng/dL — Acima do normal:</strong> pode causar efeitos adversos como aumento de hematócrito, retenção, alteração de humor.</span>
+                        <span>
+                          <strong className="text-foreground">
+                            Acima de 1000 ng/dL — Acima do normal:
+                          </strong>{" "}
+                          pode causar efeitos adversos como aumento de hematócrito, retenção,
+                          alteração de humor.
+                        </span>
                       </div>
                     </CardContent>
                   </Card>
@@ -1227,29 +1477,43 @@ export default function Simulator() {
                     </CardHeader>
                     <CardContent className="text-sm space-y-3 text-muted-foreground leading-relaxed">
                       <p>
-                        O Nebido é um <strong className="text-foreground">depósito de liberação lenta</strong>. Cada injeção
-                        leva cerca de 3 meses para terminar de ser absorvida pelo músculo.
+                        O Nebido é um{" "}
+                        <strong className="text-foreground">depósito de liberação lenta</strong>.
+                        Cada injeção leva cerca de 3 meses para terminar de ser absorvida pelo
+                        músculo.
                       </p>
                       <p>
-                        Por isso, nas <strong className="text-foreground">primeiras 2–4 injeções</strong>, os níveis ainda não atingem o
-                        platô final — a concentração vai aumentando gradualmente até estabilizar (geralmente entre o 3º e o 5º ano de
+                        Por isso, nas{" "}
+                        <strong className="text-foreground">primeiras 2–4 injeções</strong>, os
+                        níveis ainda não atingem o platô final — a concentração vai aumentando
+                        gradualmente até estabilizar (geralmente entre o 3º e o 5º ano de
                         tratamento, dependendo do intervalo entre doses).
                       </p>
                       <p>
-                        Por isso também, ajustes de dose só devem ser feitos depois de medir a testosterona em um momento
-                        já estabilizado, normalmente <strong className="text-foreground">imediatamente antes da próxima injeção</strong> (no vale).
+                        Por isso também, ajustes de dose só devem ser feitos depois de medir a
+                        testosterona em um momento já estabilizado, normalmente{" "}
+                        <strong className="text-foreground">
+                          imediatamente antes da próxima injeção
+                        </strong>{" "}
+                        (no vale).
                       </p>
                     </CardContent>
                   </Card>
 
                   <Card className="md:col-span-2 lodi-card">
                     <CardHeader>
-                      <CardTitle className="text-sm">Detalhes técnicos (para quem quer entender mais)</CardTitle>
+                      <CardTitle className="text-sm">
+                        Detalhes técnicos (para quem quer entender mais)
+                      </CardTitle>
                     </CardHeader>
                     <CardContent className="text-xs space-y-3 text-muted-foreground">
                       <p>
-                        Modelo farmacocinético de <strong className="text-foreground">2 compartimentos com absorção de 1ª ordem</strong>
-                        e <em>efeito flip-flop</em>: a absorção (ka) é mais lenta que a eliminação (k10), tornando-se o fator limitante da curva.
+                        Modelo farmacocinético de{" "}
+                        <strong className="text-foreground">
+                          2 compartimentos com absorção de 1ª ordem
+                        </strong>
+                        e <em>efeito flip-flop</em>: a absorção (ka) é mais lenta que a eliminação
+                        (k10), tornando-se o fator limitante da curva.
                       </p>
                       <div className="font-mono bg-muted rounded p-2 space-y-1 text-[11px]">
                         <p>dA_depósito/dt = −ka · A_depósito</p>
@@ -1257,17 +1521,20 @@ export default function Simulator() {
                         <p>dA_periférico/dt = k12 · A_central − k21 · A_periférico</p>
                       </div>
                       <p>
-                        Parâmetros (Nebido 1000 mg): ka = 0,049/dia (t½ absorção ≈ 14 dias);
-                        k10 = 0,0077/dia; k12 = 0,012/dia; k21 = 0,006/dia.
+                        Parâmetros (Nebido 1000 mg): ka = 0,049/dia (t½ absorção ≈ 14 dias); k10 =
+                        0,0077/dia; k12 = 0,012/dia; k21 = 0,006/dia.
                       </p>
                       <p>
-                        Variação entre pacientes simulada por <strong className="text-foreground">método de Monte Carlo</strong>:
-                        para cada paciente virtual, sorteia-se um conjunto de parâmetros a partir de distribuições log-normais
-                        (CV de 30–45%) calibradas com dados de Behre, Nieschlag e Bhasin et al.
+                        Variação entre pacientes simulada por{" "}
+                        <strong className="text-foreground">método de Monte Carlo</strong>: para
+                        cada paciente virtual, sorteia-se um conjunto de parâmetros a partir de
+                        distribuições log-normais (CV de 30–45%) calibradas com dados de Behre,
+                        Nieschlag e Bhasin et al.
                       </p>
                       <p className="opacity-80">
-                        Limitações: não inclui SHBG, variação circadiana, interações medicamentosas nem aromatização.
-                        Para decisões clínicas reais, use exames laboratoriais do próprio paciente.
+                        Limitações: não inclui SHBG, variação circadiana, interações medicamentosas
+                        nem aromatização. Para decisões clínicas reais, use exames laboratoriais do
+                        próprio paciente.
                       </p>
                     </CardContent>
                   </Card>
