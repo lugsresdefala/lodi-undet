@@ -156,27 +156,29 @@ function CustomTooltipMC({ active, payload, label, unidade }: {
 
 type Tema = "light" | "dark";
 
-function getTemaInicial(): Tema {
-  if (typeof document === "undefined") return "dark";
-  return document.documentElement.classList.contains("dark") ? "dark" : "light";
-}
-
-function getTemaExplicitoInicial(): boolean {
-  if (typeof localStorage === "undefined") return false;
-  try {
-    const t = localStorage.getItem("lodi-theme");
-    return t === "light" || t === "dark";
-  } catch {
-    return false;
-  }
-}
-
 export default function Simulator() {
   const [config, setConfig] = useState<ConfigSimulador>(CONFIG_INICIAL);
   const [isCalculating, setIsCalculating] = useState(false);
   const [aba, setAba] = useState("grafico");
-  const [tema, setTema] = useState<Tema>(getTemaInicial);
-  const [temaExplicito, setTemaExplicito] = useState<boolean>(getTemaExplicitoInicial);
+  const [tema, setTema] = useState<Tema>("light");
+  const [temaExplicito, setTemaExplicito] = useState(false);
+
+  useEffect(() => {
+    try {
+      const temaSalvo = localStorage.getItem("lodi-theme");
+      if (temaSalvo === "light" || temaSalvo === "dark") {
+        setTema(temaSalvo);
+        setTemaExplicito(true);
+        return;
+      }
+    } catch {
+      // ignora armazenamento indisponível
+    }
+
+    if (window.matchMedia?.("(prefers-color-scheme: dark)").matches) {
+      setTema("dark");
+    }
+  }, []);
 
   useEffect(() => {
     const root = document.documentElement;
