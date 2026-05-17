@@ -463,7 +463,7 @@ export default function Simulator() {
             </div>
           </div>
 
-          <Separator />
+          <Separator className="lg:hidden" />
 
           <div>
             <h2 className="text-sm font-semibold mb-3">Como exibir</h2>
@@ -550,7 +550,7 @@ export default function Simulator() {
             </div>
           </div>
 
-          <Separator />
+          <Separator className="lg:hidden" />
 
           {/* Cronograma de doses */}
           <div>
