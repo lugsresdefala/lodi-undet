@@ -140,6 +140,10 @@ function Index() {
           <PkCalculator />
         </section>
 
+        <section id="paciente" className="scroll-mt-24">
+          <PatientPanel />
+        </section>
+
         <section id="cronologia" className="scroll-mt-24">
           <EffectsTimeline />
         </section>
