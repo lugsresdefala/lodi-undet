@@ -122,7 +122,7 @@ export function PatientPanel() {
               1) Exames laboratoriais (ng/dL)
             </p>
             <p className="text-[11px] leading-snug text-muted-foreground">
-              Pelo menos um dos dois valores, colhidos depois da 4.ª–5.ª injecção no mesmo
+              Pelo menos um dos dois valores, coletados após a 4ª–5ª injeção no mesmo
               esquema. Quanto mais pontos, melhor a calibração.
             </p>
 
@@ -130,7 +130,7 @@ export function PatientPanel() {
               <Label className="flex items-center justify-between text-xs">
                 <span>Pico medido (Cmax)</span>
                 <span className="text-[10px] text-muted-foreground">
-                  ~1 sem após injecção
+                  ~1 sem após injeção
                 </span>
               </Label>
               <Input
@@ -150,7 +150,7 @@ export function PatientPanel() {
               <Label className="flex items-center justify-between text-xs">
                 <span>Vale medido (Cmin)</span>
                 <span className="text-[10px] text-muted-foreground">
-                  antes da injecção seguinte
+                  antes da injeção seguinte
                 </span>
               </Label>
               <Input
@@ -277,10 +277,10 @@ export function PatientPanel() {
               {/* Perfil individual + cenário atual */}
               <div className="rounded-lg border border-border/70 bg-background/60 p-4">
                 <h3 className="text-sm font-semibold text-foreground">
-                  Perfil desta pessoa — situação actual
+                  Perfil desta pessoa — situação atual
                 </h3>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Calculado a partir das medidas informadas, no regime actual (
+                  Calculado a partir das medidas informadas, no regime atual (
                   {parseFloat(pacienteIn.doseMg)} mg a cada{" "}
                   {parseFloat(pacienteIn.intervaloSemanas)} semanas).
                 </p>
@@ -288,7 +288,7 @@ export function PatientPanel() {
                 <div className="mt-3 flex items-baseline gap-3 rounded-md border border-primary/30 bg-primary/5 p-3">
                   <div className="flex-1">
                     <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                      Cmédia actual (calculada)
+                      Cmédia atual (calculada)
                     </div>
                     <div className="text-2xl font-semibold tabular-nums text-primary">
                       {Math.round(recomendacao.cenarioAtual.cavgSSNgdl)}
@@ -325,11 +325,11 @@ export function PatientPanel() {
 
                 <div className="mt-3 grid grid-cols-3 gap-2 text-xs">
                   <MetricSmall
-                    label="Pico actual"
+                    label="Pico atual"
                     value={`${Math.round(recomendacao.cenarioAtual.cmaxSSNgdl)} ng/dL`}
                   />
                   <MetricSmall
-                    label="Vale actual"
+                    label="Vale atual"
                     value={`${Math.round(recomendacao.cenarioAtual.cminSSNgdl)} ng/dL`}
                   />
                   <MetricSmall
@@ -368,7 +368,7 @@ export function PatientPanel() {
                   </h3>
                   <p className="mt-1 text-xs text-muted-foreground">
                     Predição de pico, vale e tempo na faixa eugonádica para diferentes
-                    espaçamentos entre doses, mantendo a dose actual.
+                    espaçamentos entre doses, mantendo a dose atual.
                   </p>
                 </div>
                 <div className="mt-3 overflow-x-auto">
@@ -456,7 +456,7 @@ export function PatientPanel() {
 
               <p className="rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-[11px] leading-relaxed text-amber-700 dark:text-amber-300">
                 <strong>Importante:</strong> a recomendação assume que as medidas foram
-                colhidas em estado estacionário (≥ 4.ª–5.ª injecção no mesmo esquema).
+                coletadas em estado estacionário (≥ 4ª–5ª injeção no mesmo esquema).
                 Antes disso os valores ainda estão a subir e não reflectem a
                 sensibilidade real. Qualquer ajuste deve ser validado com nova análise e
                 avaliação clínica.
