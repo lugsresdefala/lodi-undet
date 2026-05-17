@@ -139,11 +139,7 @@ function Index() {
         <MedicalDisclaimer />
 
         <section id="calculadora" className="scroll-mt-24">
-          <PkCalculator />
-        </section>
-
-        <section id="paciente" className="scroll-mt-24">
-          <PatientPanel />
+          <Simulator />
         </section>
 
         <section id="cronologia" className="scroll-mt-24">
