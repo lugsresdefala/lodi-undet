@@ -79,8 +79,8 @@ export function PkCalculator() {
   // === Modo individual: titulação a partir de medição sérica ===
   const [individualMode, setIndividualMode] = useState<boolean>(false);
   const [measuredValue, setMeasuredValue] = useState<number>(550); // ng/dL medido no paciente
-  const [sampleDayAfterDose, setSampleDayAfterDose] = useState<number>(84); // dia da colheita no intervalo atual
-  const [dosesBeforeSample, setDosesBeforeSample] = useState<number>(4); // n.º de doses no MESMO esquema antes da colheita
+  const [sampleDayAfterDose, setSampleDayAfterDose] = useState<number>(84); // dia da coleta no intervalo atual
+  const [dosesBeforeSample, setDosesBeforeSample] = useState<number>(4); // n.º de doses no MESMO esquema antes da coleta
 
   // === Controlos do gráfico ===
   const [showBand, setShowBand] = useState<boolean>(true);
@@ -145,7 +145,7 @@ export function PkCalculator() {
   // === Titulação individual ===
   // Uma medição isolada só é utilizável se o dia pós-dose for conhecido e o
   // esquema estiver em estado estacionário. O modelo é então calibrado por um
-  // factor individual no mesmo tempo de colheita; isto estima a exposição média
+  // fator individual no mesmo tempo de coleta; isto estima a exposição média
   // desse indivíduo, não "converte" genericamente vale em média.
   const individualResult = useMemo(() => {
     if (!individualMode || measuredValue <= 0 || targetCmean <= 0) return null;
@@ -179,7 +179,7 @@ export function PkCalculator() {
   // Validações: a calibração só é fiável em estado estacionário e com timing
   // bem definido. Regra prática (Rowland & Tozer): ≈4–5 × t½ aparente para
   // atingir 90–97% de Css. Com t½ de libertação ≈90 d isto significa ~360–450 dias
-  // no MESMO esquema (dose + τ) antes da colheita.
+  // no MESMO esquema (dose + τ) antes da coleta.
   const individualWarnings = useMemo(() => {
     if (!individualMode) return [] as { level: "error" | "warn"; msg: string }[];
     const warnings: { level: "error" | "warn"; msg: string }[] = [];
@@ -194,25 +194,25 @@ export function PkCalculator() {
     } else if (timeOnRegimen < ssTimeFull) {
       warnings.push({
         level: "warn",
-        msg: `Estado estacionário apenas parcial (~94% de Css). Idealmente ≥ ${Math.round(ssTimeFull)} d (${Math.ceil(ssTimeFull / params.intervalDays)} doses) no mesmo esquema antes da colheita.`,
+        msg: `Estado estacionário apenas parcial (~94% de Css). Idealmente ≥ ${Math.round(ssTimeFull)} d (${Math.ceil(ssTimeFull / params.intervalDays)} doses) no mesmo esquema antes da coleta.`,
       });
     }
     if (sampleDayAfterDose <= 3) {
       warnings.push({
         level: "warn",
-        msg: "Colheita muito próxima da injecção (≤3 d): fase de subida com elevada variabilidade; o factor individual pode estar inflacionado.",
+        msg: "Coleta muito próxima da injeção (≤3 d): fase de subida com elevada variabilidade; o fator individual pode estar inflacionado.",
       });
     }
     if (sampleDayAfterDose >= params.intervalDays - 1) {
       warnings.push({
         level: "warn",
-        msg: "Colheita em vale: representativa do mínimo, mas extrapolar Cmédia depende fortemente da forma da curva — confirmar com pelo menos uma segunda medição em momento diferente.",
+        msg: "Coleta em vale: representativa do mínimo, mas extrapolar Cmédia depende fortemente da forma da curva — confirmar com pelo menos uma segunda medição em momento diferente.",
       });
     }
     if (individualResult && (individualResult.exposureRatio < 0.5 || individualResult.exposureRatio > 2)) {
       warnings.push({
         level: "warn",
-        msg: `Factor individual extremo (${(individualResult.exposureRatio * 100).toFixed(0)}%): verifique se a dose, intervalo e dia da colheita inseridos correspondem ao realmente praticado.`,
+        msg: `Fator individual extremo (${(individualResult.exposureRatio * 100).toFixed(0)}%): verifique se a dose, intervalo e dia da coleta inseridos correspondem ao realmente praticado.`,
       });
     }
     return warnings;
@@ -395,7 +395,7 @@ export function PkCalculator() {
             <div className="border-t border-border/50 pt-3 space-y-3">
               <label className="flex items-start gap-3 cursor-pointer">
                 <Switch
-                  aria-label="Activar titulação individual a partir de medição sérica"
+                  aria-label="Ativar titulação individual a partir de medição sérica"
                   checked={individualMode}
                   onCheckedChange={setIndividualMode}
                   className="mt-0.5"
@@ -421,7 +421,7 @@ export function PkCalculator() {
                     onChange={setMeasuredValue}
                   />
                   <Control
-                    label="Dia da colheita após a última injecção"
+                    label="Dia da coleta após a última injeção"
                     unit="dias"
                     value={Math.min(sampleDayAfterDose, params.intervalDays)}
                     min={1}
@@ -431,7 +431,7 @@ export function PkCalculator() {
                     onChange={setSampleDayAfterDose}
                   />
                   <Control
-                    label="Doses já feitas no MESMO esquema antes da colheita"
+                    label="Doses já feitas no MESMO esquema antes da coleta"
                     unit="doses"
                     value={dosesBeforeSample}
                     min={1}
@@ -467,7 +467,7 @@ export function PkCalculator() {
                           {Math.round(individualResult.predictedAtSample)} ng/dL
                         </span>{" "}
                         <span className="text-[11px]">
-                          → factor individual {(individualResult.exposureRatio * 100).toFixed(0)}%
+                          → fator individual {(individualResult.exposureRatio * 100).toFixed(0)}%
                         </span>
                       </div>
                       <div className="text-muted-foreground">
@@ -516,7 +516,7 @@ export function PkCalculator() {
 
             <p className="text-xs leading-relaxed text-muted-foreground">
               Uma medição única apenas calibra a curva no dia informado. Titulação clínica real
-              requer medições em condições estáveis (≥3 doses no mesmo τ), momento de colheita
+              requer medições em condições estáveis (≥3 doses no mesmo τ), momento de coleta
               documentado e ajuste por sintomas/hematócrito.
             </p>
           </section>
@@ -530,13 +530,13 @@ export function PkCalculator() {
               <span className="text-xs text-muted-foreground">parâmetros que pode ajustar</span>
             </div>
             <Control
-              label="Dose por injecção"
+              label="Dose por injeção"
               unit="mg"
               value={params.doseMg}
               min={250}
               max={1500}
               step={10}
-              hint="Quantidade de undecilato de testosterona (TU) por injecção intramuscular. Apresentação padrão: 1000 mg em 4 mL de óleo de rícino."
+              hint="Quantidade de undecilato de testosterona (TU) por injeção intramuscular. Apresentação padrão: 1000 mg em 4 mL de óleo de rícino."
               source="SmPC Nebido / Reandron"
               onChange={(v) => update({ doseMg: v })}
             />
