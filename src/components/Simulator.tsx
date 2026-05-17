@@ -363,18 +363,6 @@ export default function Simulator() {
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            onClick={alternarTema}
-            data-testid="button-tema"
-            aria-label={tema === "dark" ? "Mudar para tema claro" : "Mudar para tema escuro"}
-            title={tema === "dark" ? "Mudar para tema claro" : "Mudar para tema escuro"}
-            className="h-8 w-8"
-          >
-            {tema === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-          </Button>
           <Badge
             variant="outline"
             className="text-[10px] gap-1 border-accent/40 text-accent uppercase tracking-wider"
