@@ -704,7 +704,7 @@ export default function Simulator() {
               </TabsList>
 
               <TabsContent value="grafico" className="space-y-5">
-                <section className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
+                <section className="overflow-visible rounded-lg border border-border bg-card shadow-sm">
                   <div className="border-b border-border/70 px-4 py-4 sm:px-5">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                       <div>
@@ -757,12 +757,12 @@ export default function Simulator() {
                         injeção
                       </span>
                     </div>
-                    <div className="-mx-3 overflow-x-auto px-3 pb-2 sm:mx-0 sm:px-0">
-                      <div className="h-[460px] min-w-[760px] rounded-md border border-border/60 bg-[linear-gradient(180deg,color-mix(in_oklab,var(--color-background)_92%,var(--color-chart-2)),var(--color-background)_42%,color-mix(in_oklab,var(--color-background)_94%,var(--color-chart-1)))] p-3 sm:h-[520px] sm:min-w-0 sm:p-4">
+                    <div className="-mx-3 overflow-x-auto overflow-y-visible px-3 pb-3 [scrollbar-gutter:stable] sm:-mx-5 sm:px-5">
+                      <div className="h-[460px] w-full min-w-[760px] rounded-md border border-border/60 bg-[linear-gradient(180deg,color-mix(in_oklab,var(--color-background)_92%,var(--color-chart-2)),var(--color-background)_42%,color-mix(in_oklab,var(--color-background)_94%,var(--color-chart-1)))] p-3 sm:h-[520px] sm:p-4">
                         <ResponsiveContainer width="100%" height="100%">
                         <ComposedChart
                           data={dadosGrafico}
-                          margin={{ top: 18, right: 26, left: 8, bottom: 44 }}
+                          margin={{ top: 18, right: 34, left: 10, bottom: 60 }}
                         >
                           <CartesianGrid
                             strokeDasharray="3 3"
@@ -777,6 +777,7 @@ export default function Simulator() {
                             minTickGap={12}
                             label={{ value: "Semanas desde a 1ª injeção", position: "insideBottom", offset: -24, fontSize: 11, fill: "var(--color-muted-foreground)" }}
                             tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
+                            tickMargin={8}
                             axisLine={{ stroke: "var(--color-border)" }}
                             tickLine={{ stroke: "var(--color-border)" }}
                           />
@@ -784,9 +785,10 @@ export default function Simulator() {
                             domain={[0, yMax]}
                             tickCount={6}
                             tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
+                            tickMargin={8}
                             axisLine={{ stroke: "var(--color-border)" }}
                             tickLine={{ stroke: "var(--color-border)" }}
-                            width={66}
+                            width={74}
                             label={{
                               value: `Testosterona (${unLabel})`,
                               angle: -90,
@@ -796,7 +798,11 @@ export default function Simulator() {
                               offset: 8,
                             }}
                           />
-                          <Tooltip content={<CustomTooltipMC unidade={config.unidade} />} />
+                          <Tooltip
+                            allowEscapeViewBox={{ x: true, y: true }}
+                            content={<CustomTooltipMC unidade={config.unidade} />}
+                            wrapperStyle={{ outline: "none", zIndex: 20 }}
+                          />
 
                           {/* Zona eugonadal */}
                           <ReferenceArea
