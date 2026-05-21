@@ -151,7 +151,7 @@ function CustomTooltipMC({
   };
 
   return (
-    <div className="min-w-[240px] rounded-lg border border-border/80 bg-popover/95 p-3.5 text-xs shadow-xl backdrop-blur-md">
+    <div className="w-[220px] max-w-[calc(100vw-2rem)] rounded-lg border border-border/80 bg-popover/95 p-3.5 text-xs shadow-xl backdrop-blur-md">
       <div className="mb-3 flex items-start justify-between gap-4 border-b border-border/60 pb-2">
         <div>
           <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
@@ -798,9 +798,9 @@ export default function Simulator() {
                         injeção
                       </span>
                     </div>
-                    <div className="-mx-3 overflow-x-auto overflow-y-visible px-3 pb-3 [scrollbar-gutter:stable] sm:-mx-5 sm:px-5">
+                    <div className="-mx-3 overflow-x-auto overflow-y-visible px-3 pb-3 [scrollbar-color:color-mix(in_oklab,var(--color-primary)_34%,transparent)_transparent] [scrollbar-gutter:stable] [scrollbar-width:thin] sm:-mx-5 sm:px-5 [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-primary/25 [&::-webkit-scrollbar-track]:bg-transparent">
                       <div
-                        className="h-[480px] w-full min-w-[760px] rounded-lg border border-border/70 bg-card p-3 shadow-inner sm:h-[540px] sm:p-4"
+                        className="h-[480px] w-full min-w-[760px] rounded-lg border border-border/70 bg-card p-3 shadow-inner sm:h-[520px] sm:p-4"
                         style={{
                           background:
                             "linear-gradient(180deg, color-mix(in oklab, var(--color-card) 93%, var(--color-chart-2)), var(--color-card) 54%, color-mix(in oklab, var(--color-card) 94%, var(--color-chart-1)))",
@@ -859,8 +859,9 @@ export default function Simulator() {
                           />
                           <Tooltip
                             allowEscapeViewBox={{ x: true, y: true }}
+                            offset={14}
                             content={<CustomTooltipMC unidade={config.unidade} />}
-                            wrapperStyle={{ outline: "none", zIndex: 20 }}
+                            wrapperStyle={{ outline: "none", zIndex: 20, transform: "translateX(-100%)" }}
                           />
 
                           {/* Zona eugonadal */}
