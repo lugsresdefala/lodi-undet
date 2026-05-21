@@ -129,13 +129,19 @@ function CustomTooltipMC({
   unidade,
 }: {
   active?: boolean;
-  payload?: { value: number | [number, number]; name: string; color?: string }[];
+  payload?: {
+    value: number | [number, number];
+    name: string;
+    color?: string;
+    payload?: { dia?: number };
+  }[];
   label?: number;
   unidade: UnidadeConc;
 }) {
   if (!active || !payload || !payload.length) return null;
   const unit = unidade === "ngdl" ? "ng/dL" : "nmol/L";
   const semana = label !== undefined ? Math.round(label) : "-";
+  const dia = payload[0]?.payload?.dia;
   const casas = unidade === "nmol" ? 1 : 0;
   const formatarValor = (valor: number | [number, number]) => {
     if (Array.isArray(valor)) {
@@ -145,14 +151,32 @@ function CustomTooltipMC({
   };
 
   return (
-    <div className="min-w-[190px] rounded-md border border-border bg-popover/95 p-3 text-xs shadow-lg backdrop-blur">
-      <div className="mb-2 font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-        Semana {semana}
+    <div className="w-[220px] max-w-[calc(100vw-2rem)] rounded-lg border border-border/80 bg-popover/95 p-3.5 text-xs shadow-xl backdrop-blur-md">
+      <div className="mb-3 flex items-start justify-between gap-4 border-b border-border/60 pb-2">
+        <div>
+          <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+            Semana {semana}
+          </div>
+          {typeof dia === "number" && (
+            <div className="mt-0.5 font-mono text-[11px] text-muted-foreground">
+              dia {Math.round(dia)}
+            </div>
+          )}
+        </div>
+        <div className="rounded-full border border-border bg-muted/40 px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
+          {unit}
+        </div>
       </div>
       {payload.map((p, i) => (
-        <div key={i} className="flex items-baseline justify-between gap-4 py-0.5 text-muted-foreground">
-          <span className="max-w-[9rem] truncate">{p.name}</span>
-          <span className="font-mono text-[11px] font-medium text-foreground">
+        <div key={i} className="flex items-baseline justify-between gap-5 py-1 text-muted-foreground">
+          <span className="flex min-w-0 items-center gap-2">
+            <span
+              className="h-2 w-2 shrink-0 rounded-full"
+              style={{ backgroundColor: p.color ?? "var(--color-primary)" }}
+            />
+            <span className="truncate">{p.name}</span>
+          </span>
+          <span className="font-mono text-[12px] font-semibold tabular-nums text-foreground">
             {formatarValor(p.value)}
           </span>
         </div>
@@ -346,6 +370,13 @@ export default function Simulator() {
   );
 
   const xTickFormatter = (v: number) => `sem ${Math.round(v)}`;
+  const yTickFormatter = (v: number) =>
+    config.unidade === "nmol" ? v.toFixed(1) : Math.round(v).toLocaleString("pt-BR");
+  const eixoTick = {
+    fontSize: 11,
+    fill: "var(--color-muted-foreground)",
+    fontFamily: "var(--font-mono)",
+  };
 
   const yMax = useMemo(() => {
     const valores = dadosGrafico.flatMap((p) => {
@@ -704,9 +735,9 @@ export default function Simulator() {
               </TabsList>
 
               <TabsContent value="grafico" className="space-y-5">
-                <section className="overflow-visible rounded-lg border border-border bg-card shadow-sm">
+                <section className="overflow-visible rounded-lg border border-border/70 bg-card shadow-sm">
                   <div className="border-b border-border/70 px-4 py-4 sm:px-5">
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                       <div>
                         <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                           Curva farmacocinética
@@ -715,8 +746,18 @@ export default function Simulator() {
                           Testosterona no sangue
                         </h3>
                       </div>
-                      <div className="font-mono text-[11px] text-muted-foreground sm:text-right">
-                        {config.doseMg} mg · {config.cargaSchubert ? "Schubert 0/6/12 sem" : `${(config.intervaloDias / 7).toFixed(0)} em ${(config.intervaloDias / 7).toFixed(0)} sem`}
+                      <div className="flex flex-wrap gap-2 sm:justify-end">
+                        <span className="rounded-full border border-border bg-background px-2.5 py-1 font-mono text-[10px] text-muted-foreground">
+                          {config.doseMg} mg
+                        </span>
+                        <span className="rounded-full border border-border bg-background px-2.5 py-1 font-mono text-[10px] text-muted-foreground">
+                          {config.cargaSchubert
+                            ? "Schubert 0/6/12 sem"
+                            : `a cada ${(config.intervaloDias / 7).toFixed(0)} sem`}
+                        </span>
+                        <span className="rounded-full border border-border bg-background px-2.5 py-1 font-mono text-[10px] text-muted-foreground">
+                          {unLabel}
+                        </span>
                       </div>
                     </div>
                     <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted-foreground">
@@ -757,17 +798,43 @@ export default function Simulator() {
                         injeção
                       </span>
                     </div>
-                    <div className="-mx-3 overflow-x-auto overflow-y-visible px-3 pb-3 [scrollbar-gutter:stable] sm:-mx-5 sm:px-5">
-                      <div className="h-[460px] w-full min-w-[760px] rounded-md border border-border/60 bg-[linear-gradient(180deg,color-mix(in_oklab,var(--color-background)_92%,var(--color-chart-2)),var(--color-background)_42%,color-mix(in_oklab,var(--color-background)_94%,var(--color-chart-1)))] p-3 sm:h-[520px] sm:p-4">
+                    <div className="-mx-3 overflow-x-auto overflow-y-visible px-3 pb-3 [scrollbar-color:color-mix(in_oklab,var(--color-primary)_34%,transparent)_transparent] [scrollbar-gutter:stable] [scrollbar-width:thin] sm:-mx-5 sm:px-5 [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-primary/25 [&::-webkit-scrollbar-track]:bg-transparent">
+                      <div
+                        className="h-[480px] w-full min-w-[760px] rounded-lg border border-border/70 bg-card p-3 shadow-inner sm:h-[520px] sm:p-4"
+                        style={{
+                          background:
+                            "linear-gradient(180deg, color-mix(in oklab, var(--color-card) 93%, var(--color-chart-2)), var(--color-card) 54%, color-mix(in oklab, var(--color-card) 94%, var(--color-chart-1)))",
+                        }}
+                      >
                         <ResponsiveContainer width="100%" height="100%">
                         <ComposedChart
                           data={dadosGrafico}
-                          margin={{ top: 18, right: 34, left: 10, bottom: 60 }}
+                          margin={{ top: 24, right: 118, left: 6, bottom: 44 }}
                         >
+                          <defs>
+                            <linearGradient id="banda90" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="var(--color-chart-5)" stopOpacity={0.2} />
+                              <stop offset="100%" stopColor="var(--color-chart-5)" stopOpacity={0.08} />
+                            </linearGradient>
+                            <linearGradient id="banda50" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.34} />
+                              <stop offset="100%" stopColor="var(--color-chart-2)" stopOpacity={0.16} />
+                            </linearGradient>
+                            <filter id="curvaSombra" x="-10%" y="-10%" width="120%" height="120%">
+                              <feDropShadow
+                                dx="0"
+                                dy="3"
+                                stdDeviation="2.4"
+                                floodColor="var(--color-primary)"
+                                floodOpacity="0.22"
+                              />
+                            </filter>
+                          </defs>
                           <CartesianGrid
-                            strokeDasharray="3 3"
+                            vertical={false}
+                            strokeDasharray="2 8"
                             stroke="var(--color-border)"
-                            strokeOpacity={0.42}
+                            strokeOpacity={0.62}
                           />
                           <XAxis
                             dataKey="semana"
@@ -775,31 +842,24 @@ export default function Simulator() {
                             ticks={xTicks}
                             interval={0}
                             minTickGap={12}
-                            label={{ value: "Semanas desde a 1ª injeção", position: "insideBottom", offset: -24, fontSize: 11, fill: "var(--color-muted-foreground)" }}
-                            tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
-                            tickMargin={8}
-                            axisLine={{ stroke: "var(--color-border)" }}
-                            tickLine={{ stroke: "var(--color-border)" }}
+                            tick={eixoTick}
+                            tickMargin={12}
+                            axisLine={false}
+                            tickLine={false}
                           />
                           <YAxis
                             domain={[0, yMax]}
                             tickCount={6}
-                            tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
-                            tickMargin={8}
-                            axisLine={{ stroke: "var(--color-border)" }}
-                            tickLine={{ stroke: "var(--color-border)" }}
-                            width={74}
-                            label={{
-                              value: `Testosterona (${unLabel})`,
-                              angle: -90,
-                              position: "insideLeft",
-                              fontSize: 11,
-                              fill: "var(--color-muted-foreground)",
-                              offset: 8,
-                            }}
+                            tickFormatter={yTickFormatter}
+                            tick={eixoTick}
+                            tickMargin={12}
+                            axisLine={false}
+                            tickLine={false}
+                            width={64}
                           />
                           <Tooltip
                             allowEscapeViewBox={{ x: true, y: true }}
+                            offset={14}
                             content={<CustomTooltipMC unidade={config.unidade} />}
                             wrapperStyle={{ outline: "none", zIndex: 20 }}
                           />
@@ -809,31 +869,21 @@ export default function Simulator() {
                             y1={eugMin}
                             y2={eugMax}
                             fill="var(--color-system-body)"
-                            fillOpacity={0.14}
+                            fillOpacity={0.16}
                           />
                           <ReferenceLine
                             y={eugMin}
                             stroke="var(--color-system-body)"
-                            strokeDasharray="4 4"
+                            strokeDasharray="6 6"
                             strokeWidth={1.2}
-                            label={{
-                              value: `mín. normal (${eugMin.toFixed(config.unidade === "nmol" ? 1 : 0)})`,
-                              position: "right",
-                              fontSize: 9,
-                              fill: "var(--color-system-body)",
-                            }}
+                            opacity={0.72}
                           />
                           <ReferenceLine
                             y={eugMax}
                             stroke="var(--color-system-body)"
-                            strokeDasharray="4 4"
+                            strokeDasharray="6 6"
                             strokeWidth={1.2}
-                            label={{
-                              value: `máx. normal (${eugMax.toFixed(config.unidade === "nmol" ? 1 : 0)})`,
-                              position: "right",
-                              fontSize: 9,
-                              fill: "var(--color-system-body)",
-                            }}
+                            opacity={0.72}
                           />
 
                           {/* Marcadores de doses */}
@@ -844,7 +894,7 @@ export default function Simulator() {
                               stroke="var(--color-chart-4)"
                               strokeWidth={1}
                               strokeDasharray="2 4"
-                              opacity={0.45}
+                              opacity={0.34}
                             />
                           ))}
 
@@ -853,9 +903,9 @@ export default function Simulator() {
                               type="monotone"
                               dataKey="bandaIC90"
                               stroke="none"
-                              fill="var(--color-chart-5)"
-                              fillOpacity={0.14}
-                              name="9 em 10 pacientes"
+                              fill="url(#banda90)"
+                              fillOpacity={1}
+                              name="9 em cada 10"
                               isAnimationActive={false}
                               dot={false}
                               activeDot={false}
@@ -866,8 +916,8 @@ export default function Simulator() {
                               type="monotone"
                               dataKey="bandaIQ50"
                               stroke="none"
-                              fill="var(--color-chart-5)"
-                              fillOpacity={0.28}
+                              fill="url(#banda50)"
+                              fillOpacity={1}
                               name="metade típica"
                               isAnimationActive={false}
                               dot={false}
@@ -877,9 +927,11 @@ export default function Simulator() {
                           <Line
                             type="monotone"
                             dataKey="conc"
-                            stroke="var(--color-chart-2)"
-                            strokeWidth={2.6}
+                            stroke="var(--color-primary)"
+                            strokeWidth={3}
                             dot={false}
+                            activeDot={{ r: 5, strokeWidth: 2, stroke: "var(--color-card)", fill: "var(--color-primary)" }}
+                            filter="url(#curvaSombra)"
                             isAnimationActive={false}
                             name={
                               config.mostrarMonteCarlo && resultadoMC
@@ -890,10 +942,11 @@ export default function Simulator() {
 
                           <Brush
                             dataKey="semana"
-                            height={16}
+                            height={20}
+                            fill="var(--color-card)"
                             stroke="var(--color-border)"
-                            tickFormatter={xTickFormatter}
-                            travellerWidth={6}
+                            tickFormatter={() => ""}
+                            travellerWidth={8}
                           />
                         </ComposedChart>
                         </ResponsiveContainer>
