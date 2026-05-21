@@ -809,7 +809,7 @@ export default function Simulator() {
                         <ResponsiveContainer width="100%" height="100%">
                         <ComposedChart
                           data={dadosGrafico}
-                          margin={{ top: 24, right: 30, left: 6, bottom: 44 }}
+                          margin={{ top: 24, right: 118, left: 6, bottom: 44 }}
                         >
                           <defs>
                             <linearGradient id="banda90" x1="0" y1="0" x2="0" y2="1">
@@ -861,7 +861,7 @@ export default function Simulator() {
                             allowEscapeViewBox={{ x: true, y: true }}
                             offset={14}
                             content={<CustomTooltipMC unidade={config.unidade} />}
-                            wrapperStyle={{ outline: "none", zIndex: 20, transform: "translateX(-100%)" }}
+                            wrapperStyle={{ outline: "none", zIndex: 20 }}
                           />
 
                           {/* Zona eugonadal */}
