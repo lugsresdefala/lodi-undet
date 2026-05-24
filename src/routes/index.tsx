@@ -82,7 +82,8 @@ function Index() {
       {/* Top bar */}
       <header className="border-b border-border/70">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-5 md:px-8">
-          <a href="#top" className="flex items-baseline gap-2">
+          <a href="#top" className="flex items-center gap-3">
+            <img src={lodiLogo} alt="" className="h-9 w-9 select-none" draggable={false} />
             <span className="font-serif text-xl font-medium tracking-tight">lodi-t</span>
             <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
               v2 · referência
