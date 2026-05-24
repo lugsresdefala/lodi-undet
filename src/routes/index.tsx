@@ -82,13 +82,11 @@ function Index() {
       {/* Top bar */}
       <header className="border-b border-border/70 bg-background/85 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-8">
-          <a href="#top" className="flex items-center">
-            <img
-              src={lodiLogo}
-              alt="L.O.D.I"
-              className="h-auto w-24 select-none object-contain md:w-28"
-              draggable={false}
-            />
+          <a
+            href="#top"
+            className="font-mono text-sm font-medium uppercase tracking-[0.28em] text-foreground"
+          >
+            L.O.D.I
           </a>
           <nav className="hidden gap-6 text-sm text-muted-foreground md:flex">
             <a href="#calculadora" className="transition-colors hover:text-foreground">
