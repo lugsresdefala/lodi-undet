@@ -52,7 +52,7 @@ export const Route = createFileRoute("/")({
           description:
             "Modelo farmacocinético do undecilato de testosterona e cronologia de efeitos descritos pela Endocrine Society 2017 e WPATH SOC-8.",
           url: "https://lodi-undet.lovable.app/",
-          inLanguage: "pt-BR",
+          inLanguage: "pt-PT",
           about: {
             "@type": "MedicalCondition",
             name: "Hormonização masculinizante com testosterona",
@@ -80,13 +80,13 @@ function Index() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Top bar */}
-      <header className="border-b border-border/70 bg-background/85 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-8">
-          <a
-            href="#top"
-            className="font-mono text-sm font-medium uppercase tracking-[0.28em] text-foreground"
-          >
-            L.O.D.I
+      <header className="border-b border-border/70">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-5 md:px-8">
+          <a href="#top" className="flex items-baseline gap-2">
+            <span className="font-serif text-xl font-medium tracking-tight">lodi-t</span>
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+              v2 · referência
+            </span>
           </a>
           <nav className="hidden gap-6 text-sm text-muted-foreground md:flex">
             <a href="#calculadora" className="transition-colors hover:text-foreground">
@@ -103,7 +103,7 @@ function Index() {
       </header>
 
       {/* Hero */}
-      <section id="top" className="lodi-instrument-field relative overflow-hidden border-b border-border/70">
+      <section id="top" className="relative overflow-hidden border-b border-border/70">
         <div className="relative mx-auto max-w-6xl px-4 py-16 md:px-8 md:py-24">
           <div className="grid items-center gap-10 md:grid-cols-[1.1fr_1fr]">
             <div>
@@ -133,11 +133,11 @@ function Index() {
                 educativa, não dosimétrica.
               </p>
             </div>
-            <div className="relative mx-auto w-full max-w-lg">
+            <div className="relative mx-auto w-full max-w-sm">
               <img
                 src={lodiLogo}
                 alt="L.O.D.I — emblema instrumental"
-                className="lodi-hero-logo h-auto w-full select-none"
+                className="h-auto w-full select-none"
                 draggable={false}
               />
             </div>
