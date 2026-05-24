@@ -86,7 +86,7 @@ function Index() {
             <img
               src={lodiLogo}
               alt="L.O.D.I"
-              className="h-14 w-36 select-none object-cover object-center"
+              className="h-12 w-auto select-none object-contain"
               draggable={false}
             />
             <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
