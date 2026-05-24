@@ -82,7 +82,8 @@ function Index() {
       {/* Top bar */}
       <header className="border-b border-border/70">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-5 md:px-8">
-          <a href="#top" className="flex items-baseline gap-2">
+          <a href="#top" className="flex items-center gap-3">
+            <img src={lodiLogo} alt="" className="h-9 w-9 select-none" draggable={false} />
             <span className="font-serif text-xl font-medium tracking-tight">lodi-t</span>
             <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
               v2 · referência
@@ -113,19 +114,6 @@ function Index() {
               <h1 className="mt-4 font-serif text-3xl font-medium leading-[1.1] tracking-tight sm:text-4xl md:text-5xl">
                 Lógica para Dose Individualizada — Notas, cronologia e farmacocinética.
               </h1>
-              {/* tick rule — eco do mostrador instrumental do emblema */}
-              <div
-                aria-hidden
-                className="mt-6 h-3 w-40 max-w-full opacity-60"
-                style={{
-                  backgroundImage:
-                    "repeating-linear-gradient(to right, var(--color-foreground) 0 1px, transparent 1px 8px)",
-                  WebkitMaskImage:
-                    "linear-gradient(to right, black, black 85%, transparent)",
-                  maskImage:
-                    "linear-gradient(to right, black, black 85%, transparent)",
-                }}
-              />
               <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground">
                 Modelo farmacocinético do undecilato de testosterona para ajuste
                 individualizado dos intervalos posológicos. Janelas temporais de efeitos
