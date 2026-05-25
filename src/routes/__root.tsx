@@ -1,5 +1,6 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 
+import { SiteBackdrop, SiteFooter, SiteHeader } from "@/components/SiteChrome";
 import appCss from "../styles.css?url";
 
 const SITE_TITLE = "lodi-t — Hormonização com testosterona, referência clínica";
@@ -103,5 +104,12 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
-  return <Outlet />;
+  return (
+    <div className="relative min-h-screen overflow-x-clip bg-background text-foreground">
+      <SiteBackdrop />
+      <SiteHeader />
+      <Outlet />
+      <SiteFooter />
+    </div>
+  );
 }
