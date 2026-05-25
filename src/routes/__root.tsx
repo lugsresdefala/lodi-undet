@@ -104,5 +104,12 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
-  return <Outlet />;
+  return (
+    <div className="relative min-h-screen overflow-x-clip bg-background text-foreground">
+      <SiteBackdrop />
+      <SiteHeader />
+      <Outlet />
+      <SiteFooter />
+    </div>
+  );
 }
