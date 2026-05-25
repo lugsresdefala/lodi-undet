@@ -1,5 +1,6 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 
+import { SiteBackdrop, SiteFooter, SiteHeader } from "@/components/SiteChrome";
 import appCss from "../styles.css?url";
 
 const SITE_TITLE = "lodi-t — Hormonização com testosterona, referência clínica";
