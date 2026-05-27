@@ -481,7 +481,7 @@ export default function Simulator() {
                 <Slider
                   data-testid="slider-intervalo"
                   min={42}
-                  max={168}
+                  max={112}
                   step={7}
                   value={[config.intervaloDias]}
                   onValueChange={([v]) => setConfig((c) => ({ ...c, intervaloDias: v }))}
@@ -489,8 +489,9 @@ export default function Simulator() {
                 />
                 <div className="flex justify-between text-xs text-muted-foreground">
                   <span>6 sem</span>
-                  <span>24 sem</span>
+                  <span>16 sem</span>
                 </div>
+
               </div>
 
               <div className="space-y-2">
