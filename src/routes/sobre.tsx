@@ -77,11 +77,11 @@ function SobrePage() {
           <p>
             O undecilato de testosterona (1000 mg IM) é frequentemente prescrito em
             intervalos fixos de 10 a 14 semanas. Na prática, a variação individual de
-            clearance produz vales (C<sub>média</sub>) heterogêneos, com queixas no fim do
-            ciclo. Este projeto propõe um modelo de ajuste do <strong>intervalo</strong>{" "}
-            posológico — mantendo a dose fixa — para atingir uma meta individual de
-            C<sub>média</sub>, e mede o impacto desse ajuste em satisfação e qualidade de
-            vida ao longo de seis meses.
+            clearance produz exposições médias (C<sub>média</sub>) heterogêneas, com
+            queixas no fim do ciclo. Este projeto propõe um modelo de ajuste do{" "}
+            <strong>intervalo</strong> posológico — mantendo a dose fixa — para atingir
+            uma meta individual de C<sub>média</sub>, e mede o impacto desse ajuste em
+            satisfação e qualidade de vida ao longo de seis meses.
           </p>
         </Block>
 
