@@ -72,6 +72,13 @@ const cards = [
     title: "Mapa por sistema",
     desc: "Efeitos esperados, reversíveis e permanentes, organizados por sistema.",
   },
+  {
+    to: "/sobre" as const,
+    n: "04",
+    eyebrow: "Projeto de pesquisa",
+    title: "Sobre o estudo",
+    desc: "Racional, hipótese e métodos: satisfação e qualidade de vida após ajuste de intervalo por meta de Cmin.",
+  },
 ];
 
 function Index() {
