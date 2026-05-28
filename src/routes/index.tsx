@@ -148,7 +148,7 @@ function Index() {
               <dl className="animate-rise delay-400 mt-12 grid max-w-xl grid-cols-3 gap-6 border-t border-border/70 pt-6 font-mono text-xs">
                 {[
                   { k: "1000 mg", v: "Undecilato IM" },
-                  { k: "10–14 sem", v: "Intervalo típico" },
+                  { k: "6–16 sem", v: "Intervalo ajustável" },
                   { k: "6 sistemas", v: "Efeitos descritos" },
                 ].map((s) => (
                   <div key={s.k}>
