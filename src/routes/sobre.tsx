@@ -10,13 +10,13 @@ export const Route = createFileRoute("/sobre")({
       {
         name: "description",
         content:
-          "Projeto de pesquisa sobre satisfação e qualidade de vida após ajuste de intervalo posológico do undecilato de testosterona, guiado por meta individual de Cmin.",
+          "Projeto de pesquisa sobre satisfação e qualidade de vida após ajuste de intervalo posológico do undecilato de testosterona, guiado por meta individual de Cmédia.",
       },
       { property: "og:title", content: "Sobre o projeto — lodi-t" },
       {
         property: "og:description",
         content:
-          "Estrutura de pesquisa: satisfação e qualidade de vida após ajuste individualizado do intervalo de undecilato de testosterona por meta de Cmin.",
+          "Estrutura de pesquisa: satisfação e qualidade de vida após ajuste individualizado do intervalo de undecilato de testosterona por meta de Cmédia.",
       },
       { rel: "canonical", href: "https://lodi-undet.lovable.app/sobre" } as never,
     ],
@@ -57,14 +57,14 @@ function SobrePage() {
         Satisfação e qualidade de vida após ajuste individualizado do{" "}
         <span className="italic text-foreground/80">intervalo</span> do undecilato de
         testosterona, guiado por meta de C
-        <sub>min</sub>.
+        <sub>média</sub>.
       </h1>
 
       <p className="mt-6 max-w-3xl text-pretty text-base leading-relaxed text-muted-foreground md:text-lg">
         Estrutura de projeto de pesquisa em formato acadêmico. Reúne o racional clínico,
         a hipótese, os métodos e os desfechos para avaliar se ajustar o intervalo entre
         aplicações — e não a dose — a partir de uma meta individual de concentração
-        mínima (C<sub>min</sub>) melhora a satisfação subjetiva e a qualidade de vida de
+        média (C<sub>média</sub>) melhora a satisfação subjetiva e a qualidade de vida de
         pessoas em hormonização com testosterona.
       </p>
 
@@ -77,11 +77,11 @@ function SobrePage() {
           <p>
             O undecilato de testosterona (1000 mg IM) é frequentemente prescrito em
             intervalos fixos de 10 a 14 semanas. Na prática, a variação individual de
-            clearance produz vales (C<sub>min</sub>) heterogêneos, com queixas no fim do
-            ciclo. Este projeto propõe um modelo de ajuste do <strong>intervalo</strong>{" "}
-            posológico — mantendo a dose fixa — para atingir uma meta individual de
-            C<sub>min</sub>, e mede o impacto desse ajuste em satisfação e qualidade de
-            vida ao longo de seis meses.
+            clearance produz exposições médias (C<sub>média</sub>) heterogêneas, com
+            queixas no fim do ciclo. Este projeto propõe um modelo de ajuste do{" "}
+            <strong>intervalo</strong> posológico — mantendo a dose fixa — para atingir
+            uma meta individual de C<sub>média</sub>, e mede o impacto desse ajuste em
+            satisfação e qualidade de vida ao longo de seis meses.
           </p>
         </Block>
 
@@ -89,18 +89,20 @@ function SobrePage() {
           <p>
             Diretrizes (Endocrine Society 2017; WPATH SOC-8) recomendam alvos de
             testosterona total dentro da faixa fisiológica masculina, sem prescrever um
-            esquema único. A literatura descreve que sintomas de fim de ciclo se
-            associam mais ao <em>vale</em> do que à média ou ao pico. Ajustar o intervalo
-            individualmente, com base em modelo farmacocinético e medições reais, é uma
-            estratégia simples, de baixo custo e potencialmente superior ao esquema
-            fixo em desfechos centrados na pessoa.
+            esquema único. A exposição média ao longo do ciclo (C<sub>média</sub>) é o
+            parâmetro que melhor representa o estado hormonal sustentado entre aplicações
+            e é diretamente comparável à faixa fisiológica de referência. Ajustar o
+            intervalo individualmente, com base em modelo farmacocinético e medições
+            reais, para atingir uma C<sub>média</sub> alvo é uma estratégia simples, de
+            baixo custo e potencialmente superior ao esquema fixo em desfechos centrados
+            na pessoa.
           </p>
         </Block>
 
         <Block n="03" title="Hipótese">
           <p>
             Pessoas em uso de undecilato de testosterona cujo intervalo posológico é
-            ajustado para uma meta individual de C<sub>min</sub> apresentam, em 6 meses,
+            ajustado para uma meta individual de C<sub>média</sub> apresentam, em 6 meses,
             melhora clinicamente relevante em satisfação subjetiva e em qualidade de
             vida, em comparação com o intervalo fixo prévio.
           </p>
@@ -111,7 +113,7 @@ function SobrePage() {
           <ul className="list-disc pl-5 text-muted-foreground">
             <li>
               Avaliar a variação na satisfação subjetiva com a hormonização após 6 meses
-              de intervalo ajustado por meta de C<sub>min</sub>.
+              de intervalo ajustado por meta de C<sub>média</sub>.
             </li>
           </ul>
           <p className="mt-3 font-medium text-foreground">Secundários</p>
@@ -120,7 +122,7 @@ function SobrePage() {
             <li>
               Variação em sintomas de fim de ciclo (energia, libido, humor, sono).
             </li>
-            <li>Concordância entre C<sub>min</sub> previsto pelo modelo e medido.</li>
+            <li>Concordância entre C<sub>média</sub> previsto pelo modelo e medido.</li>
             <li>Aderência e segurança (eventos adversos relatados).</li>
           </ul>
         </Block>
@@ -131,7 +133,7 @@ function SobrePage() {
             Estudo prospectivo, intra-sujeito (cada participante é seu próprio
             controle), com duas fases: <strong>basal</strong> (intervalo fixo prévio,
             8 semanas de observação) e <strong>intervenção</strong> (intervalo ajustado
-            por meta de C<sub>min</sub>, 24 semanas).
+            por meta de C<sub>média</sub>, 24 semanas).
           </p>
 
           <p className="mt-4 font-medium text-foreground">População</p>
@@ -147,7 +149,7 @@ function SobrePage() {
           <p className="mt-4 font-medium text-foreground">Intervenção</p>
           <ol className="list-decimal pl-5 text-muted-foreground">
             <li>
-              Definição da meta individual de C<sub>min</sub> em conjunto com o médico
+              Definição da meta individual de C<sub>média</sub> em conjunto com o médico
               assistente, dentro da faixa fisiológica.
             </li>
             <li>
@@ -176,7 +178,7 @@ function SobrePage() {
           <p className="mt-4 font-medium text-foreground">Coleta</p>
           <p>
             Aplicação na entrada (T0), ao final do basal (T1), e nas semanas 8, 16 e 24
-            da intervenção (T2–T4). Dados de C<sub>min</sub> previsto vs. medido são
+            da intervenção (T2–T4). Dados de C<sub>média</sub> previsto vs. medido são
             registrados a cada ciclo.
           </p>
         </Block>
@@ -190,7 +192,7 @@ function SobrePage() {
             <li>
               <strong>Secundários:</strong> diferença em WHOQOL-BREF por domínio;
               redução de dias com sintomas de fim de ciclo; erro absoluto médio entre
-              C<sub>min</sub> previsto e medido; aderência ao intervalo; eventos
+              C<sub>média</sub> previsto e medido; aderência ao intervalo; eventos
               adversos.
             </li>
           </ul>
