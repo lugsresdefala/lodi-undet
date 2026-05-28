@@ -64,7 +64,7 @@ function SobrePage() {
         Estrutura de projeto de pesquisa em formato acadêmico. Reúne o racional clínico,
         a hipótese, os métodos e os desfechos para avaliar se ajustar o intervalo entre
         aplicações — e não a dose — a partir de uma meta individual de concentração
-        mínima (C<sub>média</sub>) melhora a satisfação subjetiva e a qualidade de vida de
+        média (C<sub>média</sub>) melhora a satisfação subjetiva e a qualidade de vida de
         pessoas em hormonização com testosterona.
       </p>
 
