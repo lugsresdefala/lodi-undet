@@ -89,11 +89,13 @@ function SobrePage() {
           <p>
             Diretrizes (Endocrine Society 2017; WPATH SOC-8) recomendam alvos de
             testosterona total dentro da faixa fisiológica masculina, sem prescrever um
-            esquema único. A literatura descreve que sintomas de fim de ciclo se
-            associam mais ao <em>vale</em> do que à média ou ao pico. Ajustar o intervalo
-            individualmente, com base em modelo farmacocinético e medições reais, é uma
-            estratégia simples, de baixo custo e potencialmente superior ao esquema
-            fixo em desfechos centrados na pessoa.
+            esquema único. A exposição média ao longo do ciclo (C<sub>média</sub>) é o
+            parâmetro que melhor representa o estado hormonal sustentado entre aplicações
+            e é diretamente comparável à faixa fisiológica de referência. Ajustar o
+            intervalo individualmente, com base em modelo farmacocinético e medições
+            reais, para atingir uma C<sub>média</sub> alvo é uma estratégia simples, de
+            baixo custo e potencialmente superior ao esquema fixo em desfechos centrados
+            na pessoa.
           </p>
         </Block>
 
