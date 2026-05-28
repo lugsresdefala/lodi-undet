@@ -57,7 +57,7 @@ function SobrePage() {
         Satisfação e qualidade de vida após ajuste individualizado do{" "}
         <span className="italic text-foreground/80">intervalo</span> do undecilato de
         testosterona, guiado por meta de C
-        <sub>min</sub>.
+        <sub>média</sub>.
       </h1>
 
       <p className="mt-6 max-w-3xl text-pretty text-base leading-relaxed text-muted-foreground md:text-lg">
