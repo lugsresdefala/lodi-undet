@@ -99,10 +99,19 @@ function SobrePage() {
           </p>
         </Block>
 
-        <Block n="03" title="Hipótese">
+        <Block n="03" title="Pergunta de pesquisa e hipótese">
+          <p className="font-medium text-foreground">Pergunta</p>
           <p>
-            Pessoas em uso de undecilato de testosterona cujo intervalo posológico é
-            ajustado para uma meta individual de C<sub>média</sub> apresentam, em 6 meses,
+            Ajustar o <strong>intervalo</strong> entre aplicações de undecilato de
+            testosterona com base no cálculo desta plataforma (modelo PK do simulador
+            lodi-t), visando uma <strong>meta individual de C<sub>média</sub></strong>,
+            altera a satisfação subjetiva com a hormonização em comparação ao intervalo
+            fixo prévio?
+          </p>
+          <p className="mt-3 font-medium text-foreground">Hipótese</p>
+          <p>
+            Pessoas cujo intervalo posológico é ajustado pelo cálculo da plataforma para
+            atingir a meta individual de C<sub>média</sub> apresentam, em 6 meses,
             melhora clinicamente relevante em satisfação subjetiva e em qualidade de
             vida, em comparação com o intervalo fixo prévio.
           </p>
@@ -112,8 +121,9 @@ function SobrePage() {
           <p className="font-medium text-foreground">Primário</p>
           <ul className="list-disc pl-5 text-muted-foreground">
             <li>
-              Avaliar a variação na satisfação subjetiva com a hormonização após 6 meses
-              de intervalo ajustado por meta de C<sub>média</sub>.
+              Avaliar o efeito, sobre a satisfação subjetiva com a hormonização, de
+              ajustar o intervalo posológico conforme o cálculo da plataforma para uma
+              meta individual de C<sub>média</sub>, após 6 meses de intervenção.
             </li>
           </ul>
           <p className="mt-3 font-medium text-foreground">Secundários</p>
