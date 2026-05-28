@@ -76,7 +76,7 @@ function SobrePage() {
         <Block n="01" title="Resumo">
           <p>
             O undecilato de testosterona (1000 mg IM) é frequentemente prescrito em
-            intervalos fixos de 10 a 14 semanas. Na prática, a variação individual de
+            intervalos fixos (geralmente 10–14 semanas, com faixa prática de 6–16 semanas). Na prática, a variação individual de
             clearance produz exposições médias (C<sub>média</sub>) heterogêneas, com
             queixas no fim do ciclo. Este projeto propõe um modelo de ajuste do{" "}
             <strong>intervalo</strong> posológico — mantendo a dose fixa — para atingir
