@@ -24,7 +24,7 @@ const SITE_JSONLD = {
   name: "lodi-t",
   url: SITE_URL,
   description: SITE_DESCRIPTION,
-  inLanguage: "pt-PT",
+  inLanguage: "pt-BR",
 };
 
 function NotFoundComponent() {
@@ -91,7 +91,7 @@ export const Route = createRootRoute({
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-PT">
+    <html lang="pt-BR">
       <head>
         <HeadContent />
       </head>

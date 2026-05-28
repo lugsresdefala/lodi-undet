@@ -4,6 +4,7 @@ const nav = [
   { to: "/calculadora", label: "Calculadora" },
   { to: "/cronologia", label: "Cronologia" },
   { to: "/efeitos", label: "Efeitos" },
+  { to: "/sobre", label: "Sobre" },
 ] as const;
 
 export function SiteBackdrop() {
