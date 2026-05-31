@@ -1,16 +1,33 @@
 import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
-  type StripeEnv,
   createStripeClient,
   getStripeErrorMessage,
 } from "@/lib/stripe.server";
+
+const environmentSchema = z.enum(["sandbox", "live"]);
+
+const checkoutInputSchema = z.object({
+  priceId: z
+    .string()
+    .min(1)
+    .max(255)
+    .regex(/^[a-zA-Z0-9_-]+$/, "priceId inválido"),
+  returnUrl: z.string().url().max(2048),
+  environment: environmentSchema,
+});
+
+const portalInputSchema = z.object({
+  returnUrl: z.string().url().max(2048).optional(),
+  environment: environmentSchema,
+});
 
 type CheckoutResult = { clientSecret: string } | { error: string };
 
 export const createCheckoutSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { priceId: string; returnUrl: string; environment: StripeEnv }) => data)
+  .inputValidator((data: unknown) => checkoutInputSchema.parse(data))
   .handler(async ({ data, context }): Promise<CheckoutResult> => {
     const { userId } = context;
     try {
@@ -38,7 +55,7 @@ type PortalResult = { url: string } | { error: string };
 
 export const createPortalSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { returnUrl?: string; environment: StripeEnv }) => data)
+  .inputValidator((data: unknown) => portalInputSchema.parse(data))
   .handler(async ({ data, context }): Promise<PortalResult> => {
     const { supabase, userId } = context;
     const { data: sub, error } = await (supabase as any)
