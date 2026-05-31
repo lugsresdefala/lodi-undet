@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 
 const nav = [
@@ -20,15 +21,25 @@ export function SiteBackdrop() {
 
 export function SiteHeader() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const [open, setOpen] = useState(false);
+
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 glass">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 md:px-8">
-        <Link to="/" className="group flex items-baseline gap-3">
-          <span className="font-serif text-xl font-medium tracking-tight">lodi-t</span>
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-8 md:py-4">
+        <Link
+          to="/"
+          onClick={() => setOpen(false)}
+          className="group flex items-baseline gap-2 md:gap-3"
+        >
+          <span className="font-serif text-lg font-medium tracking-tight md:text-xl">
+            lodi-t
+          </span>
           <span className="hidden font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground sm:inline">
             v2 · referência clínica
           </span>
         </Link>
+
+        {/* Desktop nav */}
         <nav className="hidden items-center gap-1 md:flex">
           {nav.map((item) => {
             const active = pathname === item.to;
@@ -51,6 +62,76 @@ export function SiteHeader() {
           <Link
             to="/calculadora"
             className="inline-flex items-center gap-1.5 rounded-full border border-foreground/15 bg-foreground px-3.5 py-1.5 text-xs font-medium text-background transition-transform hover:-translate-y-px"
+          >
+            Abrir simulador
+            <span aria-hidden>→</span>
+          </Link>
+        </nav>
+
+        {/* Mobile toggle */}
+        <button
+          type="button"
+          aria-label={open ? "Fechar menu" : "Abrir menu"}
+          aria-expanded={open}
+          aria-controls="mobile-nav"
+          onClick={() => setOpen((v) => !v)}
+          className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border/70 bg-card/60 text-foreground transition-colors hover:border-foreground/30 md:hidden"
+        >
+          <span className="relative block h-3.5 w-4">
+            <span
+              className={
+                "absolute left-0 top-0 h-px w-full bg-current transition-transform " +
+                (open ? "translate-y-[7px] rotate-45" : "")
+              }
+            />
+            <span
+              className={
+                "absolute left-0 top-[7px] h-px w-full bg-current transition-opacity " +
+                (open ? "opacity-0" : "opacity-100")
+              }
+            />
+            <span
+              className={
+                "absolute left-0 top-[14px] h-px w-full bg-current transition-transform " +
+                (open ? "-translate-y-[7px] -rotate-45" : "")
+              }
+            />
+          </span>
+        </button>
+      </div>
+
+      {/* Mobile menu */}
+      <div
+        id="mobile-nav"
+        className={
+          "overflow-hidden border-t border-border/60 md:hidden " +
+          (open ? "max-h-[80vh]" : "max-h-0")
+        }
+        style={{ transition: "max-height 240ms ease" }}
+      >
+        <nav className="flex flex-col gap-1 px-4 py-4">
+          {nav.map((item) => {
+            const active = pathname === item.to;
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                onClick={() => setOpen(false)}
+                className={
+                  "rounded-xl px-3 py-2.5 text-sm transition-colors " +
+                  (active
+                    ? "bg-foreground/10 text-foreground"
+                    : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground")
+                }
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+          <Link
+            to="/calculadora"
+            onClick={() => setOpen(false)}
+            className="mt-2 inline-flex items-center justify-center gap-1.5 rounded-full bg-foreground px-4 py-2.5 text-sm font-medium text-background"
           >
             Abrir simulador
             <span aria-hidden>→</span>
