@@ -48,15 +48,13 @@ function ContaPage() {
 
   const isActive = sub && ["active", "trialing"].includes(sub.status);
 
-  async function onSubscribe() {
-    setBusy(true); setError(null);
-    const r = await checkout({
-      data: { priceId: "api_pro_monthly", returnUrl: window.location.origin + "/conta", environment: env },
-    });
-    setBusy(false);
-    if ("error" in r) { setError(r.error); return; }
-    // redireciona ao hosted checkout via clientSecret embedded — abrir nova aba simples:
-    window.location.href = `https://checkout.stripe.com/c/pay/${r.clientSecret}`;
+  function onSubscribe() {
+    setError(null);
+    if (!hasPaymentsConfigured()) {
+      setError("Pagamentos não configurados neste ambiente.");
+      return;
+    }
+    setCheckoutOpen(true);
   }
 
   async function onManage() {
