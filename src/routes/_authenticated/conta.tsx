@@ -124,6 +124,20 @@ function ContaPage() {
             </button>
           )}
         </div>
+        {checkoutOpen && !isActive && (
+          <div className="mt-6">
+            <StripeEmbeddedCheckout
+              priceId="api_pro_monthly"
+              returnUrl={window.location.origin + "/conta"}
+            />
+            <button
+              onClick={() => setCheckoutOpen(false)}
+              className="mt-3 text-xs text-muted-foreground hover:text-foreground"
+            >
+              cancelar
+            </button>
+          </div>
+        )}
       </section>
 
       <section className="mt-8 rounded-lg border border-border bg-card/40 p-6">
