@@ -2,14 +2,15 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { getStripeEnvironment } from "@/lib/stripe-env";
+import { getStripeEnvironment, hasPaymentsConfigured } from "@/lib/stripe-env";
 import {
   createApiKey,
   getMySubscription,
   listApiKeys,
   revokeApiKey,
 } from "@/lib/account.functions";
-import { createCheckoutSession, createPortalSession } from "@/lib/payments.functions";
+import { createPortalSession } from "@/lib/payments.functions";
+import { StripeEmbeddedCheckout } from "@/components/StripeEmbeddedCheckout";
 
 export const Route = createFileRoute("/_authenticated/conta")({
   component: ContaPage,
