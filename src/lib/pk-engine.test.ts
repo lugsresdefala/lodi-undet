@@ -108,8 +108,8 @@ describe("recomendação de intervalo", () => {
     const rec = recomendarIntervalo({
       doseMg: 1000,
       intervaloDias: 84,
-      cmaxObservadoNgdl: 940,
-      cminObservadoNgdl: 460,
+      cmaxObsNgdl: 940,
+      cminObsNgdl: 460,
     });
     expect(rec.intervaloRecomendadoDias).toBeGreaterThanOrEqual(70);
     expect(rec.intervaloRecomendadoDias).toBeLessThanOrEqual(98);
@@ -119,8 +119,8 @@ describe("recomendação de intervalo", () => {
     const rec = recomendarIntervalo({
       doseMg: 1000,
       intervaloDias: 84,
-      cmaxObservadoNgdl: 700,
-      cminObservadoNgdl: 200,
+      cmaxObsNgdl: 700,
+      cminObsNgdl: 200,
     });
     // Ou recomenda intervalo menor, ou sinaliza que nenhum intervalo é seguro.
     expect(
@@ -133,14 +133,14 @@ describe("recomendação de intervalo", () => {
     const baixo = recomendarIntervalo({
       doseMg: 1000,
       intervaloDias: 84,
-      cmaxObservadoNgdl: 500,
-      cminObservadoNgdl: 230,
+      cmaxObsNgdl: 500,
+      cminObsNgdl: 230,
     });
     const alto = recomendarIntervalo({
       doseMg: 1000,
       intervaloDias: 84,
-      cmaxObservadoNgdl: 1400,
-      cminObservadoNgdl: 700,
+      cmaxObsNgdl: 1400,
+      cminObsNgdl: 700,
     });
     expect(baixo.fatorIndividual).toBeLessThan(alto.fatorIndividual);
   });
