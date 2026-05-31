@@ -32,12 +32,14 @@ export function SiteHeader() {
           onClick={() => setOpen(false)}
           className="group flex items-center gap-2 md:gap-3"
         >
-          <img
-            src={lodiLogo}
-            alt="lodi-t"
-            className="h-8 w-8 select-none md:h-9 md:w-9"
-            draggable={false}
-          />
+          <span className="relative inline-flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full ring-1 ring-border/70 md:h-9 md:w-9">
+            <img
+              src={lodiLogo}
+              alt="lodi-t"
+              className="h-full w-full select-none object-cover scale-[2.2]"
+              draggable={false}
+            />
+          </span>
           <span className="font-serif text-lg font-medium tracking-tight md:text-xl">
             lodi-t
           </span>
