@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
+import lodiLogo from "@/assets/lodi-logo.png";
 
 const nav = [
   { to: "/calculadora", label: "Calculadora" },
@@ -29,8 +30,14 @@ export function SiteHeader() {
         <Link
           to="/"
           onClick={() => setOpen(false)}
-          className="group flex items-baseline gap-2 md:gap-3"
+          className="group flex items-center gap-2 md:gap-3"
         >
+          <img
+            src={lodiLogo}
+            alt="lodi-t"
+            className="h-8 w-8 select-none md:h-9 md:w-9"
+            draggable={false}
+          />
           <span className="font-serif text-lg font-medium tracking-tight md:text-xl">
             lodi-t
           </span>
