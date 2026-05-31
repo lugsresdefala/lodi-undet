@@ -15,6 +15,10 @@ import { Route as EfeitosRouteImport } from './routes/efeitos'
 import { Route as CronologiaRouteImport } from './routes/cronologia'
 import { Route as CalculadoraRouteImport } from './routes/calculadora'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiPublicV1SimulateRouteImport } from './routes/api/public/v1/simulate'
+import { Route as ApiPublicV1RecommendIntervalRouteImport } from './routes/api/public/v1/recommend-interval'
+import { Route as ApiPublicV1MontecarloRouteImport } from './routes/api/public/v1/montecarlo'
+import { Route as ApiPublicV1HealthRouteImport } from './routes/api/public/v1/health'
 
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
@@ -46,6 +50,27 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicV1SimulateRoute = ApiPublicV1SimulateRouteImport.update({
+  id: '/api/public/v1/simulate',
+  path: '/api/public/v1/simulate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicV1RecommendIntervalRoute =
+  ApiPublicV1RecommendIntervalRouteImport.update({
+    id: '/api/public/v1/recommend-interval',
+    path: '/api/public/v1/recommend-interval',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicV1MontecarloRoute = ApiPublicV1MontecarloRouteImport.update({
+  id: '/api/public/v1/montecarlo',
+  path: '/api/public/v1/montecarlo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicV1HealthRoute = ApiPublicV1HealthRouteImport.update({
+  id: '/api/public/v1/health',
+  path: '/api/public/v1/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +79,10 @@ export interface FileRoutesByFullPath {
   '/efeitos': typeof EfeitosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/api/public/v1/health': typeof ApiPublicV1HealthRoute
+  '/api/public/v1/montecarlo': typeof ApiPublicV1MontecarloRoute
+  '/api/public/v1/recommend-interval': typeof ApiPublicV1RecommendIntervalRoute
+  '/api/public/v1/simulate': typeof ApiPublicV1SimulateRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +91,10 @@ export interface FileRoutesByTo {
   '/efeitos': typeof EfeitosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/api/public/v1/health': typeof ApiPublicV1HealthRoute
+  '/api/public/v1/montecarlo': typeof ApiPublicV1MontecarloRoute
+  '/api/public/v1/recommend-interval': typeof ApiPublicV1RecommendIntervalRoute
+  '/api/public/v1/simulate': typeof ApiPublicV1SimulateRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,6 +104,10 @@ export interface FileRoutesById {
   '/efeitos': typeof EfeitosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/api/public/v1/health': typeof ApiPublicV1HealthRoute
+  '/api/public/v1/montecarlo': typeof ApiPublicV1MontecarloRoute
+  '/api/public/v1/recommend-interval': typeof ApiPublicV1RecommendIntervalRoute
+  '/api/public/v1/simulate': typeof ApiPublicV1SimulateRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,6 +118,10 @@ export interface FileRouteTypes {
     | '/efeitos'
     | '/sitemap.xml'
     | '/sobre'
+    | '/api/public/v1/health'
+    | '/api/public/v1/montecarlo'
+    | '/api/public/v1/recommend-interval'
+    | '/api/public/v1/simulate'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -89,6 +130,10 @@ export interface FileRouteTypes {
     | '/efeitos'
     | '/sitemap.xml'
     | '/sobre'
+    | '/api/public/v1/health'
+    | '/api/public/v1/montecarlo'
+    | '/api/public/v1/recommend-interval'
+    | '/api/public/v1/simulate'
   id:
     | '__root__'
     | '/'
@@ -97,6 +142,10 @@ export interface FileRouteTypes {
     | '/efeitos'
     | '/sitemap.xml'
     | '/sobre'
+    | '/api/public/v1/health'
+    | '/api/public/v1/montecarlo'
+    | '/api/public/v1/recommend-interval'
+    | '/api/public/v1/simulate'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -106,6 +155,10 @@ export interface RootRouteChildren {
   EfeitosRoute: typeof EfeitosRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
+  ApiPublicV1HealthRoute: typeof ApiPublicV1HealthRoute
+  ApiPublicV1MontecarloRoute: typeof ApiPublicV1MontecarloRoute
+  ApiPublicV1RecommendIntervalRoute: typeof ApiPublicV1RecommendIntervalRoute
+  ApiPublicV1SimulateRoute: typeof ApiPublicV1SimulateRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -152,6 +205,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/simulate': {
+      id: '/api/public/v1/simulate'
+      path: '/api/public/v1/simulate'
+      fullPath: '/api/public/v1/simulate'
+      preLoaderRoute: typeof ApiPublicV1SimulateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/recommend-interval': {
+      id: '/api/public/v1/recommend-interval'
+      path: '/api/public/v1/recommend-interval'
+      fullPath: '/api/public/v1/recommend-interval'
+      preLoaderRoute: typeof ApiPublicV1RecommendIntervalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/montecarlo': {
+      id: '/api/public/v1/montecarlo'
+      path: '/api/public/v1/montecarlo'
+      fullPath: '/api/public/v1/montecarlo'
+      preLoaderRoute: typeof ApiPublicV1MontecarloRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/health': {
+      id: '/api/public/v1/health'
+      path: '/api/public/v1/health'
+      fullPath: '/api/public/v1/health'
+      preLoaderRoute: typeof ApiPublicV1HealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -162,7 +243,20 @@ const rootRouteChildren: RootRouteChildren = {
   EfeitosRoute: EfeitosRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
+  ApiPublicV1HealthRoute: ApiPublicV1HealthRoute,
+  ApiPublicV1MontecarloRoute: ApiPublicV1MontecarloRoute,
+  ApiPublicV1RecommendIntervalRoute: ApiPublicV1RecommendIntervalRoute,
+  ApiPublicV1SimulateRoute: ApiPublicV1SimulateRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
