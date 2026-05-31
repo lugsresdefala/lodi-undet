@@ -1,15 +1,16 @@
-import type { StripeEnv } from "./stripe.server";
+// Tipo duplicado intencionalmente para não importar de arquivos .server.ts no bundle do cliente.
+export type StripeEnv = "sandbox" | "live";
 
-/**
- * Detecta o ambiente Stripe corrente. Em preview/dev usamos sandbox; em
- * produção publicada usamos live.
- */
+const clientToken = import.meta.env.VITE_PAYMENTS_CLIENT_TOKEN as string | undefined;
+
 export function getStripeEnvironment(): StripeEnv {
-  if (typeof window === "undefined") {
-    return process.env.NODE_ENV === "production" ? "live" : "sandbox";
-  }
-  const host = window.location.hostname;
-  // *.lovable.app publicado (sem `-dev`) = live
-  if (host.endsWith(".lovable.app") && !host.includes("-dev")) return "live";
-  return "sandbox";
+  if (clientToken?.startsWith("pk_test_")) return "sandbox";
+  if (clientToken?.startsWith("pk_live_")) return "live";
+  throw new Error(
+    "Pagamentos não configurados para este build. Conclua o go-live do Stripe no Lovable.",
+  );
+}
+
+export function hasPaymentsConfigured(): boolean {
+  return !!clientToken && (clientToken.startsWith("pk_test_") || clientToken.startsWith("pk_live_"));
 }

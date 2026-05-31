@@ -2,14 +2,15 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { getStripeEnvironment } from "@/lib/stripe-env";
+import { getStripeEnvironment, hasPaymentsConfigured } from "@/lib/stripe-env";
 import {
   createApiKey,
   getMySubscription,
   listApiKeys,
   revokeApiKey,
 } from "@/lib/account.functions";
-import { createCheckoutSession, createPortalSession } from "@/lib/payments.functions";
+import { createPortalSession } from "@/lib/payments.functions";
+import { StripeEmbeddedCheckout } from "@/components/StripeEmbeddedCheckout";
 
 export const Route = createFileRoute("/_authenticated/conta")({
   component: ContaPage,
@@ -17,12 +18,11 @@ export const Route = createFileRoute("/_authenticated/conta")({
 });
 
 function ContaPage() {
-  const env = typeof window !== "undefined" ? getStripeEnvironment() : "sandbox";
+  const env = hasPaymentsConfigured() ? getStripeEnvironment() : "sandbox";
   const fetchKeys = useServerFn(listApiKeys);
   const fetchSub = useServerFn(getMySubscription);
   const createKey = useServerFn(createApiKey);
   const revoke = useServerFn(revokeApiKey);
-  const checkout = useServerFn(createCheckoutSession);
   const portal = useServerFn(createPortalSession);
 
   const [keys, setKeys] = useState<any[]>([]);
@@ -32,6 +32,7 @@ function ContaPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [email, setEmail] = useState<string>("");
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
 
   async function refresh() {
     const [k, s] = await Promise.all([fetchKeys(), fetchSub({ data: { environment: env } })]);
@@ -47,15 +48,13 @@ function ContaPage() {
 
   const isActive = sub && ["active", "trialing"].includes(sub.status);
 
-  async function onSubscribe() {
-    setBusy(true); setError(null);
-    const r = await checkout({
-      data: { priceId: "api_pro_monthly", returnUrl: window.location.origin + "/conta", environment: env },
-    });
-    setBusy(false);
-    if ("error" in r) { setError(r.error); return; }
-    // redireciona ao hosted checkout via clientSecret embedded — abrir nova aba simples:
-    window.location.href = `https://checkout.stripe.com/c/pay/${r.clientSecret}`;
+  function onSubscribe() {
+    setError(null);
+    if (!hasPaymentsConfigured()) {
+      setError("Pagamentos não configurados neste ambiente.");
+      return;
+    }
+    setCheckoutOpen(true);
   }
 
   async function onManage() {
@@ -125,6 +124,20 @@ function ContaPage() {
             </button>
           )}
         </div>
+        {checkoutOpen && !isActive && (
+          <div className="mt-6">
+            <StripeEmbeddedCheckout
+              priceId="api_pro_monthly"
+              returnUrl={window.location.origin + "/conta"}
+            />
+            <button
+              onClick={() => setCheckoutOpen(false)}
+              className="mt-3 text-xs text-muted-foreground hover:text-foreground"
+            >
+              cancelar
+            </button>
+          </div>
+        )}
       </section>
 
       <section className="mt-8 rounded-lg border border-border bg-card/40 p-6">
