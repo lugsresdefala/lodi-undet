@@ -11,10 +11,19 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as EfeitosRouteImport } from './routes/efeitos'
 import { Route as CronologiaRouteImport } from './routes/cronologia'
 import { Route as CalculadoraRouteImport } from './routes/calculadora'
+import { Route as ApiDocsRouteImport } from './routes/api-docs'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedContaRouteImport } from './routes/_authenticated/conta'
+import { Route as ApiPublicV1SimulateRouteImport } from './routes/api/public/v1/simulate'
+import { Route as ApiPublicV1RecommendIntervalRouteImport } from './routes/api/public/v1/recommend-interval'
+import { Route as ApiPublicV1MontecarloRouteImport } from './routes/api/public/v1/montecarlo'
+import { Route as ApiPublicV1HealthRouteImport } from './routes/api/public/v1/health'
+import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
@@ -24,6 +33,11 @@ const SobreRoute = SobreRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EfeitosRoute = EfeitosRouteImport.update({
@@ -41,71 +55,170 @@ const CalculadoraRoute = CalculadoraRouteImport.update({
   path: '/calculadora',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiDocsRoute = ApiDocsRouteImport.update({
+  id: '/api-docs',
+  path: '/api-docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedContaRoute = AuthenticatedContaRouteImport.update({
+  id: '/conta',
+  path: '/conta',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const ApiPublicV1SimulateRoute = ApiPublicV1SimulateRouteImport.update({
+  id: '/api/public/v1/simulate',
+  path: '/api/public/v1/simulate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicV1RecommendIntervalRoute =
+  ApiPublicV1RecommendIntervalRouteImport.update({
+    id: '/api/public/v1/recommend-interval',
+    path: '/api/public/v1/recommend-interval',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicV1MontecarloRoute = ApiPublicV1MontecarloRouteImport.update({
+  id: '/api/public/v1/montecarlo',
+  path: '/api/public/v1/montecarlo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicV1HealthRoute = ApiPublicV1HealthRouteImport.update({
+  id: '/api/public/v1/health',
+  path: '/api/public/v1/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicPaymentsWebhookRoute =
+  ApiPublicPaymentsWebhookRouteImport.update({
+    id: '/api/public/payments/webhook',
+    path: '/api/public/payments/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api-docs': typeof ApiDocsRoute
   '/calculadora': typeof CalculadoraRoute
   '/cronologia': typeof CronologiaRoute
   '/efeitos': typeof EfeitosRoute
+  '/login': typeof LoginRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/conta': typeof AuthenticatedContaRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
+  '/api/public/v1/health': typeof ApiPublicV1HealthRoute
+  '/api/public/v1/montecarlo': typeof ApiPublicV1MontecarloRoute
+  '/api/public/v1/recommend-interval': typeof ApiPublicV1RecommendIntervalRoute
+  '/api/public/v1/simulate': typeof ApiPublicV1SimulateRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api-docs': typeof ApiDocsRoute
   '/calculadora': typeof CalculadoraRoute
   '/cronologia': typeof CronologiaRoute
   '/efeitos': typeof EfeitosRoute
+  '/login': typeof LoginRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/conta': typeof AuthenticatedContaRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
+  '/api/public/v1/health': typeof ApiPublicV1HealthRoute
+  '/api/public/v1/montecarlo': typeof ApiPublicV1MontecarloRoute
+  '/api/public/v1/recommend-interval': typeof ApiPublicV1RecommendIntervalRoute
+  '/api/public/v1/simulate': typeof ApiPublicV1SimulateRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/api-docs': typeof ApiDocsRoute
   '/calculadora': typeof CalculadoraRoute
   '/cronologia': typeof CronologiaRoute
   '/efeitos': typeof EfeitosRoute
+  '/login': typeof LoginRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/_authenticated/conta': typeof AuthenticatedContaRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
+  '/api/public/v1/health': typeof ApiPublicV1HealthRoute
+  '/api/public/v1/montecarlo': typeof ApiPublicV1MontecarloRoute
+  '/api/public/v1/recommend-interval': typeof ApiPublicV1RecommendIntervalRoute
+  '/api/public/v1/simulate': typeof ApiPublicV1SimulateRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/api-docs'
     | '/calculadora'
     | '/cronologia'
     | '/efeitos'
+    | '/login'
     | '/sitemap.xml'
     | '/sobre'
+    | '/conta'
+    | '/api/public/payments/webhook'
+    | '/api/public/v1/health'
+    | '/api/public/v1/montecarlo'
+    | '/api/public/v1/recommend-interval'
+    | '/api/public/v1/simulate'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/api-docs'
     | '/calculadora'
     | '/cronologia'
     | '/efeitos'
+    | '/login'
     | '/sitemap.xml'
     | '/sobre'
+    | '/conta'
+    | '/api/public/payments/webhook'
+    | '/api/public/v1/health'
+    | '/api/public/v1/montecarlo'
+    | '/api/public/v1/recommend-interval'
+    | '/api/public/v1/simulate'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
+    | '/api-docs'
     | '/calculadora'
     | '/cronologia'
     | '/efeitos'
+    | '/login'
     | '/sitemap.xml'
     | '/sobre'
+    | '/_authenticated/conta'
+    | '/api/public/payments/webhook'
+    | '/api/public/v1/health'
+    | '/api/public/v1/montecarlo'
+    | '/api/public/v1/recommend-interval'
+    | '/api/public/v1/simulate'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  ApiDocsRoute: typeof ApiDocsRoute
   CalculadoraRoute: typeof CalculadoraRoute
   CronologiaRoute: typeof CronologiaRoute
   EfeitosRoute: typeof EfeitosRoute
+  LoginRoute: typeof LoginRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
+  ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
+  ApiPublicV1HealthRoute: typeof ApiPublicV1HealthRoute
+  ApiPublicV1MontecarloRoute: typeof ApiPublicV1MontecarloRoute
+  ApiPublicV1RecommendIntervalRoute: typeof ApiPublicV1RecommendIntervalRoute
+  ApiPublicV1SimulateRoute: typeof ApiPublicV1SimulateRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -122,6 +235,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/efeitos': {
@@ -145,6 +265,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CalculadoraRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api-docs': {
+      id: '/api-docs'
+      path: '/api-docs'
+      fullPath: '/api-docs'
+      preLoaderRoute: typeof ApiDocsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -152,16 +286,78 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/conta': {
+      id: '/_authenticated/conta'
+      path: '/conta'
+      fullPath: '/conta'
+      preLoaderRoute: typeof AuthenticatedContaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/api/public/v1/simulate': {
+      id: '/api/public/v1/simulate'
+      path: '/api/public/v1/simulate'
+      fullPath: '/api/public/v1/simulate'
+      preLoaderRoute: typeof ApiPublicV1SimulateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/recommend-interval': {
+      id: '/api/public/v1/recommend-interval'
+      path: '/api/public/v1/recommend-interval'
+      fullPath: '/api/public/v1/recommend-interval'
+      preLoaderRoute: typeof ApiPublicV1RecommendIntervalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/montecarlo': {
+      id: '/api/public/v1/montecarlo'
+      path: '/api/public/v1/montecarlo'
+      fullPath: '/api/public/v1/montecarlo'
+      preLoaderRoute: typeof ApiPublicV1MontecarloRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/health': {
+      id: '/api/public/v1/health'
+      path: '/api/public/v1/health'
+      fullPath: '/api/public/v1/health'
+      preLoaderRoute: typeof ApiPublicV1HealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/payments/webhook': {
+      id: '/api/public/payments/webhook'
+      path: '/api/public/payments/webhook'
+      fullPath: '/api/public/payments/webhook'
+      preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface AuthenticatedRouteChildren {
+  AuthenticatedContaRoute: typeof AuthenticatedContaRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedContaRoute: AuthenticatedContaRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  ApiDocsRoute: ApiDocsRoute,
   CalculadoraRoute: CalculadoraRoute,
   CronologiaRoute: CronologiaRoute,
   EfeitosRoute: EfeitosRoute,
+  LoginRoute: LoginRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
+  ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
+  ApiPublicV1HealthRoute: ApiPublicV1HealthRoute,
+  ApiPublicV1MontecarloRoute: ApiPublicV1MontecarloRoute,
+  ApiPublicV1RecommendIntervalRoute: ApiPublicV1RecommendIntervalRoute,
+  ApiPublicV1SimulateRoute: ApiPublicV1SimulateRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

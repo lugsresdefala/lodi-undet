@@ -5,6 +5,7 @@ const nav = [
   { to: "/cronologia", label: "Cronologia" },
   { to: "/efeitos", label: "Efeitos" },
   { to: "/sobre", label: "Sobre" },
+  { to: "/api-docs", label: "API" },
 ] as const;
 
 export function SiteBackdrop() {
