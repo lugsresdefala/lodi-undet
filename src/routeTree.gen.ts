@@ -19,6 +19,7 @@ import { Route as ApiPublicV1SimulateRouteImport } from './routes/api/public/v1/
 import { Route as ApiPublicV1RecommendIntervalRouteImport } from './routes/api/public/v1/recommend-interval'
 import { Route as ApiPublicV1MontecarloRouteImport } from './routes/api/public/v1/montecarlo'
 import { Route as ApiPublicV1HealthRouteImport } from './routes/api/public/v1/health'
+import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
@@ -71,6 +72,12 @@ const ApiPublicV1HealthRoute = ApiPublicV1HealthRouteImport.update({
   path: '/api/public/v1/health',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicPaymentsWebhookRoute =
+  ApiPublicPaymentsWebhookRouteImport.update({
+    id: '/api/public/payments/webhook',
+    path: '/api/public/payments/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -79,6 +86,7 @@ export interface FileRoutesByFullPath {
   '/efeitos': typeof EfeitosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/v1/health': typeof ApiPublicV1HealthRoute
   '/api/public/v1/montecarlo': typeof ApiPublicV1MontecarloRoute
   '/api/public/v1/recommend-interval': typeof ApiPublicV1RecommendIntervalRoute
@@ -91,6 +99,7 @@ export interface FileRoutesByTo {
   '/efeitos': typeof EfeitosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/v1/health': typeof ApiPublicV1HealthRoute
   '/api/public/v1/montecarlo': typeof ApiPublicV1MontecarloRoute
   '/api/public/v1/recommend-interval': typeof ApiPublicV1RecommendIntervalRoute
@@ -104,6 +113,7 @@ export interface FileRoutesById {
   '/efeitos': typeof EfeitosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/v1/health': typeof ApiPublicV1HealthRoute
   '/api/public/v1/montecarlo': typeof ApiPublicV1MontecarloRoute
   '/api/public/v1/recommend-interval': typeof ApiPublicV1RecommendIntervalRoute
@@ -118,6 +128,7 @@ export interface FileRouteTypes {
     | '/efeitos'
     | '/sitemap.xml'
     | '/sobre'
+    | '/api/public/payments/webhook'
     | '/api/public/v1/health'
     | '/api/public/v1/montecarlo'
     | '/api/public/v1/recommend-interval'
@@ -130,6 +141,7 @@ export interface FileRouteTypes {
     | '/efeitos'
     | '/sitemap.xml'
     | '/sobre'
+    | '/api/public/payments/webhook'
     | '/api/public/v1/health'
     | '/api/public/v1/montecarlo'
     | '/api/public/v1/recommend-interval'
@@ -142,6 +154,7 @@ export interface FileRouteTypes {
     | '/efeitos'
     | '/sitemap.xml'
     | '/sobre'
+    | '/api/public/payments/webhook'
     | '/api/public/v1/health'
     | '/api/public/v1/montecarlo'
     | '/api/public/v1/recommend-interval'
@@ -155,6 +168,7 @@ export interface RootRouteChildren {
   EfeitosRoute: typeof EfeitosRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
+  ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   ApiPublicV1HealthRoute: typeof ApiPublicV1HealthRoute
   ApiPublicV1MontecarloRoute: typeof ApiPublicV1MontecarloRoute
   ApiPublicV1RecommendIntervalRoute: typeof ApiPublicV1RecommendIntervalRoute
@@ -233,6 +247,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1HealthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/payments/webhook': {
+      id: '/api/public/payments/webhook'
+      path: '/api/public/payments/webhook'
+      fullPath: '/api/public/payments/webhook'
+      preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -243,6 +264,7 @@ const rootRouteChildren: RootRouteChildren = {
   EfeitosRoute: EfeitosRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
+  ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   ApiPublicV1HealthRoute: ApiPublicV1HealthRoute,
   ApiPublicV1MontecarloRoute: ApiPublicV1MontecarloRoute,
   ApiPublicV1RecommendIntervalRoute: ApiPublicV1RecommendIntervalRoute,
