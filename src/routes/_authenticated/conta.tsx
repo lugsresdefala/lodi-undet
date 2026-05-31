@@ -18,12 +18,11 @@ export const Route = createFileRoute("/_authenticated/conta")({
 });
 
 function ContaPage() {
-  const env = typeof window !== "undefined" ? getStripeEnvironment() : "sandbox";
+  const env = hasPaymentsConfigured() ? getStripeEnvironment() : "sandbox";
   const fetchKeys = useServerFn(listApiKeys);
   const fetchSub = useServerFn(getMySubscription);
   const createKey = useServerFn(createApiKey);
   const revoke = useServerFn(revokeApiKey);
-  const checkout = useServerFn(createCheckoutSession);
   const portal = useServerFn(createPortalSession);
 
   const [keys, setKeys] = useState<any[]>([]);
@@ -33,6 +32,7 @@ function ContaPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [email, setEmail] = useState<string>("");
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
 
   async function refresh() {
     const [k, s] = await Promise.all([fetchKeys(), fetchSub({ data: { environment: env } })]);
