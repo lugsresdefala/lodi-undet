@@ -1244,11 +1244,11 @@ export default function Simulator() {
                           </CardContent>
                         </Card>
 
-                        {/* Perfil individual: metabolismo + Cavg atual calculado */}
+                        {/* Perfil individual: fator de exposição + Cmédia,SS atual */}
                         <Card>
                           <CardHeader className="pb-2">
                             <CardTitle className="text-sm">
-                              Perfil deste paciente — metabolismo e situação atual
+                              Perfil individual — exposição e regime atual
                             </CardTitle>
                             <CardDescription className="text-xs">
                               Calculado a partir das medidas laboratoriais informadas, no regime
@@ -1331,19 +1331,19 @@ export default function Simulator() {
                             <div className="text-xs">
                               <div className="flex items-center justify-between mb-1">
                                 <span className="text-muted-foreground">
-                                  Sensibilidade à dose deste paciente
+                                  Fator individual de exposição (S = F/V)
                                 </span>
                                 <span className="font-mono font-semibold">
                                   {(recomendacao.fatorIndividual * 100).toFixed(0)}% da média
                                 </span>
                               </div>
                               <p className="text-[11px] text-muted-foreground leading-relaxed">
-                                Este paciente {recomendacao.classificacaoSensibilidade}. Cada
-                                miligrama de undecilato gera{" "}
+                                Estimativa relativa ao parâmetro populacional: cada miligrama de
+                                undecilato gera{" "}
                                 <strong className="text-foreground">
                                   {recomendacao.fatorIndividual.toFixed(2)}×
                                 </strong>{" "}
-                                a concentração que geraria em um paciente de resposta típica.
+                                a concentração prevista para um indivíduo típico. Classificação: {recomendacao.classificacaoSensibilidade}.
                               </p>
                             </div>
                           </CardContent>
