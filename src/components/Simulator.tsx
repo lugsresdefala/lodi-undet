@@ -386,7 +386,7 @@ export default function Simulator() {
       return [p.conc, ...bandas];
     });
     const max = Math.max(eugMax, ...valores);
-    return Math.ceil((max * 1.08) / 100) * 100;
+    return Math.ceil((max * 1.06) / 100) * 100;
   }, [dadosGrafico, eugMax]);
 
   // Ticks de eixo X: a cada 12 semanas (≈ 3 meses) para legibilidade
@@ -571,7 +571,7 @@ export default function Simulator() {
                   <div className="pt-2 space-y-2 border-t border-border">
                     <div className="flex justify-between">
                       <Label className="text-[11px] text-muted-foreground">
-                        N de simulações
+                        Replicações Monte Carlo (N)
                       </Label>
                       <span className="text-[11px] font-mono font-medium">
                         {config.nSimulacoesMC}
@@ -590,10 +590,10 @@ export default function Simulator() {
                       {isCalculating ? (
                         <span className="flex items-center gap-1 text-primary">
                           <span className="inline-block w-2 h-2 rounded-full border border-primary border-t-transparent animate-spin" />
-                          calculando…
+                          simulando…
                         </span>
                       ) : mcConcluido ? (
-                        <span className="text-emerald-600 dark:text-emerald-400">pronto</span>
+                        <span className="text-emerald-600 dark:text-emerald-400">concluído</span>
                       ) : null}
                       <span>500</span>
                     </div>
@@ -607,11 +607,11 @@ export default function Simulator() {
 
           {/* Cronograma de doses */}
           <div>
-            <h2 className="text-sm font-semibold mb-2">Cronograma de doses</h2>
+            <h2 className="text-sm font-semibold mb-2">Cronograma posológico</h2>
             <div className="space-y-1 max-h-40 overflow-y-auto">
               {doses.map((d, i) => (
                 <div key={i} className="flex justify-between text-xs py-0.5">
-                  <span className="text-muted-foreground">Dose {i + 1}</span>
+                  <span className="text-muted-foreground">Administração {i + 1}</span>
                   <span className="font-mono text-foreground">
                     semana {(d.diaDose / 7).toFixed(0)}
                   </span>
@@ -777,21 +777,21 @@ export default function Simulator() {
                         <>
                           <span className="flex items-center gap-1.5">
                             <span
-                              className="inline-block h-2 w-4 rounded-sm"
-                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-5) 18%, transparent)" }}
+                              className="inline-block h-2.5 w-5 rounded-sm border border-border/60"
+                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-5) 28%, transparent)" }}
                             />
                             IC 90 % (p5–p95)
                           </span>
                           <span className="flex items-center gap-1.5">
                             <span
-                              className="inline-block h-2 w-4 rounded-sm"
-                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-2) 30%, transparent)" }}
+                              className="inline-block h-2.5 w-5 rounded-sm border border-border/60"
+                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-2) 42%, transparent)" }}
                             />
                             IIQ 50 % (p25–p75)
                           </span>
                           <span className="flex items-center gap-1.5">
                             <span
-                              className="inline-block h-0.5 w-4"
+                              className="inline-block h-[2px] w-5"
                               style={{ backgroundColor: "var(--color-primary)" }}
                             />
                             mediana populacional
@@ -808,17 +808,17 @@ export default function Simulator() {
                       )}
                       <span className="flex items-center gap-1.5">
                         <span
-                          className="inline-block h-2 w-4 rounded-sm"
-                          style={{ backgroundColor: "color-mix(in oklab, var(--color-system-body) 16%, transparent)" }}
+                            className="inline-block h-2.5 w-5 rounded-sm border border-border/60"
+                            style={{ backgroundColor: "color-mix(in oklab, var(--color-system-body) 24%, transparent)" }}
                         />
                         faixa eugonádica ({EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL} ng/dL)
                       </span>
                       <span className="flex items-center gap-1.5">
                         <span
-                          className="inline-block h-3 w-0.5 border-l border-dashed"
+                            className="inline-block h-4 w-0.5 border-l-2 border-dashed"
                           style={{ borderColor: "var(--color-chart-4)" }}
                         />
-                        dose
+                        administração
                       </span>
                     </div>
 
@@ -832,12 +832,12 @@ export default function Simulator() {
                         >
                           <defs>
                             <linearGradient id="banda90" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="var(--color-chart-5)" stopOpacity={0.2} />
-                              <stop offset="100%" stopColor="var(--color-chart-5)" stopOpacity={0.08} />
+                              <stop offset="0%" stopColor="var(--color-chart-5)" stopOpacity={0.32} />
+                              <stop offset="100%" stopColor="var(--color-chart-5)" stopOpacity={0.14} />
                             </linearGradient>
                             <linearGradient id="banda50" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.34} />
-                              <stop offset="100%" stopColor="var(--color-chart-2)" stopOpacity={0.16} />
+                              <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.46} />
+                              <stop offset="100%" stopColor="var(--color-chart-2)" stopOpacity={0.24} />
                             </linearGradient>
                           </defs>
 
@@ -845,7 +845,7 @@ export default function Simulator() {
                             vertical={false}
                             strokeDasharray="2 8"
                             stroke="var(--color-border)"
-                            strokeOpacity={0.62}
+                            strokeOpacity={0.72}
                           />
                           <XAxis
                             dataKey="semana"
@@ -880,21 +880,21 @@ export default function Simulator() {
                             y1={eugMin}
                             y2={eugMax}
                             fill="var(--color-system-body)"
-                            fillOpacity={0.16}
+                            fillOpacity={0.22}
                           />
                           <ReferenceLine
                             y={eugMin}
                             stroke="var(--color-system-body)"
                             strokeDasharray="6 6"
                             strokeWidth={1.2}
-                            opacity={0.72}
+                            opacity={0.82}
                           />
                           <ReferenceLine
                             y={eugMax}
                             stroke="var(--color-system-body)"
                             strokeDasharray="6 6"
                             strokeWidth={1.2}
-                            opacity={0.72}
+                            opacity={0.82}
                           />
 
                           {/* Marcadores de doses */}
@@ -903,9 +903,9 @@ export default function Simulator() {
                               key={i}
                               x={d.diaDose / 7}
                               stroke="var(--color-chart-4)"
-                              strokeWidth={1}
+                              strokeWidth={1.35}
                               strokeDasharray="2 4"
-                              opacity={0.34}
+                              opacity={0.5}
                             />
                           ))}
 
@@ -939,7 +939,7 @@ export default function Simulator() {
                             type="monotone"
                             dataKey="conc"
                             stroke="var(--color-primary)"
-                            strokeWidth={2.25}
+                            strokeWidth={2.6}
                             dot={false}
                             activeDot={{ r: 4, strokeWidth: 2, stroke: "var(--color-card)", fill: "var(--color-primary)" }}
                             isAnimationActive={false}
@@ -1009,9 +1009,9 @@ export default function Simulator() {
                         Dados do paciente
                       </CardTitle>
                       <CardDescription className="text-xs">
-                        Informe a dose atual, o intervalo entre injeções e{" "}
-                        <strong>pelo menos um valor laboratorial</strong> (pico ou vale) medido após
-                        o paciente já estar estabilizado (a partir da 4ª-5ª injeção).
+                        Informe a dose atual, o intervalo entre administrações e{" "}
+                        <strong>pelo menos um valor laboratorial</strong> (Cmax,SS ou Cmin,SS) medido
+                        no estado estacionário, a partir da 4ª–5ª administração.
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
@@ -1053,16 +1053,16 @@ export default function Simulator() {
                           1) Exames do paciente (ng/dL)
                         </p>
                         <p className="text-[11px] text-muted-foreground leading-snug">
-                          Informe pelo menos UM dos dois valores abaixo (preferencialmente os dois).
-                          O sistema usa essas medidas para identificar o metabolismo individual
-                          deste paciente.
+                          Informe pelo menos um dos dois valores abaixo, preferencialmente ambos.
+                          O algoritmo usa essas medidas para estimar o fator individual de exposição
+                          (S = F/V) deste paciente.
                         </p>
 
                         <div className="space-y-1.5">
                           <Label className="text-xs flex items-center justify-between">
-                            <span>Pico medido (Cmax)</span>
+                            <span>Pico medido (Cmax,SS)</span>
                             <span className="text-[10px] text-muted-foreground">
-                              ~1 sem após injeção
+                              ~1 sem após administração
                             </span>
                           </Label>
                           <Input
@@ -1081,9 +1081,9 @@ export default function Simulator() {
 
                         <div className="space-y-1.5">
                           <Label className="text-xs flex items-center justify-between">
-                            <span>Vale medido (Cmin)</span>
+                            <span>Vale medido (Cmin,SS)</span>
                             <span className="text-[10px] text-muted-foreground">
-                              imediatamente antes da próxima dose
+                              antes da próxima administração
                             </span>
                           </Label>
                           <Input
@@ -1105,10 +1105,10 @@ export default function Simulator() {
 
                       <div className="space-y-2">
                         <p className="text-[11px] uppercase tracking-wide text-muted-foreground font-medium">
-                          2) Concentração média desejada
+                          2) Meta de exposição média
                         </p>
                         <Label className="text-xs flex items-center justify-between">
-                          <span>Cavg-alvo (ng/dL)</span>
+                          <span>Cmédia,SS alvo (ng/dL)</span>
                           <span className="text-[10px] text-muted-foreground">
                             faixa: {EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL}
                           </span>
@@ -1143,9 +1143,8 @@ export default function Simulator() {
                           ))}
                         </div>
                         <p className="text-[11px] text-muted-foreground leading-snug">
-                          Meta de testosterona média no sangue deste paciente. Faixa fisiológica
-                          média: 500–700 ng/dL. O sistema vai escolher o intervalo que mais se
-                          aproxima desta meta mantendo o vale acima de {EUGONADAL_MIN_NGDL}.
+                          Meta de exposição sérica média no intervalo τ. O algoritmo seleciona o
+                          intervalo que mais se aproxima dessa meta mantendo Cmin,SS ≥ {EUGONADAL_MIN_NGDL} ng/dL.
                         </p>
                       </div>
 
@@ -1154,7 +1153,7 @@ export default function Simulator() {
                         className="w-full lodi-button-primary font-display tracking-wide"
                         onClick={calcularRecomendacao}
                       >
-                        Calcular intervalo ideal
+                        Calcular intervalo recomendado
                       </Button>
                     </CardContent>
                   </Card>
@@ -1167,10 +1166,10 @@ export default function Simulator() {
                           <UserCog className="w-10 h-10 mx-auto mb-3 opacity-30" />
                           <p>
                             Preencha os dados do paciente à esquerda e clique em{" "}
-                            <strong className="text-foreground">"Calcular intervalo ideal"</strong>.
+                            <strong className="text-foreground">"Calcular intervalo recomendado"</strong>.
                           </p>
                           <p className="text-xs mt-2">
-                            É necessário pelo menos uma medida (pico, vale ou média).
+                            É necessária pelo menos uma medida laboratorial: Cmax,SS ou Cmin,SS.
                           </p>
                         </CardContent>
                       </Card>
@@ -1207,7 +1206,7 @@ export default function Simulator() {
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2">
                                   <div className="rounded-lg bg-background border border-border p-2">
                                     <div className="text-[10px] text-muted-foreground">
-                                      Pico previsto
+                                      Cmax,SS prevista
                                     </div>
                                     <div className="text-sm font-semibold tabular-nums">
                                       {Math.round(rec.cmaxSSNgdl)} ng/dL
@@ -1215,7 +1214,7 @@ export default function Simulator() {
                                   </div>
                                   <div className="rounded-lg bg-background border border-border p-2">
                                     <div className="text-[10px] text-muted-foreground">
-                                      Vale previsto
+                                      Cmin,SS prevista
                                     </div>
                                     <div className="text-sm font-semibold tabular-nums">
                                       {Math.round(rec.cminSSNgdl)} ng/dL
@@ -1223,7 +1222,7 @@ export default function Simulator() {
                                   </div>
                                   <div className="rounded-lg bg-background border border-border p-2">
                                     <div className="text-[10px] text-muted-foreground">
-                                      Média prevista
+                                      Cmédia,SS prevista
                                     </div>
                                     <div className="text-sm font-semibold tabular-nums">
                                       {Math.round(rec.cavgSSNgdl)} ng/dL
@@ -1231,7 +1230,7 @@ export default function Simulator() {
                                   </div>
                                   <div className="rounded-lg bg-background border border-border p-2">
                                     <div className="text-[10px] text-muted-foreground">
-                                      Tempo na faixa
+                                      Tempo eugonádico
                                     </div>
                                     <div
                                       className={`text-sm font-semibold tabular-nums ${rec.percentEugonadal >= 90 ? "text-emerald-600" : rec.percentEugonadal >= 70 ? "text-amber-600" : "text-rose-600"}`}
@@ -1245,11 +1244,11 @@ export default function Simulator() {
                           </CardContent>
                         </Card>
 
-                        {/* Perfil individual: metabolismo + Cavg atual calculado */}
+                        {/* Perfil individual: fator de exposição + Cmédia,SS atual */}
                         <Card>
                           <CardHeader className="pb-2">
                             <CardTitle className="text-sm">
-                              Perfil deste paciente — metabolismo e situação atual
+                              Perfil individual — exposição e regime atual
                             </CardTitle>
                             <CardDescription className="text-xs">
                               Calculado a partir das medidas laboratoriais informadas, no regime
@@ -1262,7 +1261,7 @@ export default function Simulator() {
                             <div className="rounded-lg bg-primary/5 border border-primary/20 p-3 flex items-baseline gap-3">
                               <div className="flex-1">
                                 <div className="text-[11px] text-muted-foreground uppercase tracking-wide">
-                                  Concentração média atual (calculada)
+                                  Cmédia,SS atual estimada
                                 </div>
                                 <div className="text-2xl font-bold tabular-nums text-primary">
                                   {Math.round(recomendacao.cenarioAtual.cavgSSNgdl)}{" "}
@@ -1273,7 +1272,7 @@ export default function Simulator() {
                               </div>
                               <div className="text-right">
                                 <div className="text-[11px] text-muted-foreground">
-                                  alvo desejado
+                                  meta
                                 </div>
                                 <div className="text-base font-semibold tabular-nums">
                                   {Math.round(recomendacao.cavgAlvoNgdl)} ng/dL
@@ -1295,7 +1294,7 @@ export default function Simulator() {
                                     const d =
                                       recomendacao.cenarioAtual.cavgSSNgdl -
                                       recomendacao.cavgAlvoNgdl;
-                                    if (Math.abs(d) < 50) return "no alvo";
+                                    if (Math.abs(d) < 50) return "dentro da meta";
                                     return `${d > 0 ? "+" : ""}${Math.round(d)} ng/dL`;
                                   })()}
                                 </div>
@@ -1304,20 +1303,20 @@ export default function Simulator() {
 
                             <div className="grid grid-cols-3 gap-2 text-xs">
                               <div className="rounded-lg border border-border bg-background p-2">
-                                <div className="text-[10px] text-muted-foreground">Pico atual</div>
+                                <div className="text-[10px] text-muted-foreground">Cmax,SS atual</div>
                                 <div className="font-mono font-semibold">
                                   {Math.round(recomendacao.cenarioAtual.cmaxSSNgdl)} ng/dL
                                 </div>
                               </div>
                               <div className="rounded-lg border border-border bg-background p-2">
-                                <div className="text-[10px] text-muted-foreground">Vale atual</div>
+                                <div className="text-[10px] text-muted-foreground">Cmin,SS atual</div>
                                 <div className="font-mono font-semibold">
                                   {Math.round(recomendacao.cenarioAtual.cminSSNgdl)} ng/dL
                                 </div>
                               </div>
                               <div className="rounded-lg border border-border bg-background p-2">
                                 <div className="text-[10px] text-muted-foreground">
-                                  Tempo na faixa
+                                  Tempo eugonádico
                                 </div>
                                 <div
                                   className={`font-mono font-semibold ${recomendacao.cenarioAtual.percentEugonadal >= 90 ? "text-emerald-600" : recomendacao.cenarioAtual.percentEugonadal >= 70 ? "text-amber-600" : "text-rose-600"}`}
@@ -1332,19 +1331,19 @@ export default function Simulator() {
                             <div className="text-xs">
                               <div className="flex items-center justify-between mb-1">
                                 <span className="text-muted-foreground">
-                                  Sensibilidade à dose deste paciente
+                                  Fator individual de exposição (S = F/V)
                                 </span>
                                 <span className="font-mono font-semibold">
                                   {(recomendacao.fatorIndividual * 100).toFixed(0)}% da média
                                 </span>
                               </div>
                               <p className="text-[11px] text-muted-foreground leading-relaxed">
-                                Este paciente {recomendacao.classificacaoSensibilidade}. Cada
-                                miligrama de undecilato gera{" "}
+                                Estimativa relativa ao parâmetro populacional: cada miligrama de
+                                undecilato gera{" "}
                                 <strong className="text-foreground">
                                   {recomendacao.fatorIndividual.toFixed(2)}×
                                 </strong>{" "}
-                                a concentração que geraria em um paciente de resposta típica.
+                                a concentração prevista para um indivíduo típico. Classificação: {recomendacao.classificacaoSensibilidade}.
                               </p>
                             </div>
                           </CardContent>
@@ -1357,8 +1356,8 @@ export default function Simulator() {
                               Comparação de intervalos (para este paciente)
                             </CardTitle>
                             <CardDescription className="text-xs">
-                              Predição de pico, vale e tempo na faixa eugonádica para diferentes
-                              espaçamentos entre as doses, mantendo a dose atual.
+                              Predição de Cmax,SS, Cmin,SS, Cmédia,SS e tempo eugonádico para
+                              diferentes intervalos, mantendo a dose atual.
                             </CardDescription>
                           </CardHeader>
                           <CardContent className="p-0">
@@ -1367,10 +1366,10 @@ export default function Simulator() {
                                 <thead className="bg-muted/50 text-muted-foreground">
                                   <tr>
                                     <th className="text-left p-2 font-medium">Intervalo</th>
-                                    <th className="text-right p-2 font-medium">Pico (Cmax)</th>
-                                    <th className="text-right p-2 font-medium">Vale (Cmin)</th>
-                                    <th className="text-right p-2 font-medium">Média (Cavg)</th>
-                                    <th className="text-right p-2 font-medium">% na faixa</th>
+                                    <th className="text-right p-2 font-medium">Cmax,SS</th>
+                                    <th className="text-right p-2 font-medium">Cmin,SS</th>
+                                    <th className="text-right p-2 font-medium">Cmédia,SS</th>
+                                    <th className="text-right p-2 font-medium">% eugonádico</th>
                                     <th className="text-center p-2 font-medium">Status</th>
                                   </tr>
                                 </thead>
@@ -1389,15 +1388,15 @@ export default function Simulator() {
                                         </Badge>
                                       ) : a.status === "vale_baixo" ? (
                                         <Badge className="bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/30">
-                                          vale baixo
+                                          Cmin baixa
                                         </Badge>
                                       ) : a.status === "pico_alto" ? (
                                         <Badge className="bg-rose-500/15 text-rose-700 dark:text-rose-400 border-rose-500/30">
-                                          pico alto
+                                          Cmax alta
                                         </Badge>
                                       ) : (
                                         <Badge className="bg-rose-500/15 text-rose-700 dark:text-rose-400 border-rose-500/30">
-                                          fora
+                                          ambos fora
                                         </Badge>
                                       );
                                     return (
@@ -1438,19 +1437,18 @@ export default function Simulator() {
                             </div>
                             <div className="px-3 py-2 text-[11px] text-muted-foreground border-t border-border">
                               Faixa eugonádica de referência: {EUGONADAL_MIN_NGDL}–
-                              {EUGONADAL_MAX_NGDL} ng/dL · Vale acima de {EUGONADAL_MIN_NGDL} = sem
-                              hipogonadismo entre doses.
+                              {EUGONADAL_MAX_NGDL} ng/dL · Cmin,SS ≥ {EUGONADAL_MIN_NGDL} ng/dL = sem
+                              concentração subeugonádica entre administrações.
                             </div>
                           </CardContent>
                         </Card>
 
                         <div className="rounded-xl border border-amber-500/20 bg-amber-50 dark:bg-amber-950/20 p-3 text-xs text-amber-700 dark:text-amber-300">
-                          <strong>Importante:</strong> a recomendação assume que as medidas
-                          informadas foram colhidas em estado estacionário (após a 4ª–5ª injeção) e
-                          usando o regime atual. Antes do estado estacionário, os valores ainda
-                          estão subindo e não refletem a sensibilidade real. Esta ferramenta é
-                          educacional — qualquer ajuste deve ser validado com novos exames e
-                          avaliação médica.
+                          <strong>Importante:</strong> a recomendação assume medidas laboratoriais
+                          coletadas no estado estacionário do regime atual (após a 4ª–5ª administração).
+                          Antes desse ponto, a acumulação ainda está em curso e os valores não estimam
+                          adequadamente S = F/V. Esta ferramenta é educacional — qualquer ajuste exige
+                          validação laboratorial e avaliação médica.
                         </div>
                       </>
                     )}
@@ -1468,69 +1466,62 @@ export default function Simulator() {
                   />
                   <p className="text-xs text-muted-foreground max-w-xl">
                     Plataforma educacional de simulação farmacocinética para hormonização com
-                    undecilato de testosterona (Nebido) — modelo de 2 compartimentos com absorção de
-                    1ª ordem e variação populacional Monte Carlo.
+                    undecilato de testosterona (Nebido) — modelo populacional com absorção bifásica
+                    paralela, integração RK4 e variabilidade interindividual por Monte Carlo.
                   </p>
                 </div>
                 <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
                   <Card className="lodi-card">
                     <CardHeader>
-                      <CardTitle className="text-sm">O que esta simulação faz?</CardTitle>
+                      <CardTitle className="text-sm">Estrutura do modelo</CardTitle>
                     </CardHeader>
                     <CardContent className="text-sm space-y-3 text-muted-foreground leading-relaxed">
                       <p>
-                        Quando você toma uma injeção de undecilato de testosterona (Nebido), o
-                        medicamento fica depositado no músculo e é liberado{" "}
-                        <strong className="text-foreground">muito devagar</strong> para a corrente
-                        sanguínea — durante semanas, não minutos.
+                        Após administração intramuscular, o undecilato de testosterona em veículo oleoso
+                        forma um depósito de liberação prolongada. O motor representa esse depósito por
+                        dois compartimentos de absorção em paralelo: um componente rápido e outro lento.
                       </p>
                       <p>
-                        Esta ferramenta calcula, dia por dia, qual a concentração esperada de
-                        testosterona no sangue, considerando:
+                        O perfil sérico é calculado pela integração numérica das EDOs do depósito e do
+                        compartimento central, considerando:
                       </p>
                       <ul className="list-disc list-inside space-y-1 ml-2">
-                        <li>quanto entra (a injeção)</li>
-                        <li>quanto se distribui pelo corpo (gordura, músculos)</li>
-                        <li>quanto é eliminado (pelo fígado)</li>
+                        <li>dose administrada e cronograma posológico;</li>
+                        <li>taxas de absorção k<sub>a,rápido</sub> e k<sub>a,lento</sub>;</li>
+                        <li>eliminação central k<sub>e</sub> e fator de escala S = F/V.</li>
                       </ul>
                       <p>
-                        O resultado é a{" "}
-                        <strong className="text-foreground">curva neon ciano</strong> que você vê no
-                        gráfico.
+                        O resultado é a curva de testosterona sérica total ao longo do tempo.
                       </p>
                     </CardContent>
                   </Card>
 
                   <Card className="lodi-card">
                     <CardHeader>
-                      <CardTitle className="text-sm">O que é "variação entre pacientes"?</CardTitle>
+                      <CardTitle className="text-sm">Variabilidade interindividual</CardTitle>
                     </CardHeader>
                     <CardContent className="text-sm space-y-3 text-muted-foreground leading-relaxed">
                       <p>
-                        Duas pessoas que tomam{" "}
-                        <strong className="text-foreground">a mesma dose</strong> não têm a mesma
-                        concentração no sangue. Algumas atingem valores mais altos, outras mais
-                        baixos.
+                        Para a mesma dose, indivíduos diferentes podem apresentar concentrações séricas
+                        diferentes por variação em biodisponibilidade, distribuição, SHBG, perfusão local
+                        e eliminação.
                       </p>
                       <p>Isso depende de fatores como:</p>
                       <ul className="list-disc list-inside space-y-1 ml-2">
-                        <li>peso e composição corporal</li>
-                        <li>velocidade do fígado em eliminar o hormônio</li>
-                        <li>local da injeção, técnica, tipo de tecido</li>
+                        <li>peso, composição corporal e volume aparente de distribuição;</li>
+                        <li>SHBG e depuração metabólica;</li>
+                        <li>técnica de administração, local de depósito e perfusão muscular.</li>
                       </ul>
                       <p>
-                        Quando a opção <em>"Mostrar variação entre pacientes"</em> está ativa, o
-                        programa simula centenas de pacientes virtuais e mostra a faixa onde a
-                        maioria cai. As{" "}
-                        <strong className="text-foreground">áreas violeta sombreadas</strong> no
-                        gráfico mostram essa variação.
+                        Quando a opção Monte Carlo está ativa, o motor sorteia parâmetros estruturais
+                        por distribuições log-normais e exibe percentis populacionais (p5/p25/mediana/p75/p95).
                       </p>
                     </CardContent>
                   </Card>
 
                   <Card className="lodi-card">
                     <CardHeader>
-                      <CardTitle className="text-sm">O que significam as cores?</CardTitle>
+                      <CardTitle className="text-sm">Faixas interpretativas</CardTitle>
                     </CardHeader>
                     <CardContent className="text-sm space-y-2 text-muted-foreground">
                       <div className="flex items-start gap-2">
@@ -1539,25 +1530,23 @@ export default function Simulator() {
                           <strong className="text-foreground">
                             Abaixo de {EUGONADAL_MIN_NGDL} ng/dL — Hipogonádico:
                           </strong>{" "}
-                          testosterona baixa demais. Pode causar fadiga, baixa libido, perda
-                          muscular.
+                          concentração sérica abaixo do limite inferior de referência.
                         </span>
                       </div>
                       <div className="flex items-start gap-2">
                         <div className="w-3 h-3 rounded-full bg-emerald-500 mt-1 flex-shrink-0" />
                         <span>
                           <strong className="text-foreground">
-                            Entre {EUGONADAL_MIN_NGDL} e {EUGONADAL_MAX_NGDL} ng/dL — Faixa normal:
+                            Entre {EUGONADAL_MIN_NGDL} e {EUGONADAL_MAX_NGDL} ng/dL — Faixa eugonádica:
                           </strong>{" "}
-                          valores típicos de um homem adulto saudável (referência harmonizada CDC /
-                          Endocrine Society). Esta é a zona-alvo do tratamento.
+                          referência laboratorial para testosterona total em homem adulto.
                         </span>
                       </div>
                       <div className="flex items-start gap-2">
                         <div className="w-3 h-3 rounded-full bg-rose-500 mt-1 flex-shrink-0" />
                         <span>
                           <strong className="text-foreground">
-                            Acima de 1000 ng/dL — Acima do normal:
+                            Acima de {EUGONADAL_MAX_NGDL} ng/dL — Suprafisiológico:
                           </strong>{" "}
                           pode causar efeitos adversos como aumento de hematócrito, retenção,
                           alteração de humor.
@@ -1568,27 +1557,24 @@ export default function Simulator() {
 
                   <Card className="lodi-card">
                     <CardHeader>
-                      <CardTitle className="text-sm">Por que demora tanto a estabilizar?</CardTitle>
+                      <CardTitle className="text-sm">Acumulação e estado estacionário</CardTitle>
                     </CardHeader>
                     <CardContent className="text-sm space-y-3 text-muted-foreground leading-relaxed">
                       <p>
-                        O Nebido é um{" "}
-                        <strong className="text-foreground">depósito de liberação lenta</strong>.
-                        Cada injeção leva cerca de 3 meses para terminar de ser absorvida pelo
-                        músculo.
+                        O Nebido apresenta cinética <em>flip-flop</em>: a absorção lenta do depósito
+                        limita a fase terminal mais que a eliminação central.
                       </p>
                       <p>
                         Por isso, nas{" "}
-                        <strong className="text-foreground">primeiras 2–4 injeções</strong>, os
-                        níveis ainda não atingem o platô final — a concentração vai aumentando
-                        gradualmente até estabilizar (geralmente entre o 3º e o 5º ano de
-                        tratamento, dependendo do intervalo entre doses).
+                        <strong className="text-foreground">primeiras 4–5 administrações</strong>, a
+                        exposição ainda está em acumulação. O estado estacionário é aproximado após
+                        ~4 meias-vidas aparentes, coerente com Schubert et al. 2004.
                       </p>
                       <p>
-                        Por isso também, ajustes de dose só devem ser feitos depois de medir a
-                        testosterona em um momento já estabilizado, normalmente{" "}
+                        Por isso, calibrações individuais devem usar testosterona medida em regime já
+                        estabilizado, preferencialmente{" "}
                         <strong className="text-foreground">
-                          imediatamente antes da próxima injeção
+                          imediatamente antes da próxima administração
                         </strong>{" "}
                         (no vale).
                       </p>
@@ -1603,28 +1589,29 @@ export default function Simulator() {
                     </CardHeader>
                     <CardContent className="text-xs space-y-3 text-muted-foreground">
                       <p>
-                        Modelo farmacocinético de{" "}
+                        Modelo farmacocinético populacional com{" "}
                         <strong className="text-foreground">
-                          2 compartimentos com absorção de 1ª ordem
+                          absorção bifásica paralela de 1ª ordem
                         </strong>
-                        e <em>efeito flip-flop</em>: a absorção (ka) é mais lenta que a eliminação
-                        (k10), tornando-se o fator limitante da curva.
+                        e <em>efeito flip-flop</em>: k<sub>a,lento</sub> é muito menor que k<sub>e</sub>,
+                        tornando a absorção lenta o fator limitante da fase terminal.
                       </p>
                       <div className="font-mono bg-muted rounded p-2 space-y-1 text-[11px]">
-                        <p>dA_depósito/dt = −ka · A_depósito</p>
-                        <p>dA_central/dt = ka · A_dep − (k10+k12) · A_c + k21 · A_p</p>
-                        <p>dA_periférico/dt = k12 · A_central − k21 · A_periférico</p>
+                        <p>dQ_R/dt = −k_a,rápido · Q_R</p>
+                        <p>dQ_L/dt = −k_a,lento · Q_L</p>
+                        <p>dQ_C/dt = k_a,rápido · Q_R + k_a,lento · Q_L − k_e · Q_C</p>
+                        <p>C(t) = S · Q_C(t)</p>
                       </div>
                       <p>
-                        Parâmetros (Nebido 1000 mg): ka = 0,049/dia (t½ absorção ≈ 14 dias); k10 =
-                        0,0077/dia; k12 = 0,012/dia; k21 = 0,006/dia.
+                        Parâmetros populacionais: k<sub>a,rápido</sub> = 0,0350/dia; k<sub>a,lento</sub> =
+                        0,00650/dia; fração rápida = 0,070; k<sub>e</sub> = 0,460/dia; S = 24,44 (ng/dL)/mg.
                       </p>
                       <p>
                         Variação entre pacientes simulada por{" "}
                         <strong className="text-foreground">método de Monte Carlo</strong>: para
-                        cada paciente virtual, sorteia-se um conjunto de parâmetros a partir de
-                        distribuições log-normais (CV de 30–45%) calibradas com dados de Behre,
-                        Nieschlag e Bhasin et al.
+                        cada indivíduo sintético, sorteia-se um conjunto de parâmetros a partir de
+                        distribuições log-normais calibradas com dados de Behre/Nieschlag, Schubert,
+                        Bhasin &amp; Travison e revisão clínica do Aveed.
                       </p>
                       <p className="opacity-80">
                         Limitações: não inclui SHBG, variação circadiana, interações medicamentosas

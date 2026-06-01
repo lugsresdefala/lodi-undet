@@ -189,7 +189,7 @@ CV(S = F/V)      = 0,22`}</Eq>
 
         <Block n="06" title="Recomendação individualizada de intervalo">
           <p>
-            O motor varre intervalos candidatos (semanas inteiras entre 6 e 16 semanas)
+            O motor varre intervalos candidatos (semanas inteiras entre 4 e 18 semanas)
             simulando para cada um o estado estacionário e escolhe aquele que mais
             aproxima a C<sub>média,SS</sub> da meta individual (padrão 600 ng/dL,
             dentro da faixa 264–916 ng/dL). Para cada intervalo testado o status é
@@ -198,7 +198,7 @@ CV(S = F/V)      = 0,22`}</Eq>
           <ul className="list-disc pl-5 text-muted-foreground">
             <li><strong>ideal</strong> — C<sub>max,SS</sub> e C<sub>min,SS</sub> dentro da faixa eugonádica;</li>
             <li><strong>aceitável</strong> — pequeno desvio em um dos extremos;</li>
-            <li><strong>vale_baixo</strong> / <strong>pico_alto</strong> / <strong>ambos_fora</strong> — desvios relevantes.</li>
+            <li><strong>Cmin baixa</strong> / <strong>Cmax alta</strong> / <strong>ambos fora</strong> — desvios relevantes.</li>
           </ul>
           <p>
             Quando o usuário fornece uma medida real (vale e/ou pico), o motor ajusta
@@ -229,7 +229,7 @@ CV(S = F/V)      = 0,22`}</Eq>
               cipionato/enantato.
             </li>
             <li>
-              Doses entre 250 e 1000 mg e intervalos entre 6 e 16 semanas; fora
+              Doses entre 250 e 1000 mg na interface e intervalos avaliados entre 4 e 18 semanas; fora
               dessa faixa o modelo extrapola e perde acurácia.
             </li>
             <li>

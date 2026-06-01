@@ -653,23 +653,23 @@ export function recomendarIntervalo(medida: MedidaPaciente): RecomendacaoInterva
                               `${Math.round(Math.abs(dif))} ng/dL abaixo do alvo`;
 
     if (recomendado.cmaxSSNgdl > EUGONADAL_MAX_NGDL) {
-      justificativa = `Com este intervalo, a média sérica fica em ${Math.round(recomendado.cavgSSNgdl)} ng/dL (${aproxStr} de ${cavgAlvo}) e o vale em ${Math.round(recomendado.cminSSNgdl)} ng/dL (acima de ${EUGONADAL_MIN_NGDL}, sem hipogonadismo). O pico chega a ${Math.round(recomendado.cmaxSSNgdl)} ng/dL — para reduzir o pico mantendo a média, considere reduzir a dose e encurtar proporcionalmente o intervalo.`;
+      justificativa = `Com este intervalo, a Cmédia,SS estimada fica em ${Math.round(recomendado.cavgSSNgdl)} ng/dL (${aproxStr} de ${cavgAlvo}) e a Cmin,SS em ${Math.round(recomendado.cminSSNgdl)} ng/dL (≥ ${EUGONADAL_MIN_NGDL} ng/dL). A Cmax,SS chega a ${Math.round(recomendado.cmaxSSNgdl)} ng/dL; para reduzir pico mantendo exposição média, considere reduzir a dose e encurtar proporcionalmente o intervalo.`;
     } else {
-      justificativa = `Com este intervalo, a média sérica deste paciente fica em ${Math.round(recomendado.cavgSSNgdl)} ng/dL (${aproxStr} de ${cavgAlvo}). O vale fica em ${Math.round(recomendado.cminSSNgdl)} ng/dL e o pico em ${Math.round(recomendado.cmaxSSNgdl)} ng/dL — ambos dentro da faixa fisiológica.`;
+      justificativa = `Com este intervalo, a Cmédia,SS estimada fica em ${Math.round(recomendado.cavgSSNgdl)} ng/dL (${aproxStr} de ${cavgAlvo}). A Cmin,SS fica em ${Math.round(recomendado.cminSSNgdl)} ng/dL e a Cmax,SS em ${Math.round(recomendado.cmaxSSNgdl)} ng/dL — ambas dentro da faixa eugonádica.`;
     }
   } else {
     // Nenhum intervalo mantém o vale seguro: melhor compromisso (Cavg mais próximo do alvo)
     recomendado = avaliacoes.reduce((m, a) =>
       Math.abs(a.cavgSSNgdl - cavgAlvo) < Math.abs(m.cavgSSNgdl - cavgAlvo) ? a : m
     );
-    justificativa = `Com a dose atual (${medida.doseMg} mg), NENHUM intervalo testado mantém o vale acima de ${EUGONADAL_MIN_NGDL} ng/dL — o paciente terá períodos de hipogonadismo entre doses. Para atingir uma média de ${cavgAlvo} ng/dL com vale seguro, é necessário AUMENTAR a dose (e provavelmente encurtar o intervalo).`;
+    justificativa = `Com a dose atual (${medida.doseMg} mg), nenhum intervalo testado mantém Cmin,SS ≥ ${EUGONADAL_MIN_NGDL} ng/dL. Para atingir Cmédia,SS de ${cavgAlvo} ng/dL sem períodos subeugonádicos entre administrações, é necessário reavaliar dose e intervalo.`;
   }
 
   // Classificação da sensibilidade individual
   let classificacao: string;
-  if (scale < 0.75) classificacao = "responde MENOS que a média (precisa de mais dose ou menos intervalo)";
-  else if (scale > 1.33) classificacao = "responde MAIS que a média (níveis sobem mais com a mesma dose)";
-  else classificacao = "responde de forma típica à dose";
+  if (scale < 0.75) classificacao = "exposição menor que a referência populacional";
+  else if (scale > 1.33) classificacao = "exposição maior que a referência populacional";
+  else classificacao = "exposição próxima da referência populacional";
 
   return {
     fatorIndividual: scale,
