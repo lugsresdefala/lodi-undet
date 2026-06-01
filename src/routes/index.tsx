@@ -10,7 +10,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Modelo farmacocinético da testosterona e cronologia de efeitos descritos na literatura (Endocrine Society 2017, WPATH SOC-8).",
+          "Modelo farmacocinético do undecilato de testosterona (Schubert 2004) e cronologia de efeitos descritos na literatura (Endocrine Society 2017, WPATH SOC-8).",
       },
       {
         property: "og:title",
