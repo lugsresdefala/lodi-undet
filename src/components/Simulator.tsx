@@ -950,14 +950,6 @@ export default function Simulator() {
                           />
 
 
-                          <Brush
-                            dataKey="semana"
-                            height={20}
-                            fill="var(--color-card)"
-                            stroke="var(--color-border)"
-                            tickFormatter={() => ""}
-                            travellerWidth={8}
-                          />
                         </ComposedChart>
                         </ResponsiveContainer>
                       </div>
