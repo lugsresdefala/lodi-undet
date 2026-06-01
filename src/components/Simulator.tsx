@@ -386,7 +386,7 @@ export default function Simulator() {
       return [p.conc, ...bandas];
     });
     const max = Math.max(eugMax, ...valores);
-    return Math.ceil((max * 1.08) / 100) * 100;
+    return Math.ceil((max * 1.06) / 100) * 100;
   }, [dadosGrafico, eugMax]);
 
   // Ticks de eixo X: a cada 12 semanas (≈ 3 meses) para legibilidade
@@ -777,21 +777,21 @@ export default function Simulator() {
                         <>
                           <span className="flex items-center gap-1.5">
                             <span
-                              className="inline-block h-2 w-4 rounded-sm"
-                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-5) 18%, transparent)" }}
+                              className="inline-block h-2.5 w-5 rounded-sm border border-border/60"
+                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-5) 28%, transparent)" }}
                             />
                             IC 90 % (p5–p95)
                           </span>
                           <span className="flex items-center gap-1.5">
                             <span
-                              className="inline-block h-2 w-4 rounded-sm"
-                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-2) 30%, transparent)" }}
+                              className="inline-block h-2.5 w-5 rounded-sm border border-border/60"
+                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-2) 42%, transparent)" }}
                             />
                             IIQ 50 % (p25–p75)
                           </span>
                           <span className="flex items-center gap-1.5">
                             <span
-                              className="inline-block h-0.5 w-4"
+                              className="inline-block h-[2px] w-5"
                               style={{ backgroundColor: "var(--color-primary)" }}
                             />
                             mediana populacional
@@ -808,14 +808,14 @@ export default function Simulator() {
                       )}
                       <span className="flex items-center gap-1.5">
                         <span
-                          className="inline-block h-2 w-4 rounded-sm"
-                          style={{ backgroundColor: "color-mix(in oklab, var(--color-system-body) 16%, transparent)" }}
+                            className="inline-block h-2.5 w-5 rounded-sm border border-border/60"
+                            style={{ backgroundColor: "color-mix(in oklab, var(--color-system-body) 24%, transparent)" }}
                         />
                         faixa eugonádica ({EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL} ng/dL)
                       </span>
                       <span className="flex items-center gap-1.5">
                         <span
-                          className="inline-block h-3 w-0.5 border-l border-dashed"
+                            className="inline-block h-4 w-0.5 border-l-2 border-dashed"
                           style={{ borderColor: "var(--color-chart-4)" }}
                         />
                         administração
