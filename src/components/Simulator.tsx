@@ -636,7 +636,7 @@ export default function Simulator() {
         {/* Área principal */}
         <main className="flex min-w-0 flex-col rounded-xl border border-border/70 bg-background/55">
           {/* Métricas clínicas */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 border-b border-border">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 p-4 border-b border-border">
             {(() => {
               const val =
                 config.unidade === "ngdl"
