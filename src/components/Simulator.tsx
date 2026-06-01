@@ -839,7 +839,7 @@ export default function Simulator() {
 
                         <ComposedChart
                           data={dadosGrafico}
-                          margin={{ top: 24, right: 10, left: -20, bottom: 28 }}
+                          margin={{ top: 24, right: 12, left: 10, bottom: 28 }}
                         >
                           <defs>
                             <filter id="sombra3d" x="-12%" y="-12%" width="128%" height="136%">
@@ -891,7 +891,7 @@ export default function Simulator() {
                             tickMargin={12}
                             axisLine={{ stroke: "var(--color-border)", strokeOpacity: 0.8 }}
                             tickLine={false}
-                            width={54}
+                            width={64}
                           />
                           <Tooltip
                             allowEscapeViewBox={{ x: true, y: true }}
@@ -1439,7 +1439,7 @@ export default function Simulator() {
                                         </Badge>
                                       ) : a.status === "vale_baixo" ? (
                                         <Badge className="bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/30">
-                                          Cmin baixa
+                                          Cmin subeugonádica
                                         </Badge>
                                       ) : a.status === "pico_alto" ? (
                                         <Badge className="bg-rose-500/15 text-rose-700 dark:text-rose-400 border-rose-500/30">
