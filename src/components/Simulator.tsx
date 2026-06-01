@@ -372,8 +372,8 @@ export default function Simulator() {
   const yTickFormatter = (v: number) =>
     config.unidade === "nmol" ? v.toFixed(1) : Math.round(v).toLocaleString("pt-BR");
   const eixoTick = {
-    fontSize: 11,
-    fill: "color-mix(in oklab, var(--color-foreground) 62%, transparent)",
+    fontSize: 12,
+    fill: "color-mix(in oklab, var(--color-foreground) 74%, transparent)",
     fontFamily: "var(--font-mono)",
   };
 
@@ -777,14 +777,14 @@ export default function Simulator() {
                           <span className="flex items-center gap-1.5">
                             <span
                               className="inline-block h-3 w-6 rounded-sm border border-border"
-                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-5) 24%, transparent)" }}
+                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-5) 18%, transparent)" }}
                             />
                             IC 90 % (p5–p95)
                           </span>
                           <span className="flex items-center gap-1.5">
                             <span
                               className="inline-block h-3 w-6 rounded-sm border border-border"
-                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-2) 42%, transparent)" }}
+                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-2) 30%, transparent)" }}
                             />
                             IIQ 50 % (p25–p75)
                           </span>
@@ -808,7 +808,7 @@ export default function Simulator() {
                       <span className="flex items-center gap-1.5">
                         <span
                             className="inline-block h-3 w-6 rounded-sm border border-border"
-                            style={{ backgroundColor: "color-mix(in oklab, var(--color-system-body) 22%, transparent)" }}
+                            style={{ backgroundColor: "color-mix(in oklab, var(--color-system-body) 14%, transparent)" }}
                         />
                         faixa eugonádica ({EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL} ng/dL)
                       </span>
