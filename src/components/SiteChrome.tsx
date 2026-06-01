@@ -183,7 +183,7 @@ export function SiteFooter() {
             href="https://diversidadebarrafunda.org"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-3 inline-block text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
+            className="mt-3 inline-block break-all text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
           >
             diversidadebarrafunda.org ↗
           </a>
