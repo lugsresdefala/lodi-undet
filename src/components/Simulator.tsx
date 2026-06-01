@@ -947,40 +947,38 @@ export default function Simulator() {
                   </div>
                 </section>
 
-                {/* Como ler o gráfico */}
-                <div className="rounded-xl border border-blue-500/20 bg-blue-50 dark:bg-blue-950/20 p-3 text-xs text-blue-900 dark:text-blue-200 space-y-1.5">
-                  <p className="font-semibold">Como ler este gráfico</p>
+                {/* Notas de leitura */}
+                <div className="rounded-lg border border-border/70 bg-muted/30 p-3 text-xs text-muted-foreground space-y-1.5">
+                  <p className="font-medium text-foreground">Notas de leitura</p>
                   <ul className="list-disc list-inside space-y-1 leading-relaxed">
                     <li>
-                      <strong>Subidas e descidas:</strong> cada injeção faz a testosterona subir até
-                      um pico, depois cair lentamente até a próxima dose.
+                      <strong className="text-foreground">Acúmulo:</strong> em flip-flop
+                      (k<sub>a,lento</sub> ≪ k<sub>e</sub>) o estado estacionário só é atingido
+                      após ~4 × t<sub>½</sub> aparente.
                     </li>
                     <li>
-                      <strong>Acúmulo:</strong> as primeiras injeções não atingem o nível normal;
-                      com doses repetidas, os valores se acumulam até estabilizar.
-                    </li>
-                    <li>
-                      <strong>Faixa verde:</strong> intervalo de testosterona considerado normal
-                      para um homem adulto. O ideal é a curva ficar dentro dela.
+                      <strong className="text-foreground">Faixa eugonádica:</strong>{" "}
+                      {EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL} ng/dL (referência laboratorial
+                      para homem adulto).
                     </li>
                     {config.mostrarMonteCarlo && (
                       <li>
-                        <strong>Áreas violeta:</strong> mostram que pacientes diferentes respondem
-                        de forma diferente — alguns ficam mais altos, outros mais baixos com a mesma
-                        dose.
+                        <strong className="text-foreground">Bandas populacionais:</strong>{" "}
+                        derivadas de N indivíduos com IIV log-normal sobre k<sub>a</sub>,
+                        k<sub>e</sub>, fração de absorção rápida e S = F/V.
                       </li>
                     )}
                   </ul>
                 </div>
 
                 {/* Aviso clínico */}
-                <div className="rounded-xl border border-amber-500/20 bg-amber-50 dark:bg-amber-950/20 p-3 text-xs text-amber-700 dark:text-amber-300">
-                  <strong>Importante:</strong> esta ferramenta é apenas educacional. Não substitui
-                  consulta médica, exames de sangue, nem ajuste individualizado de tratamento. O
-                  ajuste real de dose deve ser feito com base em exames laboratoriais reais e
-                  avaliação médica.
+                <div className="rounded-lg border border-border/70 bg-card p-3 text-xs text-muted-foreground">
+                  <strong className="text-foreground">Uso educacional.</strong> Modelo populacional
+                  descritivo; não substitui avaliação clínica, dosagem laboratorial nem ajuste
+                  posológico individualizado por médico responsável.
                 </div>
               </TabsContent>
+
 
               <TabsContent value="paciente" className="space-y-4">
                 <div className="grid gap-4 grid-cols-1 lg:grid-cols-3">
