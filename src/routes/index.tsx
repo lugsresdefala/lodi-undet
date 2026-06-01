@@ -201,8 +201,9 @@ function Index() {
                   <span>○ janelas temporais aproximadas</span>
                   <span>● variação individual relevante</span>
                   <span>○ não substitui acompanhamento clínico</span>
-                  <span>● Endocrine Society 2017</span>
-                  <span>○ WPATH SOC-8</span>
+                  <span>● Schubert et al., JCEM 2004 — PK Nebido</span>
+                  <span>○ Endocrine Society 2017 — efeitos</span>
+                  <span>● WPATH SOC-8 — manejo clínico</span>
                 </span>
               ))}
             </div>
