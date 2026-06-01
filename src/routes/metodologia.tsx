@@ -300,7 +300,8 @@ Cmean_indiv = Cmean_pop × factor
                   <tr key={r.n}>
                     <td className="py-2.5 pr-3 font-mono text-xs text-muted-foreground">{r.n}</td>
                     <td className="py-2.5 pr-4 text-xs leading-relaxed">
-                      {r.authors} <em>{r.journal}</em> {r.year}.{" "}
+                      {r.authors} <em>{r.journal}</em>{" "}
+                      {r.year ? <>{r.year}. </> : null}
                       {r.doi ? (
                         <a
                           href={`https://doi.org/${r.doi}`}
