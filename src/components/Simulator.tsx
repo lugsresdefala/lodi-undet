@@ -1026,11 +1026,11 @@ export default function Simulator() {
                       (k<sub>a,lento</sub> ≪ k<sub>e</sub>) o estado estacionário só é atingido
                       após ~4 × t<sub>½</sub> aparente.
                     </li>
-                    <li>
-                      <strong className="text-foreground">Faixa eugonádica:</strong>{" "}
-                      {EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL} ng/dL (referência laboratorial
-                      para homem adulto).
-                    </li>
+                      <li>
+                        <strong className="text-foreground">Faixa eugonádica:</strong>{" "}
+                        {EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL} ng/dL, referência operacional
+                        usada pelo modelo para classificação da curva.
+                      </li>
                     {config.mostrarMonteCarlo && (
                       <li>
                         <strong className="text-foreground">Bandas populacionais:</strong>{" "}
