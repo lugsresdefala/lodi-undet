@@ -83,7 +83,7 @@ export function SiteHeader() {
           aria-expanded={open}
           aria-controls="mobile-nav"
           onClick={() => setOpen((v) => !v)}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border/70 bg-card/60 text-foreground transition-colors hover:border-foreground/30 md:hidden"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border/70 bg-card/60 text-foreground transition-colors hover:border-foreground/30 lg:hidden"
         >
           <span className="relative block h-3.5 w-4">
             <span
