@@ -158,11 +158,11 @@ export function SiteFooter() {
           <div className="flex items-baseline gap-3">
             <span className="font-serif text-lg font-medium tracking-tight">lodi-t</span>
             <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-              referência
+              referência clínica
             </span>
           </div>
           <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
-            Página de referência educativa sobre hormonização com testosterona. Sem fim
+            Página de referência clínica sobre hormonização com testosterona. Sem fim
             comercial.
           </p>
         </div>

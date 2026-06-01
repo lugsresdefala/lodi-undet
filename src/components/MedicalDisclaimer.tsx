@@ -9,7 +9,7 @@ export function MedicalDisclaimer() {
         <span aria-hidden>●</span> Nota
       </div>
       <p>
-        Página de <strong>referência educativa</strong>, complementar — e não substituta — do
+        Página de <strong>referência clínica</strong>, complementar — e não substituta — do
         acompanhamento clínico. As janelas temporais e o modelo farmacocinético são
         aproximações baseadas em literatura agregada (WPATH SOC-8, Endocrine Society
         2017); a variação individual é grande. Os efeitos descritos não são
