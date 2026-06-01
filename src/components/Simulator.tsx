@@ -843,7 +843,7 @@ export default function Simulator() {
                         >
                           <defs>
                             <filter id="sombra3d" x="-10%" y="-10%" width="124%" height="130%">
-                              <feDropShadow dx="0" dy="7" stdDeviation="4" floodColor="var(--color-primary)" floodOpacity="0.2" />
+                              <feDropShadow dx="0" dy="7" stdDeviation="4" floodColor="#1d4ed8" floodOpacity="0.2" />
                             </filter>
                             <linearGradient id="banda90" x1="0" y1="0" x2="0" y2="1">
                               <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.24} />
