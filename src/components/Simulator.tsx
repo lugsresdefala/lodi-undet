@@ -1466,69 +1466,62 @@ export default function Simulator() {
                   />
                   <p className="text-xs text-muted-foreground max-w-xl">
                     Plataforma educacional de simulação farmacocinética para hormonização com
-                    undecilato de testosterona (Nebido) — modelo de 2 compartimentos com absorção de
-                    1ª ordem e variação populacional Monte Carlo.
+                    undecilato de testosterona (Nebido) — modelo populacional com absorção bifásica
+                    paralela, integração RK4 e variabilidade interindividual por Monte Carlo.
                   </p>
                 </div>
                 <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
                   <Card className="lodi-card">
                     <CardHeader>
-                      <CardTitle className="text-sm">O que esta simulação faz?</CardTitle>
+                      <CardTitle className="text-sm">Estrutura do modelo</CardTitle>
                     </CardHeader>
                     <CardContent className="text-sm space-y-3 text-muted-foreground leading-relaxed">
                       <p>
-                        Quando você toma uma injeção de undecilato de testosterona (Nebido), o
-                        medicamento fica depositado no músculo e é liberado{" "}
-                        <strong className="text-foreground">muito devagar</strong> para a corrente
-                        sanguínea — durante semanas, não minutos.
+                        Após administração intramuscular, o undecilato de testosterona em veículo oleoso
+                        forma um depósito de liberação prolongada. O motor representa esse depósito por
+                        dois compartimentos de absorção em paralelo: um componente rápido e outro lento.
                       </p>
                       <p>
-                        Esta ferramenta calcula, dia por dia, qual a concentração esperada de
-                        testosterona no sangue, considerando:
+                        O perfil sérico é calculado pela integração numérica das EDOs do depósito e do
+                        compartimento central, considerando:
                       </p>
                       <ul className="list-disc list-inside space-y-1 ml-2">
-                        <li>quanto entra (a injeção)</li>
-                        <li>quanto se distribui pelo corpo (gordura, músculos)</li>
-                        <li>quanto é eliminado (pelo fígado)</li>
+                        <li>dose administrada e cronograma posológico;</li>
+                        <li>taxas de absorção k<sub>a,rápido</sub> e k<sub>a,lento</sub>;</li>
+                        <li>eliminação central k<sub>e</sub> e fator de escala S = F/V.</li>
                       </ul>
                       <p>
-                        O resultado é a{" "}
-                        <strong className="text-foreground">curva neon ciano</strong> que você vê no
-                        gráfico.
+                        O resultado é a curva de testosterona sérica total ao longo do tempo.
                       </p>
                     </CardContent>
                   </Card>
 
                   <Card className="lodi-card">
                     <CardHeader>
-                      <CardTitle className="text-sm">O que é "variação entre pacientes"?</CardTitle>
+                      <CardTitle className="text-sm">Variabilidade interindividual</CardTitle>
                     </CardHeader>
                     <CardContent className="text-sm space-y-3 text-muted-foreground leading-relaxed">
                       <p>
-                        Duas pessoas que tomam{" "}
-                        <strong className="text-foreground">a mesma dose</strong> não têm a mesma
-                        concentração no sangue. Algumas atingem valores mais altos, outras mais
-                        baixos.
+                        Para a mesma dose, indivíduos diferentes podem apresentar concentrações séricas
+                        diferentes por variação em biodisponibilidade, distribuição, SHBG, perfusão local
+                        e eliminação.
                       </p>
                       <p>Isso depende de fatores como:</p>
                       <ul className="list-disc list-inside space-y-1 ml-2">
-                        <li>peso e composição corporal</li>
-                        <li>velocidade do fígado em eliminar o hormônio</li>
-                        <li>local da injeção, técnica, tipo de tecido</li>
+                        <li>peso, composição corporal e volume aparente de distribuição;</li>
+                        <li>SHBG e depuração metabólica;</li>
+                        <li>técnica de administração, local de depósito e perfusão muscular.</li>
                       </ul>
                       <p>
-                        Quando a opção <em>"Mostrar variação entre pacientes"</em> está ativa, o
-                        programa simula centenas de pacientes virtuais e mostra a faixa onde a
-                        maioria cai. As{" "}
-                        <strong className="text-foreground">áreas violeta sombreadas</strong> no
-                        gráfico mostram essa variação.
+                        Quando a opção Monte Carlo está ativa, o motor sorteia parâmetros estruturais
+                        por distribuições log-normais e exibe percentis populacionais (p5/p25/mediana/p75/p95).
                       </p>
                     </CardContent>
                   </Card>
 
                   <Card className="lodi-card">
                     <CardHeader>
-                      <CardTitle className="text-sm">O que significam as cores?</CardTitle>
+                      <CardTitle className="text-sm">Faixas interpretativas</CardTitle>
                     </CardHeader>
                     <CardContent className="text-sm space-y-2 text-muted-foreground">
                       <div className="flex items-start gap-2">
@@ -1545,17 +1538,16 @@ export default function Simulator() {
                         <div className="w-3 h-3 rounded-full bg-emerald-500 mt-1 flex-shrink-0" />
                         <span>
                           <strong className="text-foreground">
-                            Entre {EUGONADAL_MIN_NGDL} e {EUGONADAL_MAX_NGDL} ng/dL — Faixa normal:
+                            Entre {EUGONADAL_MIN_NGDL} e {EUGONADAL_MAX_NGDL} ng/dL — Faixa eugonádica:
                           </strong>{" "}
-                          valores típicos de um homem adulto saudável (referência harmonizada CDC /
-                          Endocrine Society). Esta é a zona-alvo do tratamento.
+                          referência laboratorial para testosterona total em homem adulto.
                         </span>
                       </div>
                       <div className="flex items-start gap-2">
                         <div className="w-3 h-3 rounded-full bg-rose-500 mt-1 flex-shrink-0" />
                         <span>
                           <strong className="text-foreground">
-                            Acima de 1000 ng/dL — Acima do normal:
+                            Acima de {EUGONADAL_MAX_NGDL} ng/dL — Suprafisiológico:
                           </strong>{" "}
                           pode causar efeitos adversos como aumento de hematócrito, retenção,
                           alteração de humor.
@@ -1566,27 +1558,24 @@ export default function Simulator() {
 
                   <Card className="lodi-card">
                     <CardHeader>
-                      <CardTitle className="text-sm">Por que demora tanto a estabilizar?</CardTitle>
+                      <CardTitle className="text-sm">Acumulação e estado estacionário</CardTitle>
                     </CardHeader>
                     <CardContent className="text-sm space-y-3 text-muted-foreground leading-relaxed">
                       <p>
-                        O Nebido é um{" "}
-                        <strong className="text-foreground">depósito de liberação lenta</strong>.
-                        Cada injeção leva cerca de 3 meses para terminar de ser absorvida pelo
-                        músculo.
+                        O Nebido apresenta cinética <em>flip-flop</em>: a absorção lenta do depósito
+                        limita a fase terminal mais que a eliminação central.
                       </p>
                       <p>
                         Por isso, nas{" "}
-                        <strong className="text-foreground">primeiras 2–4 injeções</strong>, os
-                        níveis ainda não atingem o platô final — a concentração vai aumentando
-                        gradualmente até estabilizar (geralmente entre o 3º e o 5º ano de
-                        tratamento, dependendo do intervalo entre doses).
+                        <strong className="text-foreground">primeiras 4–5 administrações</strong>, a
+                        exposição ainda está em acumulação. O estado estacionário é aproximado após
+                        ~4 meias-vidas aparentes, coerente com Schubert et al. 2004.
                       </p>
                       <p>
-                        Por isso também, ajustes de dose só devem ser feitos depois de medir a
-                        testosterona em um momento já estabilizado, normalmente{" "}
+                        Por isso, calibrações individuais devem usar testosterona medida em regime já
+                        estabilizado, preferencialmente{" "}
                         <strong className="text-foreground">
-                          imediatamente antes da próxima injeção
+                          imediatamente antes da próxima administração
                         </strong>{" "}
                         (no vale).
                       </p>
@@ -1601,28 +1590,29 @@ export default function Simulator() {
                     </CardHeader>
                     <CardContent className="text-xs space-y-3 text-muted-foreground">
                       <p>
-                        Modelo farmacocinético de{" "}
+                        Modelo farmacocinético populacional com{" "}
                         <strong className="text-foreground">
-                          2 compartimentos com absorção de 1ª ordem
+                          absorção bifásica paralela de 1ª ordem
                         </strong>
-                        e <em>efeito flip-flop</em>: a absorção (ka) é mais lenta que a eliminação
-                        (k10), tornando-se o fator limitante da curva.
+                        e <em>efeito flip-flop</em>: k<sub>a,lento</sub> é muito menor que k<sub>e</sub>,
+                        tornando a absorção lenta o fator limitante da fase terminal.
                       </p>
                       <div className="font-mono bg-muted rounded p-2 space-y-1 text-[11px]">
-                        <p>dA_depósito/dt = −ka · A_depósito</p>
-                        <p>dA_central/dt = ka · A_dep − (k10+k12) · A_c + k21 · A_p</p>
-                        <p>dA_periférico/dt = k12 · A_central − k21 · A_periférico</p>
+                        <p>dQ_R/dt = −k_a,rápido · Q_R</p>
+                        <p>dQ_L/dt = −k_a,lento · Q_L</p>
+                        <p>dQ_C/dt = k_a,rápido · Q_R + k_a,lento · Q_L − k_e · Q_C</p>
+                        <p>C(t) = S · Q_C(t)</p>
                       </div>
                       <p>
-                        Parâmetros (Nebido 1000 mg): ka = 0,049/dia (t½ absorção ≈ 14 dias); k10 =
-                        0,0077/dia; k12 = 0,012/dia; k21 = 0,006/dia.
+                        Parâmetros populacionais: k<sub>a,rápido</sub> = 0,0350/dia; k<sub>a,lento</sub> =
+                        0,00650/dia; fração rápida = 0,070; k<sub>e</sub> = 0,460/dia; S = 24,44 (ng/dL)/mg.
                       </p>
                       <p>
                         Variação entre pacientes simulada por{" "}
                         <strong className="text-foreground">método de Monte Carlo</strong>: para
                         cada paciente virtual, sorteia-se um conjunto de parâmetros a partir de
-                        distribuições log-normais (CV de 30–45%) calibradas com dados de Behre,
-                        Nieschlag e Bhasin et al.
+                        distribuições log-normais calibradas com dados de Behre/Nieschlag, Schubert,
+                        Bhasin &amp; Travison e revisão clínica do Aveed.
                       </p>
                       <p className="opacity-80">
                         Limitações: não inclui SHBG, variação circadiana, interações medicamentosas
