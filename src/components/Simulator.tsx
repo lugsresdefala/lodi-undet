@@ -634,7 +634,7 @@ export default function Simulator() {
 
 
         {/* Área principal */}
-        <main className="flex flex-col rounded-xl border border-border/70 bg-background/55">
+        <main className="flex min-w-0 flex-col rounded-xl border border-border/70 bg-background/55">
           {/* Métricas clínicas */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 border-b border-border">
             {(() => {
@@ -750,7 +750,7 @@ export default function Simulator() {
               </TabsList>
 
               <TabsContent value="grafico" className="space-y-5">
-                <section className="overflow-visible rounded-lg border border-border/70 bg-card shadow-sm">
+                <section className="min-w-0 overflow-hidden rounded-lg border border-border/70 bg-card shadow-sm">
                   <div className="border-b border-border/70 px-4 py-4 sm:px-5">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                       <div>
