@@ -844,7 +844,7 @@ export default function Simulator() {
                             vertical={false}
                             strokeDasharray="2 8"
                             stroke="var(--color-border)"
-                            strokeOpacity={0.72}
+                            strokeOpacity={0.46}
                           />
                           <XAxis
                             dataKey="semana"
@@ -854,7 +854,7 @@ export default function Simulator() {
                             minTickGap={12}
                             tick={eixoTick}
                             tickMargin={12}
-                            axisLine={false}
+                            axisLine={{ stroke: "var(--color-border)", strokeOpacity: 0.8 }}
                             tickLine={false}
                           />
                           <YAxis
@@ -863,7 +863,7 @@ export default function Simulator() {
                             tickFormatter={yTickFormatter}
                             tick={eixoTick}
                             tickMargin={12}
-                            axisLine={false}
+                            axisLine={{ stroke: "var(--color-border)", strokeOpacity: 0.8 }}
                             tickLine={false}
                             width={64}
                           />
@@ -879,21 +879,21 @@ export default function Simulator() {
                             y1={eugMin}
                             y2={eugMax}
                             fill="var(--color-system-body)"
-                            fillOpacity={0.22}
+                            fillOpacity={0.14}
                           />
                           <ReferenceLine
                             y={eugMin}
                             stroke="var(--color-system-body)"
                             strokeDasharray="6 6"
                             strokeWidth={1.2}
-                            opacity={0.82}
+                            opacity={0.62}
                           />
                           <ReferenceLine
                             y={eugMax}
                             stroke="var(--color-system-body)"
                             strokeDasharray="6 6"
                             strokeWidth={1.2}
-                            opacity={0.82}
+                            opacity={0.62}
                           />
 
                           {/* Marcadores de doses */}
@@ -902,9 +902,9 @@ export default function Simulator() {
                               key={i}
                               x={d.diaDose / 7}
                               stroke="var(--color-chart-4)"
-                              strokeWidth={1.35}
+                              strokeWidth={1}
                               strokeDasharray="2 4"
-                              opacity={0.5}
+                              opacity={0.26}
                             />
                           ))}
 
