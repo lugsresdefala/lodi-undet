@@ -519,10 +519,10 @@ export default function Simulator() {
           <Separator className="lg:hidden" />
 
           <div>
-            <h2 className="text-sm font-semibold mb-3">Como exibir</h2>
+            <h2 className="text-sm font-semibold mb-3">Visualização</h2>
             <div className="flex flex-col gap-3">
               <div className="flex items-center justify-between">
-                <Label className="text-xs text-muted-foreground">Unidade de medida</Label>
+                <Label className="text-xs text-muted-foreground">Unidade</Label>
                 <div className="flex items-center gap-2 text-xs">
                   <span
                     className={
@@ -555,7 +555,7 @@ export default function Simulator() {
               <div className="rounded-lg border border-border bg-muted/30 p-3 space-y-2">
                 <div className="flex items-center justify-between">
                   <Label className="text-xs font-medium text-foreground">
-                    Mostrar variação entre pacientes
+                    Variabilidade populacional (Monte Carlo)
                   </Label>
                   <Switch
                     data-testid="switch-mc"
@@ -564,14 +564,14 @@ export default function Simulator() {
                   />
                 </div>
                 <p className="text-[11px] leading-snug text-muted-foreground">
-                  Pessoas diferentes respondem de forma diferente à mesma dose. Ative para ver a
-                  faixa esperada na população (de quem responde menos a quem responde mais).
+                  Propaga a variabilidade interindividual log-normal (IIV) sobre os parâmetros
+                  estruturais e retorna percentis populacionais da curva.
                 </p>
                 {config.mostrarMonteCarlo && (
                   <div className="pt-2 space-y-2 border-t border-border">
                     <div className="flex justify-between">
                       <Label className="text-[11px] text-muted-foreground">
-                        Quantos pacientes simular
+                        N de simulações
                       </Label>
                       <span className="text-[11px] font-mono font-medium">
                         {config.nSimulacoesMC}
@@ -607,11 +607,11 @@ export default function Simulator() {
 
           {/* Cronograma de doses */}
           <div>
-            <h2 className="text-sm font-semibold mb-2">Calendário de injeções</h2>
+            <h2 className="text-sm font-semibold mb-2">Cronograma de doses</h2>
             <div className="space-y-1 max-h-40 overflow-y-auto">
               {doses.map((d, i) => (
                 <div key={i} className="flex justify-between text-xs py-0.5">
-                  <span className="text-muted-foreground">Injeção {i + 1}</span>
+                  <span className="text-muted-foreground">Dose {i + 1}</span>
                   <span className="font-mono text-foreground">
                     semana {(d.diaDose / 7).toFixed(0)}
                   </span>
@@ -620,6 +620,7 @@ export default function Simulator() {
             </div>
           </div>
         </aside>
+
 
         {/* Área principal */}
         <main className="flex flex-col rounded-xl border border-border/70 bg-background/55">
