@@ -40,7 +40,7 @@ export const Route = createFileRoute("/")({
           "@type": "MedicalWebPage",
           name: "lodi-t — Referência sobre hormonização com testosterona",
           description:
-            "Modelo farmacocinético do undecilato de testosterona e cronologia de efeitos descritos pela Endocrine Society 2017 e WPATH SOC-8.",
+            "Modelo farmacocinético do undecilato de testosterona (Schubert 2004; Behre & Nieschlag 1999) e cronologia de efeitos descritos pela Endocrine Society 2017 e WPATH SOC-8.",
           url: "https://lodi-undet.lovable.app/",
           inLanguage: "pt-BR",
         }),
