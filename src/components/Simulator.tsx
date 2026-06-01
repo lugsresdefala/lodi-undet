@@ -1366,10 +1366,10 @@ export default function Simulator() {
                                 <thead className="bg-muted/50 text-muted-foreground">
                                   <tr>
                                     <th className="text-left p-2 font-medium">Intervalo</th>
-                                    <th className="text-right p-2 font-medium">Pico (Cmax)</th>
-                                    <th className="text-right p-2 font-medium">Vale (Cmin)</th>
-                                    <th className="text-right p-2 font-medium">Média (Cavg)</th>
-                                    <th className="text-right p-2 font-medium">% na faixa</th>
+                                    <th className="text-right p-2 font-medium">Cmax,SS</th>
+                                    <th className="text-right p-2 font-medium">Cmin,SS</th>
+                                    <th className="text-right p-2 font-medium">Cmédia,SS</th>
+                                    <th className="text-right p-2 font-medium">% eugonádico</th>
                                     <th className="text-center p-2 font-medium">Status</th>
                                   </tr>
                                 </thead>
@@ -1388,15 +1388,15 @@ export default function Simulator() {
                                         </Badge>
                                       ) : a.status === "vale_baixo" ? (
                                         <Badge className="bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/30">
-                                          vale baixo
+                                          Cmin baixa
                                         </Badge>
                                       ) : a.status === "pico_alto" ? (
                                         <Badge className="bg-rose-500/15 text-rose-700 dark:text-rose-400 border-rose-500/30">
-                                          pico alto
+                                          Cmax alta
                                         </Badge>
                                       ) : (
                                         <Badge className="bg-rose-500/15 text-rose-700 dark:text-rose-400 border-rose-500/30">
-                                          fora
+                                          ambos fora
                                         </Badge>
                                       );
                                     return (
@@ -1438,18 +1438,17 @@ export default function Simulator() {
                             <div className="px-3 py-2 text-[11px] text-muted-foreground border-t border-border">
                               Faixa eugonádica de referência: {EUGONADAL_MIN_NGDL}–
                               {EUGONADAL_MAX_NGDL} ng/dL · Vale acima de {EUGONADAL_MIN_NGDL} = sem
-                              hipogonadismo entre doses.
+                              concentração subeugonádica entre doses.
                             </div>
                           </CardContent>
                         </Card>
 
                         <div className="rounded-xl border border-amber-500/20 bg-amber-50 dark:bg-amber-950/20 p-3 text-xs text-amber-700 dark:text-amber-300">
-                          <strong>Importante:</strong> a recomendação assume que as medidas
-                          informadas foram colhidas em estado estacionário (após a 4ª–5ª injeção) e
-                          usando o regime atual. Antes do estado estacionário, os valores ainda
-                          estão subindo e não refletem a sensibilidade real. Esta ferramenta é
-                          educacional — qualquer ajuste deve ser validado com novos exames e
-                          avaliação médica.
+                          <strong>Importante:</strong> a recomendação assume medidas laboratoriais
+                          coletadas no estado estacionário do regime atual (após a 4ª–5ª administração).
+                          Antes desse ponto, a acumulação ainda está em curso e os valores não estimam
+                          adequadamente S = F/V. Esta ferramenta é educacional — qualquer ajuste exige
+                          validação laboratorial e avaliação médica.
                         </div>
                       </>
                     )}
