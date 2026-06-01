@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import lodiLogo from "@/assets/lodi-logo.png";
+import { InstrumentRing, RingGlyph } from "./InstrumentRing";
 
 const nav = [
   { to: "/calculadora", label: "Calculadora" },
@@ -16,6 +17,8 @@ export function SiteBackdrop() {
       <div className="absolute inset-0 bg-aurora opacity-70" />
       <div className="absolute inset-0 bg-grid-fine opacity-60" />
       <div className="absolute inset-0 bg-noise opacity-[0.18] mix-blend-multiply" />
+      {/* Instrument ring watermark — echoes the L.O.D.I logo composition */}
+      <InstrumentRing className="absolute -right-28 -top-20 w-[580px] opacity-[0.28]" />
     </div>
   );
 }
@@ -203,9 +206,9 @@ export function SiteFooter() {
 
 export function SectionEyebrow({ n, label }: { n: string; label: string }) {
   return (
-    <div className="mb-6 flex items-baseline gap-3 font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
+    <div className="mb-6 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
       <span className="text-foreground">{n}</span>
-      <span className="h-px w-8 bg-border" />
+      <RingGlyph className="h-2.5 w-2.5 shrink-0" />
       <span>{label}</span>
     </div>
   );

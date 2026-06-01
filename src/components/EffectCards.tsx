@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 
 import { Card } from "@/components/ui/card";
+import { SystemRingDot } from "@/components/InstrumentRing";
 import { EFFECTS, SYSTEMS, type System } from "@/data/effects";
 import { cn } from "@/lib/utils";
 
@@ -52,15 +53,15 @@ export function EffectCards() {
               type="button"
               onClick={() => setActive(s)}
               className={cn(
-                "rounded-full border px-3 py-1 text-xs transition-colors",
+                "inline-flex items-center rounded-full border px-3 py-1 text-xs transition-colors",
                 active === s
                   ? "border-foreground bg-foreground text-background"
                   : "border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground",
               )}
             >
-              <span
-                className="mr-1.5 inline-block h-2 w-2 rounded-full align-middle"
-                style={{ backgroundColor: SYSTEMS[s].tokenVar }}
+              <SystemRingDot
+                color={active === s ? "currentColor" : SYSTEMS[s].tokenVar}
+                className="mr-1.5 h-3 w-3 shrink-0"
               />
               {SYSTEMS[s].label}
             </button>
@@ -72,9 +73,9 @@ export function EffectCards() {
         {groups.map((g) => (
           <div key={g.system}>
             <div className="mb-3 flex items-center gap-3">
-              <span
-                className="h-2.5 w-2.5 rounded-full"
-                style={{ backgroundColor: SYSTEMS[g.system].tokenVar }}
+              <SystemRingDot
+                color={SYSTEMS[g.system].tokenVar}
+                className="h-3.5 w-3.5 shrink-0"
               />
               <h3 className="font-serif text-lg font-medium tracking-tight">
                 {SYSTEMS[g.system].label}
