@@ -26,11 +26,11 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 glass">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-8 md:py-4">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 md:px-8 md:py-4">
         <Link
           to="/"
           onClick={() => setOpen(false)}
-          className="group flex items-center gap-2 md:gap-3"
+          className="group flex min-w-0 items-center gap-2 md:gap-3"
         >
           <img
             src={lodiLogo}
@@ -39,10 +39,10 @@ export function SiteHeader() {
             draggable={false}
           />
 
-          <span className="font-serif text-lg font-medium tracking-tight md:text-xl">
+          <span className="whitespace-nowrap font-serif text-lg font-medium tracking-tight md:text-xl">
             lodi-t
           </span>
-          <span className="hidden font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground sm:inline">
+          <span className="hidden whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground xl:inline">
             v2 · referência clínica
           </span>
         </Link>
