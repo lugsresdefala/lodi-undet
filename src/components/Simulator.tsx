@@ -138,9 +138,11 @@ function CustomTooltipMC({
   unidade: UnidadeConc;
 }) {
   if (!active || !payload || !payload.length) return null;
+  const visiblePayload = payload.filter((p) => !p.name?.startsWith("__"));
+  if (!visiblePayload.length) return null;
   const unit = unidade === "ngdl" ? "ng/dL" : "nmol/L";
   const semana = label !== undefined ? Math.round(label) : "-";
-  const dia = payload[0]?.payload?.dia;
+  const dia = visiblePayload[0]?.payload?.dia;
   const casas = unidade === "nmol" ? 1 : 0;
   const formatarValor = (valor: number | [number, number]) => {
     if (Array.isArray(valor)) {
@@ -166,7 +168,7 @@ function CustomTooltipMC({
           {unit}
         </div>
       </div>
-      {payload.map((p, i) => (
+      {visiblePayload.map((p, i) => (
         <div key={i} className="flex items-baseline justify-between gap-5 py-1 text-muted-foreground">
           <span className="flex min-w-0 items-center gap-2">
             <span
