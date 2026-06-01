@@ -19,7 +19,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Activity, AlertTriangle, CheckCircle2, TrendingUp, Clock } from "lucide-react";
+import { Activity, AlertTriangle, CheckCircle2, Clock, TrendingUp, UserCog } from "lucide-react";
 import {
   simularPerfil,
   simularMonteCarlo,
@@ -40,7 +40,6 @@ import {
   type MetricasPK,
   type RecomendacaoIntervalo,
 } from "@/lib/pk-engine";
-import { UserCog } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import lodiLogo from "@/assets/lodi-logo.png";
 
@@ -110,7 +109,7 @@ function MetricCard({
   statusClass?: string;
 }) {
   return (
-    <div className="flex flex-col gap-1 p-3 rounded-xl bg-card border border-card-border">
+    <div className="flex flex-col gap-1 rounded-lg border border-border/70 bg-card p-3">
       <span className="text-xs text-muted-foreground flex items-center gap-1">
         {icon}
         {label}
@@ -563,8 +562,8 @@ export default function Simulator() {
                 </div>
               </div>
 
-              <div className="rounded-lg border border-border bg-muted/30 p-3 space-y-2">
-                <div className="flex items-center justify-between">
+              <div className="space-y-3 rounded-lg border border-border bg-muted/30 p-3">
+                <div className="flex items-start justify-between gap-3">
                   <Label className="text-xs font-medium text-foreground">
                     Variabilidade populacional (Monte Carlo)
                   </Label>
@@ -579,14 +578,26 @@ export default function Simulator() {
                   estruturais e retorna percentis populacionais da curva.
                 </p>
                 {config.mostrarMonteCarlo && (
-                  <div className="pt-2 space-y-2 border-t border-border">
-                    <div className="flex justify-between">
+                  <div className="space-y-2 border-t border-border pt-2">
+                    <div className="flex items-center justify-between gap-3">
                       <Label className="text-[11px] text-muted-foreground">
                         Replicações Monte Carlo (N)
                       </Label>
-                      <span className="text-[11px] font-mono font-medium">
-                        {config.nSimulacoesMC}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-[11px] font-medium">
+                          {config.nSimulacoesMC}
+                        </span>
+                        {isCalculating ? (
+                          <span className="inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/5 px-2 py-0.5 text-[10px] text-primary">
+                            <span className="inline-block h-2 w-2 rounded-full border border-primary border-t-transparent animate-spin" />
+                            simulando
+                          </span>
+                        ) : mcConcluido ? (
+                          <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] text-emerald-700">
+                            concluído
+                          </span>
+                        ) : null}
+                      </div>
                     </div>
                     <Slider
                       data-testid="slider-mc"
@@ -598,14 +609,6 @@ export default function Simulator() {
                     />
                     <div className="flex justify-between text-[11px] text-muted-foreground">
                       <span>50</span>
-                      {isCalculating ? (
-                        <span className="flex items-center gap-1 text-primary">
-                          <span className="inline-block w-2 h-2 rounded-full border border-primary border-t-transparent animate-spin" />
-                          simulando…
-                        </span>
-                      ) : mcConcluido ? (
-                        <span className="text-emerald-600 dark:text-emerald-400">concluído</span>
-                      ) : null}
                       <span>500</span>
                     </div>
                   </div>
