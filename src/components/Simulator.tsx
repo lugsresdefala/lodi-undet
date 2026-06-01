@@ -891,7 +891,7 @@ export default function Simulator() {
                             tickMargin={12}
                             axisLine={{ stroke: "var(--color-border)", strokeOpacity: 0.8 }}
                             tickLine={false}
-                            width={64}
+                            width={54}
                           />
                           <Tooltip
                             allowEscapeViewBox={{ x: true, y: true }}
