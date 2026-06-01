@@ -330,8 +330,6 @@ export default function Simulator() {
           semana: pt.semana,
           dia: pt.dia,
           conc: pt[chave],
-          concBase: Math.max(0, pt[chave] * 0.925),
-          concDorso: pt[chave] * 1.035,
           volume3d: [Math.max(0, pt[chave] * 0.925), pt[chave] * 1.035] as [number, number],
         }));
     }
@@ -346,8 +344,6 @@ export default function Simulator() {
           semana: pt.semana,
           dia: pt.dia,
           conc: pt[chave],
-          concBase: Math.max(0, pt[chave] * 0.925),
-          concDorso: pt[chave] * 1.035,
           volume3d: [Math.max(0, pt[chave] * 0.925), pt[chave] * 1.035] as [number, number],
           bandaIC90: [getV(resultadoMC.p5, idx), getV(resultadoMC.p95, idx)] as [number, number],
           bandaIQ50: [getV(resultadoMC.p25, idx), getV(resultadoMC.p75, idx)] as [number, number],
@@ -393,7 +389,8 @@ export default function Simulator() {
       const bandas: number[] = [];
       if ("bandaIC90" in p && Array.isArray(p.bandaIC90)) bandas.push(p.bandaIC90[1]);
       if ("bandaIQ50" in p && Array.isArray(p.bandaIQ50)) bandas.push(p.bandaIQ50[1]);
-      return [p.conc, p.concDorso, ...bandas];
+      if (Array.isArray(p.volume3d)) bandas.push(p.volume3d[1]);
+      return [p.conc, ...bandas];
     });
     const max = Math.max(eugMax, ...valores);
     return Math.ceil((max * 1.04) / 100) * 100;
