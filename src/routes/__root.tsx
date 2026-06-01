@@ -5,7 +5,7 @@ import appCss from "../styles.css?url";
 
 const SITE_TITLE = "lodi-t — Hormonização com testosterona, referência clínica";
 const SITE_DESCRIPTION =
-  "Modelo farmacocinético do undecilato de testosterona para ajustar intervalos posológicos individualizados. Endocrine Society 2017, WPATH SOC-8.";
+  "Modelo farmacocinético do undecilato de testosterona (Schubert 2004) para ajustar intervalos posológicos individualizados, com cronologia e efeitos descritos pela Endocrine Society 2017 e WPATH SOC-8.";
 const SITE_URL = "https://lodi-undet.lovable.app";
 const OG_IMAGE =
   "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/65a6ecf9-c43e-4b68-8bf7-1850b798668d";
