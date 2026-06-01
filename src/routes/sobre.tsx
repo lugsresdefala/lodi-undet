@@ -198,7 +198,7 @@ CV(S = F/V)      = 0,22`}</Eq>
           <ul className="list-disc pl-5 text-muted-foreground">
             <li><strong>ideal</strong> — C<sub>max,SS</sub> e C<sub>min,SS</sub> dentro da faixa eugonádica;</li>
             <li><strong>aceitável</strong> — pequeno desvio em um dos extremos;</li>
-            <li><strong>Cmin baixa</strong> / <strong>Cmax alta</strong> / <strong>ambos fora</strong> — desvios relevantes.</li>
+            <li><strong>Cmin subeugonádica</strong> / <strong>Cmax supraeugonádica</strong> / <strong>ambos fora</strong> — desvios relevantes.</li>
           </ul>
           <p>
             Quando o usuário fornece uma medida real (vale e/ou pico), o motor ajusta
