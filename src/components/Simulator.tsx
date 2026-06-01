@@ -776,33 +776,52 @@ export default function Simulator() {
                       {config.mostrarMonteCarlo && resultadoMC ? (
                         <>
                           <span className="flex items-center gap-1.5">
-                            <span className="inline-block h-2 w-4 rounded-sm bg-chart-5/15" />
+                            <span
+                              className="inline-block h-2 w-4 rounded-sm"
+                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-5) 18%, transparent)" }}
+                            />
                             IC 90 % (p5–p95)
                           </span>
                           <span className="flex items-center gap-1.5">
-                            <span className="inline-block h-2 w-4 rounded-sm bg-chart-5/30" />
+                            <span
+                              className="inline-block h-2 w-4 rounded-sm"
+                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-2) 30%, transparent)" }}
+                            />
                             IIQ 50 % (p25–p75)
                           </span>
                           <span className="flex items-center gap-1.5">
-                            <span className="inline-block h-0.5 w-4 bg-chart-2" />
+                            <span
+                              className="inline-block h-0.5 w-4"
+                              style={{ backgroundColor: "var(--color-primary)" }}
+                            />
                             mediana populacional
                           </span>
                         </>
                       ) : (
                         <span className="flex items-center gap-1.5">
-                          <span className="inline-block h-0.5 w-4 bg-chart-2" />
+                          <span
+                            className="inline-block h-0.5 w-4"
+                            style={{ backgroundColor: "var(--color-primary)" }}
+                          />
                           concentração sérica (indivíduo típico)
                         </span>
                       )}
                       <span className="flex items-center gap-1.5">
-                        <span className="inline-block h-2 w-4 rounded-sm bg-system-body/20" />
+                        <span
+                          className="inline-block h-2 w-4 rounded-sm"
+                          style={{ backgroundColor: "color-mix(in oklab, var(--color-system-body) 16%, transparent)" }}
+                        />
                         faixa eugonádica ({EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL} ng/dL)
                       </span>
                       <span className="flex items-center gap-1.5">
-                        <span className="inline-block h-3 w-0.5 border-l border-dashed border-chart-4" />
+                        <span
+                          className="inline-block h-3 w-0.5 border-l border-dashed"
+                          style={{ borderColor: "var(--color-chart-4)" }}
+                        />
                         dose
                       </span>
                     </div>
+
                     <div className="-mx-3 overflow-x-auto overflow-y-visible px-3 pb-3 [scrollbar-color:color-mix(in_oklab,var(--color-primary)_34%,transparent)_transparent] [scrollbar-gutter:stable] [scrollbar-width:thin] sm:-mx-5 sm:px-5 [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-primary/25 [&::-webkit-scrollbar-track]:bg-transparent">
                       <div className="h-[480px] w-full min-w-[760px] rounded-lg border border-border/70 bg-card p-3 sm:h-[520px] sm:p-4">
                         <ResponsiveContainer width="100%" height="100%">
