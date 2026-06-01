@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 
 import lodiLogo from "@/assets/lodi-logo.png";
 import { MedicalDisclaimer } from "@/components/MedicalDisclaimer";
+import { InstrumentRing, RingGlyph } from "@/components/InstrumentRing";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -95,7 +96,7 @@ function Index() {
               </span>
               referência clínica
             </span>
-            <span className="hidden h-px w-10 bg-border sm:inline-block" />
+            <RingGlyph className="hidden h-2.5 w-2.5 shrink-0 sm:inline-block" />
             <span>Schubert 2004</span>
             <span className="opacity-40">·</span>
             <span>Endocrine Society 2017</span>
@@ -168,6 +169,8 @@ function Index() {
             <div className="animate-rise delay-200 relative mx-auto w-full max-w-md">
               <div className="absolute -inset-8 -z-10 rounded-[2rem] bg-aurora opacity-80 blur-2xl" />
               <div className="ring-soft relative overflow-hidden rounded-[1.75rem] border border-border/70 bg-card/70 p-8 backdrop-blur-sm">
+                {/* Instrument ring behind the logo — echoes the L.O.D.I logo composition */}
+                <InstrumentRing className="absolute inset-0 h-full w-full scale-95 opacity-[0.14]" />
                 <div className="absolute right-4 top-4 font-mono text-[9px] uppercase tracking-[0.24em] text-muted-foreground">
                   L.O.D.I · emblema
                 </div>
@@ -227,9 +230,9 @@ function Index() {
                 to={c.to}
                 className="group ring-soft relative overflow-hidden rounded-2xl border border-border/70 bg-card/60 p-6 backdrop-blur-sm transition-colors hover:border-foreground/30"
               >
-                <div className="flex items-baseline gap-3 font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
+                <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
                   <span className="text-foreground">{c.n}</span>
-                  <span className="h-px w-8 bg-border" />
+                  <RingGlyph className="h-2.5 w-2.5 shrink-0" />
                   <span>{c.eyebrow}</span>
                 </div>
                 <h2 className="mt-5 font-serif text-2xl font-medium tracking-tight text-foreground">

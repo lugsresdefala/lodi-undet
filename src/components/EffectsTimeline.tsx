@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { EFFECTS, SYSTEMS, type System } from "@/data/effects";
 import { Card } from "@/components/ui/card";
+import { SystemRingDot } from "@/components/InstrumentRing";
 import { cn } from "@/lib/utils";
 
 const TIMELINE_MAX_MONTHS = 60;
@@ -144,16 +145,16 @@ function FilterChip({
       type="button"
       onClick={onClick}
       className={cn(
-        "rounded-full border px-3 py-1 text-xs transition-colors",
+        "inline-flex items-center rounded-full border px-3 py-1 text-xs transition-colors",
         active
           ? "border-foreground bg-foreground text-background"
           : "border-border bg-transparent text-muted-foreground hover:border-foreground/40 hover:text-foreground",
       )}
     >
       {color && (
-        <span
-          className="mr-1.5 inline-block h-2 w-2 rounded-full align-middle"
-          style={{ backgroundColor: color }}
+        <SystemRingDot
+          color={active ? "currentColor" : color}
+          className="mr-1.5 h-3 w-3 shrink-0"
         />
       )}
       {label}
