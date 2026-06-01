@@ -1054,13 +1054,13 @@ export default function Simulator() {
                         </p>
                         <p className="text-[11px] text-muted-foreground leading-snug">
                           Informe pelo menos UM dos dois valores abaixo (preferencialmente os dois).
-                          O sistema usa essas medidas para identificar o metabolismo individual
-                          deste paciente.
+                        O algoritmo usa essas medidas para estimar o fator individual de
+                        exposição (S = F/V) deste paciente.
                         </p>
 
                         <div className="space-y-1.5">
                           <Label className="text-xs flex items-center justify-between">
-                            <span>Pico medido (Cmax)</span>
+                            <span>Pico medido (Cmax,SS)</span>
                             <span className="text-[10px] text-muted-foreground">
                               ~1 sem após injeção
                             </span>
@@ -1081,7 +1081,7 @@ export default function Simulator() {
 
                         <div className="space-y-1.5">
                           <Label className="text-xs flex items-center justify-between">
-                            <span>Vale medido (Cmin)</span>
+                            <span>Vale medido (Cmin,SS)</span>
                             <span className="text-[10px] text-muted-foreground">
                               imediatamente antes da próxima dose
                             </span>
@@ -1105,10 +1105,10 @@ export default function Simulator() {
 
                       <div className="space-y-2">
                         <p className="text-[11px] uppercase tracking-wide text-muted-foreground font-medium">
-                          2) Concentração média desejada
+                          2) Meta de exposição média
                         </p>
                         <Label className="text-xs flex items-center justify-between">
-                          <span>Cavg-alvo (ng/dL)</span>
+                          <span>Cmédia,SS alvo (ng/dL)</span>
                           <span className="text-[10px] text-muted-foreground">
                             faixa: {EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL}
                           </span>
@@ -1143,9 +1143,8 @@ export default function Simulator() {
                           ))}
                         </div>
                         <p className="text-[11px] text-muted-foreground leading-snug">
-                          Meta de testosterona média no sangue deste paciente. Faixa fisiológica
-                          média: 500–700 ng/dL. O sistema vai escolher o intervalo que mais se
-                          aproxima desta meta mantendo o vale acima de {EUGONADAL_MIN_NGDL}.
+                          Meta de exposição sérica média no intervalo τ. O algoritmo seleciona o
+                          intervalo que mais se aproxima dessa meta mantendo Cmin,SS ≥ {EUGONADAL_MIN_NGDL} ng/dL.
                         </p>
                       </div>
 
@@ -1154,7 +1153,7 @@ export default function Simulator() {
                         className="w-full lodi-button-primary font-display tracking-wide"
                         onClick={calcularRecomendacao}
                       >
-                        Calcular intervalo ideal
+                        Calcular intervalo recomendado
                       </Button>
                     </CardContent>
                   </Card>
@@ -1167,10 +1166,10 @@ export default function Simulator() {
                           <UserCog className="w-10 h-10 mx-auto mb-3 opacity-30" />
                           <p>
                             Preencha os dados do paciente à esquerda e clique em{" "}
-                            <strong className="text-foreground">"Calcular intervalo ideal"</strong>.
+                            <strong className="text-foreground">"Calcular intervalo recomendado"</strong>.
                           </p>
                           <p className="text-xs mt-2">
-                            É necessário pelo menos uma medida (pico, vale ou média).
+                            É necessária pelo menos uma medida laboratorial: Cmax,SS ou Cmin,SS.
                           </p>
                         </CardContent>
                       </Card>
