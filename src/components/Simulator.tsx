@@ -327,7 +327,13 @@ export default function Simulator() {
     if (!config.mostrarMonteCarlo || !resultadoMC) {
       return perfilMediano
         .filter((_, i) => i % 3 === 0)
-        .map((pt) => ({ semana: pt.semana, dia: pt.dia, conc: pt[chave] }));
+        .map((pt) => ({
+          semana: pt.semana,
+          dia: pt.dia,
+          conc: pt[chave],
+          concBase: Math.max(0, pt[chave] * 0.955),
+          concDorso: pt[chave] * 1.018,
+        }));
     }
 
     // Para bandas: area com dataKey=[low, high] onde low é o valor baixo e high o alto
