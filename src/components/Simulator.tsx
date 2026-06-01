@@ -833,8 +833,8 @@ export default function Simulator() {
                       </span>
                     </div>
 
-                    <div className="-mx-3 overflow-x-auto overflow-y-visible px-3 pb-3 [scrollbar-color:color-mix(in_oklab,var(--color-primary)_34%,transparent)_transparent] [scrollbar-gutter:stable] [scrollbar-width:thin] sm:-mx-5 sm:px-5 [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-primary/25 [&::-webkit-scrollbar-track]:bg-transparent">
-                      <div className="h-[500px] w-full min-w-[820px] rounded-lg border border-border bg-card p-4 sm:h-[540px] sm:p-5">
+                    <div className="overflow-visible pb-3">
+                      <div className="h-[420px] w-full rounded-lg border border-border bg-card p-2 sm:h-[520px] sm:p-5">
                         <ResponsiveContainer width="100%" height="100%">
 
                         <ComposedChart
@@ -843,7 +843,7 @@ export default function Simulator() {
                         >
                           <defs>
                             <filter id="sombra3d" x="-12%" y="-12%" width="128%" height="136%">
-                              <feDropShadow dx="0" dy="7" stdDeviation="5" floodColor="var(--color-primary)" floodOpacity="0.22" />
+                              <feDropShadow dx="0" dy="9" stdDeviation="5" floodColor="var(--color-primary)" floodOpacity="0.24" />
                             </filter>
                             <linearGradient id="banda90" x1="0" y1="0" x2="0" y2="1">
                               <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.24} />
@@ -855,9 +855,9 @@ export default function Simulator() {
                               <stop offset="100%" stopColor="var(--color-chart-2)" stopOpacity={0.16} />
                             </linearGradient>
                             <linearGradient id="volume3d" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.34} />
-                              <stop offset="45%" stopColor="var(--color-chart-3)" stopOpacity={0.25} />
-                              <stop offset="100%" stopColor="var(--color-chart-1)" stopOpacity={0.22} />
+                              <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.44} />
+                              <stop offset="45%" stopColor="var(--color-chart-3)" stopOpacity={0.3} />
+                              <stop offset="100%" stopColor="var(--color-chart-1)" stopOpacity={0.26} />
                             </linearGradient>
                             <linearGradient id="linha3d" x1="0" y1="0" x2="1" y2="0">
                               <stop offset="0%" stopColor="var(--color-chart-2)" />
