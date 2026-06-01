@@ -86,7 +86,7 @@ function ApiDocs() {
   "cminObsNgdl": 350,
   "cavgAlvoNgdl": 600
 }`}
-        returns="RecomendacaoIntervalo (intervalo ótimo entre 6 e 16 sem, justificativa, sensibilidade individual)."
+        returns="RecomendacaoIntervalo (intervalo recomendado entre 4 e 18 sem, justificativa e fator individual S = F/V)."
       />
 
       <h2 className="mt-10 font-serif text-xl">Exemplo (curl)</h2>
