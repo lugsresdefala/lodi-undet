@@ -975,9 +975,9 @@ export default function Simulator() {
                           <Line
                             type="monotone"
                             dataKey="concBase"
-                            stroke="color-mix(in oklab, var(--color-chart-1) 62%, var(--color-primary))"
-                            strokeWidth={2.7}
-                            strokeOpacity={0.82}
+                            stroke="color-mix(in oklab, var(--color-chart-1) 70%, var(--color-primary))"
+                            strokeWidth={3.1}
+                            strokeOpacity={0.9}
                             dot={false}
                             activeDot={false}
                             isAnimationActive={false}
@@ -987,7 +987,7 @@ export default function Simulator() {
                             type="monotone"
                             dataKey="concDorso"
                             stroke="color-mix(in oklab, var(--color-chart-2) 72%, var(--color-background))"
-                            strokeWidth={2.2}
+                            strokeWidth={2.7}
                             strokeOpacity={0.95}
                             dot={false}
                             activeDot={false}
@@ -998,7 +998,7 @@ export default function Simulator() {
                             type="monotone"
                             dataKey="conc"
                             stroke="url(#linha3d)"
-                            strokeWidth={4.2}
+                            strokeWidth={4.6}
                             dot={false}
                             activeDot={{ r: 5, strokeWidth: 2.2, stroke: "var(--color-card)", fill: "var(--color-chart-3)" }}
                             isAnimationActive={false}
