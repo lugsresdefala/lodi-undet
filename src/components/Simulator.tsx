@@ -19,7 +19,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Activity, AlertTriangle, CheckCircle2, TrendingUp, Clock } from "lucide-react";
+import { Activity, AlertTriangle, CheckCircle2, Clock, TrendingUp, UserCog } from "lucide-react";
 import {
   simularPerfil,
   simularMonteCarlo,
@@ -40,7 +40,6 @@ import {
   type MetricasPK,
   type RecomendacaoIntervalo,
 } from "@/lib/pk-engine";
-import { UserCog } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import lodiLogo from "@/assets/lodi-logo.png";
 
@@ -110,7 +109,7 @@ function MetricCard({
   statusClass?: string;
 }) {
   return (
-    <div className="flex flex-col gap-1 p-3 rounded-xl bg-card border border-card-border">
+    <div className="flex flex-col gap-1 rounded-lg border border-border/70 bg-card p-3">
       <span className="text-xs text-muted-foreground flex items-center gap-1">
         {icon}
         {label}
@@ -331,8 +330,6 @@ export default function Simulator() {
           semana: pt.semana,
           dia: pt.dia,
           conc: pt[chave],
-          concBase: Math.max(0, pt[chave] * 0.925),
-          concDorso: pt[chave] * 1.035,
           volume3d: [Math.max(0, pt[chave] * 0.925), pt[chave] * 1.035] as [number, number],
         }));
     }
@@ -347,8 +344,6 @@ export default function Simulator() {
           semana: pt.semana,
           dia: pt.dia,
           conc: pt[chave],
-          concBase: Math.max(0, pt[chave] * 0.925),
-          concDorso: pt[chave] * 1.035,
           volume3d: [Math.max(0, pt[chave] * 0.925), pt[chave] * 1.035] as [number, number],
           bandaIC90: [getV(resultadoMC.p5, idx), getV(resultadoMC.p95, idx)] as [number, number],
           bandaIQ50: [getV(resultadoMC.p25, idx), getV(resultadoMC.p75, idx)] as [number, number],
@@ -394,7 +389,8 @@ export default function Simulator() {
       const bandas: number[] = [];
       if ("bandaIC90" in p && Array.isArray(p.bandaIC90)) bandas.push(p.bandaIC90[1]);
       if ("bandaIQ50" in p && Array.isArray(p.bandaIQ50)) bandas.push(p.bandaIQ50[1]);
-      return [p.conc, p.concDorso, ...bandas];
+      if (Array.isArray(p.volume3d)) bandas.push(p.volume3d[1]);
+      return [p.conc, ...bandas];
     });
     const max = Math.max(eugMax, ...valores);
     return Math.ceil((max * 1.04) / 100) * 100;
@@ -563,8 +559,8 @@ export default function Simulator() {
                 </div>
               </div>
 
-              <div className="rounded-lg border border-border bg-muted/30 p-3 space-y-2">
-                <div className="flex items-center justify-between">
+              <div className="space-y-3 rounded-lg border border-border bg-muted/30 p-3">
+                <div className="flex items-start justify-between gap-3">
                   <Label className="text-xs font-medium text-foreground">
                     Variabilidade populacional (Monte Carlo)
                   </Label>
@@ -579,14 +575,26 @@ export default function Simulator() {
                   estruturais e retorna percentis populacionais da curva.
                 </p>
                 {config.mostrarMonteCarlo && (
-                  <div className="pt-2 space-y-2 border-t border-border">
-                    <div className="flex justify-between">
+                  <div className="space-y-2 border-t border-border pt-2">
+                    <div className="flex items-center justify-between gap-3">
                       <Label className="text-[11px] text-muted-foreground">
                         Replicações Monte Carlo (N)
                       </Label>
-                      <span className="text-[11px] font-mono font-medium">
-                        {config.nSimulacoesMC}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-[11px] font-medium">
+                          {config.nSimulacoesMC}
+                        </span>
+                        {isCalculating ? (
+                          <span className="inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/5 px-2 py-0.5 text-[10px] text-primary">
+                            <span className="inline-block h-2 w-2 rounded-full border border-primary border-t-transparent animate-spin" />
+                            simulando
+                          </span>
+                        ) : mcConcluido ? (
+                          <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] text-emerald-700">
+                            concluído
+                          </span>
+                        ) : null}
+                      </div>
                     </div>
                     <Slider
                       data-testid="slider-mc"
@@ -598,14 +606,6 @@ export default function Simulator() {
                     />
                     <div className="flex justify-between text-[11px] text-muted-foreground">
                       <span>50</span>
-                      {isCalculating ? (
-                        <span className="flex items-center gap-1 text-primary">
-                          <span className="inline-block w-2 h-2 rounded-full border border-primary border-t-transparent animate-spin" />
-                          simulando…
-                        </span>
-                      ) : mcConcluido ? (
-                        <span className="text-emerald-600 dark:text-emerald-400">concluído</span>
-                      ) : null}
                       <span>500</span>
                     </div>
                   </div>
@@ -833,17 +833,17 @@ export default function Simulator() {
                       </span>
                     </div>
 
-                    <div className="min-w-0 overflow-visible pb-3">
-                      <div className="h-[420px] w-full rounded-lg border border-border bg-card p-2 sm:h-[520px] sm:p-5">
+                    <div className="min-w-0 overflow-hidden pb-3">
+                      <div className="h-[390px] w-full rounded-lg border border-border bg-card p-2 sm:h-[480px] sm:p-4">
                         <ResponsiveContainer width="100%" height="100%">
 
                         <ComposedChart
                           data={dadosGrafico}
-                          margin={{ top: 24, right: 12, left: 10, bottom: 28 }}
+                          margin={{ top: 20, right: 10, left: 4, bottom: 24 }}
                         >
                           <defs>
-                            <filter id="sombra3d" x="-12%" y="-12%" width="128%" height="136%">
-                              <feDropShadow dx="0" dy="9" stdDeviation="5" floodColor="var(--color-primary)" floodOpacity="0.24" />
+                            <filter id="sombra3d" x="-10%" y="-10%" width="124%" height="130%">
+                              <feDropShadow dx="0" dy="7" stdDeviation="4" floodColor="var(--color-primary)" floodOpacity="0.2" />
                             </filter>
                             <linearGradient id="banda90" x1="0" y1="0" x2="0" y2="1">
                               <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.24} />
@@ -855,9 +855,9 @@ export default function Simulator() {
                               <stop offset="100%" stopColor="var(--color-chart-2)" stopOpacity={0.16} />
                             </linearGradient>
                             <linearGradient id="volume3d" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.44} />
-                              <stop offset="45%" stopColor="var(--color-chart-3)" stopOpacity={0.3} />
-                              <stop offset="100%" stopColor="var(--color-chart-1)" stopOpacity={0.26} />
+                              <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.36} />
+                              <stop offset="45%" stopColor="var(--color-chart-3)" stopOpacity={0.24} />
+                              <stop offset="100%" stopColor="var(--color-chart-1)" stopOpacity={0.2} />
                             </linearGradient>
                             <linearGradient id="linha3d" x1="0" y1="0" x2="1" y2="0">
                               <stop offset="0%" stopColor="var(--color-chart-2)" />
@@ -974,31 +974,9 @@ export default function Simulator() {
                           />
                           <Line
                             type="monotone"
-                            dataKey="concBase"
-                            stroke="color-mix(in oklab, var(--color-chart-1) 70%, var(--color-primary))"
-                            strokeWidth={3.1}
-                            strokeOpacity={0.9}
-                            dot={false}
-                            activeDot={false}
-                            isAnimationActive={false}
-                            name="__base tridimensional"
-                          />
-                          <Line
-                            type="monotone"
-                            dataKey="concDorso"
-                            stroke="color-mix(in oklab, var(--color-chart-2) 72%, var(--color-background))"
-                            strokeWidth={2.7}
-                            strokeOpacity={0.95}
-                            dot={false}
-                            activeDot={false}
-                            isAnimationActive={false}
-                            name="__dorso tridimensional"
-                          />
-                          <Line
-                            type="monotone"
                             dataKey="conc"
                             stroke="url(#linha3d)"
-                            strokeWidth={4.6}
+                            strokeWidth={4.2}
                             dot={false}
                             activeDot={{ r: 5, strokeWidth: 2.2, stroke: "var(--color-card)", fill: "var(--color-chart-3)" }}
                             isAnimationActive={false}
@@ -1053,7 +1031,7 @@ export default function Simulator() {
               <TabsContent value="paciente" className="space-y-4">
                 <div className="grid gap-4 grid-cols-1 lg:grid-cols-3">
                   {/* Coluna 1: formulário */}
-                  <Card className="lg:col-span-1 lodi-card">
+                  <Card className="lg:col-span-1">
                     <CardHeader className="pb-3">
                       <CardTitle className="text-sm flex items-center gap-2">
                         <UserCog className="w-4 h-4 text-accent" />
@@ -1201,7 +1179,7 @@ export default function Simulator() {
 
                       <Button
                         data-testid="button-recomendar"
-                        className="w-full lodi-button-primary font-display tracking-wide"
+                        className="w-full"
                         onClick={calcularRecomendacao}
                       >
                         Calcular intervalo recomendado
@@ -1522,7 +1500,7 @@ export default function Simulator() {
                   </p>
                 </div>
                 <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-                  <Card className="lodi-card">
+                  <Card>
                     <CardHeader>
                       <CardTitle className="text-sm">Estrutura do modelo</CardTitle>
                     </CardHeader>
@@ -1547,7 +1525,7 @@ export default function Simulator() {
                     </CardContent>
                   </Card>
 
-                  <Card className="lodi-card">
+                  <Card>
                     <CardHeader>
                       <CardTitle className="text-sm">Variabilidade interindividual</CardTitle>
                     </CardHeader>
@@ -1570,7 +1548,7 @@ export default function Simulator() {
                     </CardContent>
                   </Card>
 
-                  <Card className="lodi-card">
+                  <Card>
                     <CardHeader>
                       <CardTitle className="text-sm">Faixas interpretativas</CardTitle>
                     </CardHeader>
@@ -1606,7 +1584,7 @@ export default function Simulator() {
                     </CardContent>
                   </Card>
 
-                  <Card className="lodi-card">
+                  <Card>
                     <CardHeader>
                       <CardTitle className="text-sm">Acumulação e estado estacionário</CardTitle>
                     </CardHeader>
@@ -1632,7 +1610,7 @@ export default function Simulator() {
                     </CardContent>
                   </Card>
 
-                  <Card className="md:col-span-2 lodi-card">
+                  <Card className="md:col-span-2">
                     <CardHeader>
                       <CardTitle className="text-sm">
                         Detalhes técnicos (para quem quer entender mais)

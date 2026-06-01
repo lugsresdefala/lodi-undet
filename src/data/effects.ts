@@ -1,4 +1,4 @@
-// Expected masculinizing effects of testosterone therapy.
+// Efeitos esperados da hormonização com testosterona.
 // Onset/maximum windows derived from the Endocrine Society 2017 Clinical
 // Practice Guideline (Hembree et al., JCEM 2017, Table 13) and WPATH SOC-8.
 // Individual variation is large; not all changes are reversible.
@@ -9,9 +9,9 @@ export interface EffectEntry {
   id: string;
   title: string;
   system: System;
-  /** Onset window, in months from start of therapy */
+  /** Janela de início, em meses desde o começo da hormonização */
   onsetMonths: [number, number];
-  /** Window in which the effect typically reaches its plateau */
+  /** Janela em que o efeito geralmente atinge platô */
   maxMonths: [number, number];
   reversible: boolean;
   notes: string;
@@ -49,13 +49,13 @@ export const EFFECTS: EffectEntry[] = [
   },
   {
     id: "scalp-loss",
-    title: "Rarefação capilar de padrão androgénico",
+    title: "Rarefação capilar de padrão androgênico",
     system: "skin",
     onsetMonths: [12, 24],
     maxMonths: [60, 120],
     reversible: false,
     notes:
-      "Ocorre na presença de predisposição genética (polimorfismos do receptor de androgénio). Curso e intensidade variáveis; para alguns é desejado, para outros não. (Endocrine Society 2017; WPATH SOC-8, Coleman et al., J Sex Med 2022;19(3):S1–S259)",
+      "Ocorre na presença de predisposição genética (polimorfismos do receptor de androgênio). Curso e intensidade variáveis; para alguns é desejado, para outros não. (Endocrine Society 2017; WPATH SOC-8, Coleman et al., J Sex Med 2022;19(3):S1–S259)",
   },
   {
     id: "muscle-mass",
@@ -105,7 +105,7 @@ export const EFFECTS: EffectEntry[] = [
     maxMonths: [12, 24],
     reversible: true,
     notes:
-      "Pode haver ressecamento e maior fragilidade da mucosa. Quando incômodo, hidratantes ou estrogénio tópico em baixa dose aliviam sem comprometer a masculinização.",
+      "Pode haver ressecamento e maior fragilidade da mucosa. Quando incômodo, hidratantes ou estrogênio tópico em baixa dose aliviam sem comprometer a masculinização.",
   },
   {
     id: "voice",
@@ -135,7 +135,7 @@ export const EFFECTS: EffectEntry[] = [
     maxMonths: [3, 12],
     reversible: true,
     notes:
-      "Muitas pessoas relatam melhora do bem-estar e redução da disforia de género com a hormonização masculinizante. Oscilações iniciais são comuns e tendem a estabilizar. A evidência disponível não suporta uma associação causal entre testosterona terapêutica e o surgimento de nova patologia psiquiátrica (Colizzi M et al., J Endocrinol Invest 2014;37(12):1205–13; Costa R & Colizzi M, Ther Adv Psychopharmacol 2016;6(3):187–97). (Endocrine Society 2017)",
+      "Muitas pessoas relatam melhora do bem-estar e redução da disforia de gênero com a hormonização masculinizante. Oscilações iniciais são comuns e tendem a estabilizar. A evidência disponível não suporta uma associação causal entre testosterona em dose terapêutica e o surgimento de nova patologia psiquiátrica (Colizzi M et al., J Endocrinol Invest 2014;37(12):1205–13; Costa R & Colizzi M, Ther Adv Psychopharmacol 2016;6(3):187–97). (Endocrine Society 2017)",
   },
   {
     id: "fertility",
