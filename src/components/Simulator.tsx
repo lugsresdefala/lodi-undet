@@ -897,7 +897,7 @@ export default function Simulator() {
                               stroke="none"
                               fill="url(#banda90)"
                               fillOpacity={1}
-                              name="9 em cada 10"
+                              name="IC 90 % (p5–p95)"
                               isAnimationActive={false}
                               dot={false}
                               activeDot={false}
@@ -910,7 +910,7 @@ export default function Simulator() {
                               stroke="none"
                               fill="url(#banda50)"
                               fillOpacity={1}
-                              name="metade típica"
+                              name="IIQ 50 % (p25–p75)"
                               isAnimationActive={false}
                               dot={false}
                               activeDot={false}
@@ -920,17 +920,17 @@ export default function Simulator() {
                             type="monotone"
                             dataKey="conc"
                             stroke="var(--color-primary)"
-                            strokeWidth={3}
+                            strokeWidth={2.25}
                             dot={false}
-                            activeDot={{ r: 5, strokeWidth: 2, stroke: "var(--color-card)", fill: "var(--color-primary)" }}
-                            filter="url(#curvaSombra)"
+                            activeDot={{ r: 4, strokeWidth: 2, stroke: "var(--color-card)", fill: "var(--color-primary)" }}
                             isAnimationActive={false}
                             name={
                               config.mostrarMonteCarlo && resultadoMC
-                                ? "paciente médio"
-                                : "testosterona"
+                                ? "mediana populacional"
+                                : "concentração sérica"
                             }
                           />
+
 
                           <Brush
                             dataKey="semana"
