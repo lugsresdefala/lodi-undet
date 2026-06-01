@@ -1009,9 +1009,9 @@ export default function Simulator() {
                         Dados do paciente
                       </CardTitle>
                       <CardDescription className="text-xs">
-                        Informe a dose atual, o intervalo entre injeções e{" "}
-                        <strong>pelo menos um valor laboratorial</strong> (pico ou vale) medido após
-                        o paciente já estar estabilizado (a partir da 4ª-5ª injeção).
+                        Informe a dose atual, o intervalo entre administrações e{" "}
+                        <strong>pelo menos um valor laboratorial</strong> (Cmax,SS ou Cmin,SS) medido
+                        no estado estacionário, a partir da 4ª–5ª administração.
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
@@ -1053,16 +1053,16 @@ export default function Simulator() {
                           1) Exames do paciente (ng/dL)
                         </p>
                         <p className="text-[11px] text-muted-foreground leading-snug">
-                          Informe pelo menos UM dos dois valores abaixo (preferencialmente os dois).
-                        O algoritmo usa essas medidas para estimar o fator individual de
-                        exposição (S = F/V) deste paciente.
+                          Informe pelo menos um dos dois valores abaixo, preferencialmente ambos.
+                          O algoritmo usa essas medidas para estimar o fator individual de exposição
+                          (S = F/V) deste paciente.
                         </p>
 
                         <div className="space-y-1.5">
                           <Label className="text-xs flex items-center justify-between">
                             <span>Pico medido (Cmax,SS)</span>
                             <span className="text-[10px] text-muted-foreground">
-                              ~1 sem após injeção
+                              ~1 sem após administração
                             </span>
                           </Label>
                           <Input
@@ -1083,7 +1083,7 @@ export default function Simulator() {
                           <Label className="text-xs flex items-center justify-between">
                             <span>Vale medido (Cmin,SS)</span>
                             <span className="text-[10px] text-muted-foreground">
-                              imediatamente antes da próxima dose
+                              antes da próxima administração
                             </span>
                           </Label>
                           <Input
