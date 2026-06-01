@@ -199,7 +199,7 @@ function Index() {
           <div className="flex overflow-hidden">
             <div className="animate-marquee flex shrink-0 items-center gap-10 whitespace-nowrap pr-10 font-mono text-[11px] uppercase tracking-[0.28em] text-muted-foreground">
               {Array.from({ length: 2 }).map((_, i) => (
-                <span key={i} className="flex items-center gap-10">
+                <span key={i} aria-hidden={i !== 0} className="flex items-center gap-10">
                   <span>● hormonização ≠ patologia</span>
                   <span>○ janelas temporais aproximadas</span>
                   <span>● variação individual relevante</span>
@@ -218,9 +218,9 @@ function Index() {
         <MedicalDisclaimer />
 
         <section>
-          <div className="mb-8 flex items-baseline gap-3 font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
+          <div className="mb-8 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
             <span className="text-foreground">índice</span>
-            <span className="h-px w-8 bg-border" />
+            <RingGlyph className="h-2.5 w-2.5 shrink-0" />
             <span>conteúdos</span>
           </div>
           <div className="grid gap-5 md:grid-cols-3">

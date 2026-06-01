@@ -262,5 +262,12 @@
     to { transform: translateX(-50%); }
   }
   .animate-marquee { animation: marquee 38s linear infinite; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-marquee,
+    .animate-float-slow,
+    .animate-drift { animation: none; }
+    .animate-rise { animation: none; opacity: 1; transform: none; }
+  }
 }
 
