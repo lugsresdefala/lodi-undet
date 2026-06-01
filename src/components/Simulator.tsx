@@ -812,7 +812,7 @@ export default function Simulator() {
                         <span className="flex items-center gap-1.5">
                           <span
                             className="inline-block h-0.5 w-4"
-                            style={{ backgroundColor: "var(--color-primary)" }}
+                              style={{ background: "linear-gradient(90deg, var(--color-chart-2), var(--color-chart-3), var(--color-chart-1))" }}
                           />
                           concentração sérica (indivíduo típico)
                         </span>
