@@ -138,9 +138,11 @@ function CustomTooltipMC({
   unidade: UnidadeConc;
 }) {
   if (!active || !payload || !payload.length) return null;
+  const visiblePayload = payload.filter((p) => !p.name?.startsWith("__"));
+  if (!visiblePayload.length) return null;
   const unit = unidade === "ngdl" ? "ng/dL" : "nmol/L";
   const semana = label !== undefined ? Math.round(label) : "-";
-  const dia = payload[0]?.payload?.dia;
+  const dia = visiblePayload[0]?.payload?.dia;
   const casas = unidade === "nmol" ? 1 : 0;
   const formatarValor = (valor: number | [number, number]) => {
     if (Array.isArray(valor)) {
@@ -166,7 +168,7 @@ function CustomTooltipMC({
           {unit}
         </div>
       </div>
-      {payload.map((p, i) => (
+      {visiblePayload.map((p, i) => (
         <div key={i} className="flex items-baseline justify-between gap-5 py-1 text-muted-foreground">
           <span className="flex min-w-0 items-center gap-2">
             <span
@@ -325,7 +327,14 @@ export default function Simulator() {
     if (!config.mostrarMonteCarlo || !resultadoMC) {
       return perfilMediano
         .filter((_, i) => i % 3 === 0)
-        .map((pt) => ({ semana: pt.semana, dia: pt.dia, conc: pt[chave] }));
+        .map((pt) => ({
+          semana: pt.semana,
+          dia: pt.dia,
+          conc: pt[chave],
+          concBase: Math.max(0, pt[chave] * 0.955),
+          concDorso: pt[chave] * 1.018,
+          volume3d: [Math.max(0, pt[chave] * 0.955), pt[chave] * 1.018] as [number, number],
+        }));
     }
 
     // Para bandas: area com dataKey=[low, high] onde low é o valor baixo e high o alto
@@ -338,6 +347,9 @@ export default function Simulator() {
           semana: pt.semana,
           dia: pt.dia,
           conc: pt[chave],
+          concBase: Math.max(0, pt[chave] * 0.955),
+          concDorso: pt[chave] * 1.018,
+          volume3d: [Math.max(0, pt[chave] * 0.955), pt[chave] * 1.018] as [number, number],
           bandaIC90: [getV(resultadoMC.p5, idx), getV(resultadoMC.p95, idx)] as [number, number],
           bandaIQ50: [getV(resultadoMC.p25, idx), getV(resultadoMC.p75, idx)] as [number, number],
         };
@@ -382,7 +394,7 @@ export default function Simulator() {
       const bandas: number[] = [];
       if ("bandaIC90" in p && Array.isArray(p.bandaIC90)) bandas.push(p.bandaIC90[1]);
       if ("bandaIQ50" in p && Array.isArray(p.bandaIQ50)) bandas.push(p.bandaIQ50[1]);
-      return [p.conc, ...bandas];
+      return [p.conc, p.concDorso, ...bandas];
     });
     const max = Math.max(eugMax, ...valores);
     return Math.ceil((max * 1.04) / 100) * 100;
@@ -777,21 +789,21 @@ export default function Simulator() {
                           <span className="flex items-center gap-1.5">
                             <span
                               className="inline-block h-3 w-6 rounded-sm border border-border"
-                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-5) 18%, transparent)" }}
+                              style={{ background: "linear-gradient(180deg, color-mix(in oklab, var(--color-chart-2) 24%, transparent), color-mix(in oklab, var(--color-chart-1) 14%, transparent))" }}
                             />
                             IC 90 % (p5–p95)
                           </span>
                           <span className="flex items-center gap-1.5">
                             <span
                               className="inline-block h-3 w-6 rounded-sm border border-border"
-                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-2) 30%, transparent)" }}
+                              style={{ background: "linear-gradient(180deg, color-mix(in oklab, var(--color-chart-3) 34%, transparent), color-mix(in oklab, var(--color-chart-2) 18%, transparent))" }}
                             />
                             IIQ 50 % (p25–p75)
                           </span>
                           <span className="flex items-center gap-1.5">
                             <span
                               className="inline-block h-[3px] w-6 rounded-full"
-                              style={{ backgroundColor: "var(--color-primary)" }}
+                              style={{ background: "linear-gradient(90deg, var(--color-chart-2), var(--color-chart-3), var(--color-chart-1))" }}
                             />
                             mediana populacional
                           </span>
@@ -800,7 +812,7 @@ export default function Simulator() {
                         <span className="flex items-center gap-1.5">
                           <span
                             className="inline-block h-0.5 w-4"
-                            style={{ backgroundColor: "var(--color-primary)" }}
+                              style={{ background: "linear-gradient(90deg, var(--color-chart-2), var(--color-chart-3), var(--color-chart-1))" }}
                           />
                           concentração sérica (indivíduo típico)
                         </span>
@@ -827,16 +839,30 @@ export default function Simulator() {
 
                         <ComposedChart
                           data={dadosGrafico}
-                          margin={{ top: 18, right: 30, left: 4, bottom: 30 }}
+                          margin={{ top: 28, right: 34, left: 4, bottom: 34 }}
                         >
                           <defs>
+                            <filter id="sombra3d" x="-12%" y="-12%" width="128%" height="136%">
+                              <feDropShadow dx="0" dy="7" stdDeviation="5" floodColor="var(--color-primary)" floodOpacity="0.22" />
+                            </filter>
                             <linearGradient id="banda90" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="var(--color-chart-5)" stopOpacity={0.16} />
-                              <stop offset="100%" stopColor="var(--color-chart-5)" stopOpacity={0.06} />
+                              <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.24} />
+                              <stop offset="58%" stopColor="var(--color-chart-3)" stopOpacity={0.13} />
+                              <stop offset="100%" stopColor="var(--color-chart-1)" stopOpacity={0.08} />
                             </linearGradient>
                             <linearGradient id="banda50" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.32} />
-                              <stop offset="100%" stopColor="var(--color-chart-2)" stopOpacity={0.12} />
+                              <stop offset="0%" stopColor="var(--color-chart-3)" stopOpacity={0.34} />
+                              <stop offset="100%" stopColor="var(--color-chart-2)" stopOpacity={0.16} />
+                            </linearGradient>
+                            <linearGradient id="volume3d" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.34} />
+                              <stop offset="45%" stopColor="var(--color-chart-3)" stopOpacity={0.25} />
+                              <stop offset="100%" stopColor="var(--color-chart-1)" stopOpacity={0.22} />
+                            </linearGradient>
+                            <linearGradient id="linha3d" x1="0" y1="0" x2="1" y2="0">
+                              <stop offset="0%" stopColor="var(--color-chart-2)" />
+                              <stop offset="52%" stopColor="var(--color-chart-3)" />
+                              <stop offset="100%" stopColor="var(--color-chart-1)" />
                             </linearGradient>
                           </defs>
 
@@ -934,13 +960,47 @@ export default function Simulator() {
                               activeDot={false}
                             />
                           )}
+                          <Area
+                            type="monotone"
+                            dataKey="volume3d"
+                            stroke="none"
+                            fill="url(#volume3d)"
+                            fillOpacity={1}
+                            name="__volume tridimensional"
+                            isAnimationActive={false}
+                            dot={false}
+                            activeDot={false}
+                            filter="url(#sombra3d)"
+                          />
+                          <Line
+                            type="monotone"
+                            dataKey="concBase"
+                            stroke="color-mix(in oklab, var(--color-chart-1) 62%, var(--color-primary))"
+                            strokeWidth={2.7}
+                            strokeOpacity={0.82}
+                            dot={false}
+                            activeDot={false}
+                            isAnimationActive={false}
+                            name="__base tridimensional"
+                          />
+                          <Line
+                            type="monotone"
+                            dataKey="concDorso"
+                            stroke="color-mix(in oklab, var(--color-chart-2) 72%, var(--color-background))"
+                            strokeWidth={2.2}
+                            strokeOpacity={0.95}
+                            dot={false}
+                            activeDot={false}
+                            isAnimationActive={false}
+                            name="__dorso tridimensional"
+                          />
                           <Line
                             type="monotone"
                             dataKey="conc"
-                            stroke="var(--color-primary)"
-                            strokeWidth={3.4}
+                            stroke="url(#linha3d)"
+                            strokeWidth={4.2}
                             dot={false}
-                            activeDot={{ r: 4.5, strokeWidth: 2, stroke: "var(--color-card)", fill: "var(--color-primary)" }}
+                            activeDot={{ r: 5, strokeWidth: 2.2, stroke: "var(--color-card)", fill: "var(--color-chart-3)" }}
                             isAnimationActive={false}
                             name={
                               config.mostrarMonteCarlo && resultadoMC
