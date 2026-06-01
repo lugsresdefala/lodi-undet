@@ -702,7 +702,7 @@ export default function Simulator() {
                 </p>
                 <span className="text-[11px] text-muted-foreground">média ± DP</span>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <MetricCard
                   label="Cmax,SS"
                   value={`${Math.round(resultadoMC.metricasPopulacionais.cmaxSSMediaNgdl)} ± ${Math.round(resultadoMC.metricasPopulacionais.cmaxSSDpNgdl)} ng/dL`}
