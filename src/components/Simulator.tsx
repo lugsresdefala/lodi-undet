@@ -831,20 +831,20 @@ export default function Simulator() {
                         >
                           <defs>
                             <linearGradient id="banda90" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="var(--color-chart-5)" stopOpacity={0.14} />
-                              <stop offset="100%" stopColor="var(--color-chart-5)" stopOpacity={0.05} />
+                              <stop offset="0%" stopColor="var(--color-chart-5)" stopOpacity={0.24} />
+                              <stop offset="100%" stopColor="var(--color-chart-5)" stopOpacity={0.1} />
                             </linearGradient>
                             <linearGradient id="banda50" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.28} />
-                              <stop offset="100%" stopColor="var(--color-chart-2)" stopOpacity={0.1} />
+                              <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.46} />
+                              <stop offset="100%" stopColor="var(--color-chart-2)" stopOpacity={0.18} />
                             </linearGradient>
                           </defs>
 
                           <CartesianGrid
                             vertical={false}
-                            strokeDasharray="2 8"
+                            strokeDasharray="3 6"
                             stroke="var(--color-border)"
-                            strokeOpacity={0.46}
+                            strokeOpacity={0.62}
                           />
                           <XAxis
                             dataKey="semana"
@@ -879,21 +879,21 @@ export default function Simulator() {
                             y1={eugMin}
                             y2={eugMax}
                             fill="var(--color-system-body)"
-                            fillOpacity={0.14}
+                            fillOpacity={0.2}
                           />
                           <ReferenceLine
                             y={eugMin}
                             stroke="var(--color-system-body)"
                             strokeDasharray="6 6"
                             strokeWidth={1.2}
-                            opacity={0.62}
+                            opacity={0.78}
                           />
                           <ReferenceLine
                             y={eugMax}
                             stroke="var(--color-system-body)"
                             strokeDasharray="6 6"
                             strokeWidth={1.2}
-                            opacity={0.62}
+                            opacity={0.78}
                           />
 
                           {/* Marcadores de doses */}
@@ -902,9 +902,9 @@ export default function Simulator() {
                               key={i}
                               x={d.diaDose / 7}
                               stroke="var(--color-chart-4)"
-                              strokeWidth={1}
+                              strokeWidth={1.25}
                               strokeDasharray="2 4"
-                              opacity={0.26}
+                              opacity={0.42}
                             />
                           ))}
 
