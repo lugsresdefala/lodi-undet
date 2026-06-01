@@ -791,7 +791,7 @@ export default function Simulator() {
                           <span className="flex items-center gap-1.5">
                             <span
                               className="inline-block h-[2px] w-5"
-                              style={{ backgroundColor: "var(--color-primary)" }}
+                              style={{ backgroundColor: "var(--color-foreground)" }}
                             />
                             mediana populacional
                           </span>
@@ -831,12 +831,12 @@ export default function Simulator() {
                         >
                           <defs>
                             <linearGradient id="banda90" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="var(--color-chart-5)" stopOpacity={0.2} />
-                              <stop offset="100%" stopColor="var(--color-chart-5)" stopOpacity={0.08} />
+                              <stop offset="0%" stopColor="var(--color-chart-5)" stopOpacity={0.14} />
+                              <stop offset="100%" stopColor="var(--color-chart-5)" stopOpacity={0.05} />
                             </linearGradient>
                             <linearGradient id="banda50" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.34} />
-                              <stop offset="100%" stopColor="var(--color-chart-2)" stopOpacity={0.14} />
+                              <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.28} />
+                              <stop offset="100%" stopColor="var(--color-chart-2)" stopOpacity={0.1} />
                             </linearGradient>
                           </defs>
 
