@@ -91,9 +91,9 @@ const STATUS_ICON = {
 };
 
 const STATUS_LABEL = {
-  baixo: "Hipogonádico",
+  baixo: "Subeugonádico",
   normal: "Eugonádico",
-  alto: "Suprafisiológico",
+  alto: "Supraeugonádico",
 };
 
 function MetricCard({
@@ -331,9 +331,9 @@ export default function Simulator() {
           semana: pt.semana,
           dia: pt.dia,
           conc: pt[chave],
-          concBase: Math.max(0, pt[chave] * 0.955),
-          concDorso: pt[chave] * 1.018,
-          volume3d: [Math.max(0, pt[chave] * 0.955), pt[chave] * 1.018] as [number, number],
+          concBase: Math.max(0, pt[chave] * 0.925),
+          concDorso: pt[chave] * 1.035,
+          volume3d: [Math.max(0, pt[chave] * 0.925), pt[chave] * 1.035] as [number, number],
         }));
     }
 
@@ -347,9 +347,9 @@ export default function Simulator() {
           semana: pt.semana,
           dia: pt.dia,
           conc: pt[chave],
-          concBase: Math.max(0, pt[chave] * 0.955),
-          concDorso: pt[chave] * 1.018,
-          volume3d: [Math.max(0, pt[chave] * 0.955), pt[chave] * 1.018] as [number, number],
+          concBase: Math.max(0, pt[chave] * 0.925),
+          concDorso: pt[chave] * 1.035,
+          volume3d: [Math.max(0, pt[chave] * 0.925), pt[chave] * 1.035] as [number, number],
           bandaIC90: [getV(resultadoMC.p5, idx), getV(resultadoMC.p95, idx)] as [number, number],
           bandaIQ50: [getV(resultadoMC.p25, idx), getV(resultadoMC.p75, idx)] as [number, number],
         };
