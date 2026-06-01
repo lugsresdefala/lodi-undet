@@ -1031,7 +1031,7 @@ export default function Simulator() {
               <TabsContent value="paciente" className="space-y-4">
                 <div className="grid gap-4 grid-cols-1 lg:grid-cols-3">
                   {/* Coluna 1: formulário */}
-                  <Card className="lg:col-span-1 lodi-card">
+                  <Card className="lg:col-span-1">
                     <CardHeader className="pb-3">
                       <CardTitle className="text-sm flex items-center gap-2">
                         <UserCog className="w-4 h-4 text-accent" />
@@ -1179,7 +1179,7 @@ export default function Simulator() {
 
                       <Button
                         data-testid="button-recomendar"
-                        className="w-full lodi-button-primary font-display tracking-wide"
+                        className="w-full"
                         onClick={calcularRecomendacao}
                       >
                         Calcular intervalo recomendado
@@ -1500,7 +1500,7 @@ export default function Simulator() {
                   </p>
                 </div>
                 <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-                  <Card className="lodi-card">
+                  <Card>
                     <CardHeader>
                       <CardTitle className="text-sm">Estrutura do modelo</CardTitle>
                     </CardHeader>
@@ -1525,7 +1525,7 @@ export default function Simulator() {
                     </CardContent>
                   </Card>
 
-                  <Card className="lodi-card">
+                  <Card>
                     <CardHeader>
                       <CardTitle className="text-sm">Variabilidade interindividual</CardTitle>
                     </CardHeader>
@@ -1548,7 +1548,7 @@ export default function Simulator() {
                     </CardContent>
                   </Card>
 
-                  <Card className="lodi-card">
+                  <Card>
                     <CardHeader>
                       <CardTitle className="text-sm">Faixas interpretativas</CardTitle>
                     </CardHeader>
@@ -1584,7 +1584,7 @@ export default function Simulator() {
                     </CardContent>
                   </Card>
 
-                  <Card className="lodi-card">
+                  <Card>
                     <CardHeader>
                       <CardTitle className="text-sm">Acumulação e estado estacionário</CardTitle>
                     </CardHeader>
@@ -1610,7 +1610,7 @@ export default function Simulator() {
                     </CardContent>
                   </Card>
 
-                  <Card className="md:col-span-2 lodi-card">
+                  <Card className="md:col-span-2">
                     <CardHeader>
                       <CardTitle className="text-sm">
                         Detalhes técnicos (para quem quer entender mais)
