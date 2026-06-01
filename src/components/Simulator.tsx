@@ -1206,7 +1206,7 @@ export default function Simulator() {
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2">
                                   <div className="rounded-lg bg-background border border-border p-2">
                                     <div className="text-[10px] text-muted-foreground">
-                                      Pico previsto
+                                      Cmax,SS prevista
                                     </div>
                                     <div className="text-sm font-semibold tabular-nums">
                                       {Math.round(rec.cmaxSSNgdl)} ng/dL
@@ -1214,7 +1214,7 @@ export default function Simulator() {
                                   </div>
                                   <div className="rounded-lg bg-background border border-border p-2">
                                     <div className="text-[10px] text-muted-foreground">
-                                      Vale previsto
+                                      Cmin,SS prevista
                                     </div>
                                     <div className="text-sm font-semibold tabular-nums">
                                       {Math.round(rec.cminSSNgdl)} ng/dL
@@ -1222,7 +1222,7 @@ export default function Simulator() {
                                   </div>
                                   <div className="rounded-lg bg-background border border-border p-2">
                                     <div className="text-[10px] text-muted-foreground">
-                                      Média prevista
+                                      Cmédia,SS prevista
                                     </div>
                                     <div className="text-sm font-semibold tabular-nums">
                                       {Math.round(rec.cavgSSNgdl)} ng/dL
@@ -1230,7 +1230,7 @@ export default function Simulator() {
                                   </div>
                                   <div className="rounded-lg bg-background border border-border p-2">
                                     <div className="text-[10px] text-muted-foreground">
-                                      Tempo na faixa
+                                      Tempo eugonádico
                                     </div>
                                     <div
                                       className={`text-sm font-semibold tabular-nums ${rec.percentEugonadal >= 90 ? "text-emerald-600" : rec.percentEugonadal >= 70 ? "text-amber-600" : "text-rose-600"}`}
@@ -1261,7 +1261,7 @@ export default function Simulator() {
                             <div className="rounded-lg bg-primary/5 border border-primary/20 p-3 flex items-baseline gap-3">
                               <div className="flex-1">
                                 <div className="text-[11px] text-muted-foreground uppercase tracking-wide">
-                                  Concentração média atual (calculada)
+                                  Cmédia,SS atual estimada
                                 </div>
                                 <div className="text-2xl font-bold tabular-nums text-primary">
                                   {Math.round(recomendacao.cenarioAtual.cavgSSNgdl)}{" "}
@@ -1272,7 +1272,7 @@ export default function Simulator() {
                               </div>
                               <div className="text-right">
                                 <div className="text-[11px] text-muted-foreground">
-                                  alvo desejado
+                                  meta
                                 </div>
                                 <div className="text-base font-semibold tabular-nums">
                                   {Math.round(recomendacao.cavgAlvoNgdl)} ng/dL
@@ -1294,7 +1294,7 @@ export default function Simulator() {
                                     const d =
                                       recomendacao.cenarioAtual.cavgSSNgdl -
                                       recomendacao.cavgAlvoNgdl;
-                                    if (Math.abs(d) < 50) return "no alvo";
+                                    if (Math.abs(d) < 50) return "dentro da meta";
                                     return `${d > 0 ? "+" : ""}${Math.round(d)} ng/dL`;
                                   })()}
                                 </div>
@@ -1303,20 +1303,20 @@ export default function Simulator() {
 
                             <div className="grid grid-cols-3 gap-2 text-xs">
                               <div className="rounded-lg border border-border bg-background p-2">
-                                <div className="text-[10px] text-muted-foreground">Pico atual</div>
+                                <div className="text-[10px] text-muted-foreground">Cmax,SS atual</div>
                                 <div className="font-mono font-semibold">
                                   {Math.round(recomendacao.cenarioAtual.cmaxSSNgdl)} ng/dL
                                 </div>
                               </div>
                               <div className="rounded-lg border border-border bg-background p-2">
-                                <div className="text-[10px] text-muted-foreground">Vale atual</div>
+                                <div className="text-[10px] text-muted-foreground">Cmin,SS atual</div>
                                 <div className="font-mono font-semibold">
                                   {Math.round(recomendacao.cenarioAtual.cminSSNgdl)} ng/dL
                                 </div>
                               </div>
                               <div className="rounded-lg border border-border bg-background p-2">
                                 <div className="text-[10px] text-muted-foreground">
-                                  Tempo na faixa
+                                  Tempo eugonádico
                                 </div>
                                 <div
                                   className={`font-mono font-semibold ${recomendacao.cenarioAtual.percentEugonadal >= 90 ? "text-emerald-600" : recomendacao.cenarioAtual.percentEugonadal >= 70 ? "text-amber-600" : "text-rose-600"}`}
