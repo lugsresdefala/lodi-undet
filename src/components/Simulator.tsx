@@ -836,17 +836,17 @@ export default function Simulator() {
                       </span>
                     </div>
 
-                    <div className="min-w-0 overflow-visible pb-3">
-                      <div className="h-[420px] w-full rounded-lg border border-border bg-card p-2 sm:h-[520px] sm:p-5">
+                    <div className="min-w-0 overflow-hidden pb-3">
+                      <div className="h-[390px] w-full rounded-lg border border-border bg-card p-2 sm:h-[480px] sm:p-4">
                         <ResponsiveContainer width="100%" height="100%">
 
                         <ComposedChart
                           data={dadosGrafico}
-                          margin={{ top: 24, right: 12, left: 10, bottom: 28 }}
+                          margin={{ top: 20, right: 10, left: 4, bottom: 24 }}
                         >
                           <defs>
-                            <filter id="sombra3d" x="-12%" y="-12%" width="128%" height="136%">
-                              <feDropShadow dx="0" dy="9" stdDeviation="5" floodColor="var(--color-primary)" floodOpacity="0.24" />
+                            <filter id="sombra3d" x="-10%" y="-10%" width="124%" height="130%">
+                              <feDropShadow dx="0" dy="7" stdDeviation="4" floodColor="var(--color-primary)" floodOpacity="0.2" />
                             </filter>
                             <linearGradient id="banda90" x1="0" y1="0" x2="0" y2="1">
                               <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.24} />
@@ -858,9 +858,9 @@ export default function Simulator() {
                               <stop offset="100%" stopColor="var(--color-chart-2)" stopOpacity={0.16} />
                             </linearGradient>
                             <linearGradient id="volume3d" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.44} />
-                              <stop offset="45%" stopColor="var(--color-chart-3)" stopOpacity={0.3} />
-                              <stop offset="100%" stopColor="var(--color-chart-1)" stopOpacity={0.26} />
+                              <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.36} />
+                              <stop offset="45%" stopColor="var(--color-chart-3)" stopOpacity={0.24} />
+                              <stop offset="100%" stopColor="var(--color-chart-1)" stopOpacity={0.2} />
                             </linearGradient>
                             <linearGradient id="linha3d" x1="0" y1="0" x2="1" y2="0">
                               <stop offset="0%" stopColor="var(--color-chart-2)" />
@@ -977,31 +977,9 @@ export default function Simulator() {
                           />
                           <Line
                             type="monotone"
-                            dataKey="concBase"
-                            stroke="color-mix(in oklab, var(--color-chart-1) 70%, var(--color-primary))"
-                            strokeWidth={3.1}
-                            strokeOpacity={0.9}
-                            dot={false}
-                            activeDot={false}
-                            isAnimationActive={false}
-                            name="__base tridimensional"
-                          />
-                          <Line
-                            type="monotone"
-                            dataKey="concDorso"
-                            stroke="color-mix(in oklab, var(--color-chart-2) 72%, var(--color-background))"
-                            strokeWidth={2.7}
-                            strokeOpacity={0.95}
-                            dot={false}
-                            activeDot={false}
-                            isAnimationActive={false}
-                            name="__dorso tridimensional"
-                          />
-                          <Line
-                            type="monotone"
                             dataKey="conc"
                             stroke="url(#linha3d)"
-                            strokeWidth={4.6}
+                            strokeWidth={4.2}
                             dot={false}
                             activeDot={{ r: 5, strokeWidth: 2.2, stroke: "var(--color-card)", fill: "var(--color-chart-3)" }}
                             isAnimationActive={false}
