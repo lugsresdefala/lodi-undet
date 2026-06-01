@@ -394,7 +394,7 @@ export default function Simulator() {
       const bandas: number[] = [];
       if ("bandaIC90" in p && Array.isArray(p.bandaIC90)) bandas.push(p.bandaIC90[1]);
       if ("bandaIQ50" in p && Array.isArray(p.bandaIQ50)) bandas.push(p.bandaIQ50[1]);
-      return [p.conc, ...bandas];
+      return [p.conc, p.concDorso, ...bandas];
     });
     const max = Math.max(eugMax, ...valores);
     return Math.ceil((max * 1.04) / 100) * 100;
