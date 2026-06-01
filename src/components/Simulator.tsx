@@ -636,7 +636,7 @@ export default function Simulator() {
         {/* Área principal */}
         <main className="flex min-w-0 flex-col rounded-xl border border-border/70 bg-background/55">
           {/* Métricas clínicas */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 border-b border-border">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 p-4 border-b border-border">
             {(() => {
               const val =
                 config.unidade === "ngdl"
@@ -702,7 +702,7 @@ export default function Simulator() {
                 </p>
                 <span className="text-[11px] text-muted-foreground">média ± DP</span>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <MetricCard
                   label="Cmax,SS"
                   value={`${Math.round(resultadoMC.metricasPopulacionais.cmaxSSMediaNgdl)} ± ${Math.round(resultadoMC.metricasPopulacionais.cmaxSSDpNgdl)} ng/dL`}
@@ -843,7 +843,7 @@ export default function Simulator() {
                         >
                           <defs>
                             <filter id="sombra3d" x="-10%" y="-10%" width="124%" height="130%">
-                              <feDropShadow dx="0" dy="7" stdDeviation="4" floodColor="var(--color-primary)" floodOpacity="0.2" />
+                              <feDropShadow dx="0" dy="7" stdDeviation="4" floodColor="#1d4ed8" floodOpacity="0.2" />
                             </filter>
                             <linearGradient id="banda90" x1="0" y1="0" x2="0" y2="1">
                               <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.24} />

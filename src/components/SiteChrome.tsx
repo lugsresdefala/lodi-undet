@@ -26,11 +26,11 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 glass">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-8 md:py-4">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 md:px-8 md:py-4">
         <Link
           to="/"
           onClick={() => setOpen(false)}
-          className="group flex items-center gap-2 md:gap-3"
+          className="group flex min-w-0 items-center gap-2 md:gap-3"
         >
           <img
             src={lodiLogo}
@@ -39,16 +39,16 @@ export function SiteHeader() {
             draggable={false}
           />
 
-          <span className="font-serif text-lg font-medium tracking-tight md:text-xl">
+          <span className="whitespace-nowrap font-serif text-lg font-medium tracking-tight md:text-xl">
             lodi-t
           </span>
-          <span className="hidden font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground sm:inline">
+          <span className="hidden whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground xl:inline">
             v2 · referência clínica
           </span>
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav className="hidden items-center gap-1 lg:flex">
           {nav.map((item) => {
             const active = pathname === item.to;
             return (
@@ -83,7 +83,7 @@ export function SiteHeader() {
           aria-expanded={open}
           aria-controls="mobile-nav"
           onClick={() => setOpen((v) => !v)}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border/70 bg-card/60 text-foreground transition-colors hover:border-foreground/30 md:hidden"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border/70 bg-card/60 text-foreground transition-colors hover:border-foreground/30 lg:hidden"
         >
           <span className="relative block h-3.5 w-4">
             <span
@@ -112,7 +112,7 @@ export function SiteHeader() {
       <div
         id="mobile-nav"
         className={
-          "overflow-hidden border-t border-border/60 md:hidden " +
+          "overflow-hidden border-t border-border/60 lg:hidden " +
           (open ? "max-h-[80vh]" : "max-h-0")
         }
         style={{ transition: "max-height 240ms ease" }}
@@ -183,7 +183,7 @@ export function SiteFooter() {
             href="https://diversidadebarrafunda.org"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-3 inline-block text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
+            className="mt-3 inline-block break-all text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
           >
             diversidadebarrafunda.org ↗
           </a>
