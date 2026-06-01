@@ -266,7 +266,7 @@ CV(S = F/V)      = 0,22`}</Eq>
         <Block n="10" title="Responsabilidade">
           <p>
             Investigador responsável: <strong>Tiago José de Oliveira Gomes</strong>,
-            CRM 164375. Este site é referência educativa e técnica: o simulador
+            CRM 164375. Este site é referência clínica e técnica: o simulador
             implementa o modelo descrito acima; a cronologia e os efeitos por
             sistema contextualizam o material de consentimento informado.
           </p>
