@@ -18,7 +18,7 @@ export function SiteBackdrop() {
       <div className="absolute inset-0 bg-grid-fine opacity-60" />
       <div className="absolute inset-0 bg-noise opacity-[0.18] mix-blend-multiply" />
       {/* Instrument ring watermark — echoes the L.O.D.I logo composition */}
-      <InstrumentRing className="absolute -right-28 -top-20 w-[580px] opacity-[0.28]" />
+      <InstrumentRing className="absolute -right-28 -top-20 h-[580px] w-[580px] opacity-[0.28]" />
     </div>
   );
 }

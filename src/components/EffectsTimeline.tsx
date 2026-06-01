@@ -120,6 +120,7 @@ export function EffectsTimeline() {
         <LegendSwatch opacity={0.4} label="Janela de início" />
         <LegendSwatch opacity={1} label="Janela de estabilização" />
         <span className="font-mono">perm. = irreversível</span>
+        <span className="font-mono">cor = sistema orgânico</span>
       </div>
     </Card>
   );
@@ -153,7 +154,7 @@ function FilterChip({
     >
       {color && (
         <SystemRingDot
-          color={active ? "currentColor" : color}
+          color={color}
           className="mr-1.5 h-3 w-3 shrink-0"
         />
       )}

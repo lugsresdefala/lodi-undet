@@ -60,7 +60,7 @@ export function EffectCards() {
               )}
             >
               <SystemRingDot
-                color={active === s ? "currentColor" : SYSTEMS[s].tokenVar}
+                color={SYSTEMS[s].tokenVar}
                 className="mr-1.5 h-3 w-3 shrink-0"
               />
               {SYSTEMS[s].label}
