@@ -1356,8 +1356,8 @@ export default function Simulator() {
                               Comparação de intervalos (para este paciente)
                             </CardTitle>
                             <CardDescription className="text-xs">
-                              Predição de pico, vale e tempo na faixa eugonádica para diferentes
-                              espaçamentos entre as doses, mantendo a dose atual.
+                              Predição de Cmax,SS, Cmin,SS, Cmédia,SS e tempo eugonádico para
+                              diferentes intervalos, mantendo a dose atual.
                             </CardDescription>
                           </CardHeader>
                           <CardContent className="p-0">
@@ -1437,8 +1437,8 @@ export default function Simulator() {
                             </div>
                             <div className="px-3 py-2 text-[11px] text-muted-foreground border-t border-border">
                               Faixa eugonádica de referência: {EUGONADAL_MIN_NGDL}–
-                              {EUGONADAL_MAX_NGDL} ng/dL · Vale acima de {EUGONADAL_MIN_NGDL} = sem
-                              concentração subeugonádica entre doses.
+                              {EUGONADAL_MAX_NGDL} ng/dL · Cmin,SS ≥ {EUGONADAL_MIN_NGDL} ng/dL = sem
+                              concentração subeugonádica entre administrações.
                             </div>
                           </CardContent>
                         </Card>
@@ -1530,8 +1530,7 @@ export default function Simulator() {
                           <strong className="text-foreground">
                             Abaixo de {EUGONADAL_MIN_NGDL} ng/dL — Hipogonádico:
                           </strong>{" "}
-                          testosterona baixa demais. Pode causar fadiga, baixa libido, perda
-                          muscular.
+                          concentração sérica abaixo do limite inferior de referência.
                         </span>
                       </div>
                       <div className="flex items-start gap-2">
@@ -1610,7 +1609,7 @@ export default function Simulator() {
                       <p>
                         Variação entre pacientes simulada por{" "}
                         <strong className="text-foreground">método de Monte Carlo</strong>: para
-                        cada paciente virtual, sorteia-se um conjunto de parâmetros a partir de
+                        cada indivíduo sintético, sorteia-se um conjunto de parâmetros a partir de
                         distribuições log-normais calibradas com dados de Behre/Nieschlag, Schubert,
                         Bhasin &amp; Travison e revisão clínica do Aveed.
                       </p>
