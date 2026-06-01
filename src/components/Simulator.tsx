@@ -1579,7 +1579,7 @@ export default function Simulator() {
                         <div className="w-3 h-3 rounded-full bg-amber-500 mt-1 flex-shrink-0" />
                         <span>
                           <strong className="text-foreground">
-                            Abaixo de {EUGONADAL_MIN_NGDL} ng/dL — Hipogonádico:
+                            Abaixo de {EUGONADAL_MIN_NGDL} ng/dL — Concentração subeugonádica:
                           </strong>{" "}
                           concentração sérica abaixo do limite inferior de referência.
                         </span>
@@ -1590,14 +1590,14 @@ export default function Simulator() {
                           <strong className="text-foreground">
                             Entre {EUGONADAL_MIN_NGDL} e {EUGONADAL_MAX_NGDL} ng/dL — Faixa eugonádica:
                           </strong>{" "}
-                          referência laboratorial para testosterona total em homem adulto.
+                          referência operacional usada pelo modelo para testosterona sérica total.
                         </span>
                       </div>
                       <div className="flex items-start gap-2">
                         <div className="w-3 h-3 rounded-full bg-rose-500 mt-1 flex-shrink-0" />
                         <span>
                           <strong className="text-foreground">
-                            Acima de {EUGONADAL_MAX_NGDL} ng/dL — Suprafisiológico:
+                            Acima de {EUGONADAL_MAX_NGDL} ng/dL — Concentração supraeugonádica:
                           </strong>{" "}
                           pode causar efeitos adversos como aumento de hematócrito, retenção,
                           alteração de humor.
