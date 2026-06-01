@@ -428,12 +428,12 @@ export default function Simulator() {
         {/* Painel de controles */}
         <aside className="grid gap-5 lg:grid-cols-[1fr_1fr_0.7fr]">
           <div>
-            <h2 className="text-sm font-semibold mb-3 text-foreground">Esquema de doses</h2>
+            <h2 className="text-sm font-semibold mb-3 text-foreground">Esquema posológico</h2>
 
             <div className="flex flex-col gap-4">
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <Label className="text-xs text-muted-foreground">Quantidade por injeção</Label>
+                  <Label className="text-xs text-muted-foreground">Dose</Label>
                   <span className="text-xs font-mono font-medium">{config.doseMg} mg</span>
                 </div>
                 <Slider
@@ -462,8 +462,8 @@ export default function Simulator() {
                   />
                 </div>
                 <p className="text-[11px] leading-snug text-muted-foreground">
-                  Protocolo clínico padrão do Nebido: 1ª injeção, 2ª em 6 semanas (carga), depois a
-                  cada 12 semanas. Acelera o estado estacionário (Schubert et al., JCEM 2004).
+                  Regime de bula do Nebido®: 1ª dose, 2ª dose após 6 semanas, manutenção a cada
+                  12 semanas. Reduz o tempo até o estado estacionário (Schubert et al., JCEM 2004).
                 </p>
               </div>
 
@@ -471,11 +471,11 @@ export default function Simulator() {
                 className={`space-y-2 ${config.cargaSchubert ? "opacity-50 pointer-events-none" : ""}`}
               >
                 <div className="flex justify-between">
-                  <Label className="text-xs text-muted-foreground">Tempo entre injeções</Label>
+                  <Label className="text-xs text-muted-foreground">Intervalo entre doses (τ)</Label>
                   <span className="text-xs font-mono font-medium">
                     {config.cargaSchubert
-                      ? "12 semanas (Schubert)"
-                      : `${(config.intervaloDias / 7).toFixed(0)} semanas`}
+                      ? "12 sem (Schubert)"
+                      : `${(config.intervaloDias / 7).toFixed(0)} sem`}
                   </span>
                 </div>
                 <Slider
@@ -496,7 +496,7 @@ export default function Simulator() {
 
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <Label className="text-xs text-muted-foreground">Quantas injeções simular</Label>
+                  <Label className="text-xs text-muted-foreground">Número de doses simuladas</Label>
                   <span className="text-xs font-mono font-medium">{config.nDoses}</span>
                 </div>
                 <Slider
@@ -514,6 +514,7 @@ export default function Simulator() {
               </div>
             </div>
           </div>
+
 
           <Separator className="lg:hidden" />
 
