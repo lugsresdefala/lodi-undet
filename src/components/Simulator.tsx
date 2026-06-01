@@ -839,16 +839,30 @@ export default function Simulator() {
 
                         <ComposedChart
                           data={dadosGrafico}
-                          margin={{ top: 18, right: 30, left: 4, bottom: 30 }}
+                          margin={{ top: 28, right: 34, left: 4, bottom: 34 }}
                         >
                           <defs>
+                            <filter id="sombra3d" x="-12%" y="-12%" width="128%" height="136%">
+                              <feDropShadow dx="0" dy="7" stdDeviation="5" floodColor="var(--color-primary)" floodOpacity="0.22" />
+                            </filter>
                             <linearGradient id="banda90" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="var(--color-chart-5)" stopOpacity={0.16} />
-                              <stop offset="100%" stopColor="var(--color-chart-5)" stopOpacity={0.06} />
+                              <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.24} />
+                              <stop offset="58%" stopColor="var(--color-chart-3)" stopOpacity={0.13} />
+                              <stop offset="100%" stopColor="var(--color-chart-1)" stopOpacity={0.08} />
                             </linearGradient>
                             <linearGradient id="banda50" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.32} />
-                              <stop offset="100%" stopColor="var(--color-chart-2)" stopOpacity={0.12} />
+                              <stop offset="0%" stopColor="var(--color-chart-3)" stopOpacity={0.34} />
+                              <stop offset="100%" stopColor="var(--color-chart-2)" stopOpacity={0.16} />
+                            </linearGradient>
+                            <linearGradient id="volume3d" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.34} />
+                              <stop offset="45%" stopColor="var(--color-chart-3)" stopOpacity={0.25} />
+                              <stop offset="100%" stopColor="var(--color-chart-1)" stopOpacity={0.22} />
+                            </linearGradient>
+                            <linearGradient id="linha3d" x1="0" y1="0" x2="1" y2="0">
+                              <stop offset="0%" stopColor="var(--color-chart-2)" />
+                              <stop offset="52%" stopColor="var(--color-chart-3)" />
+                              <stop offset="100%" stopColor="var(--color-chart-1)" />
                             </linearGradient>
                           </defs>
 
