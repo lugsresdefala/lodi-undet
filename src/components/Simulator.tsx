@@ -91,9 +91,9 @@ const STATUS_ICON = {
 };
 
 const STATUS_LABEL = {
-  baixo: "Hipogonádico",
+  baixo: "Subeugonádico",
   normal: "Eugonádico",
-  alto: "Suprafisiológico",
+  alto: "Supraeugonádico",
 };
 
 function MetricCard({
@@ -331,9 +331,9 @@ export default function Simulator() {
           semana: pt.semana,
           dia: pt.dia,
           conc: pt[chave],
-          concBase: Math.max(0, pt[chave] * 0.955),
-          concDorso: pt[chave] * 1.018,
-          volume3d: [Math.max(0, pt[chave] * 0.955), pt[chave] * 1.018] as [number, number],
+          concBase: Math.max(0, pt[chave] * 0.925),
+          concDorso: pt[chave] * 1.035,
+          volume3d: [Math.max(0, pt[chave] * 0.925), pt[chave] * 1.035] as [number, number],
         }));
     }
 
@@ -347,9 +347,9 @@ export default function Simulator() {
           semana: pt.semana,
           dia: pt.dia,
           conc: pt[chave],
-          concBase: Math.max(0, pt[chave] * 0.955),
-          concDorso: pt[chave] * 1.018,
-          volume3d: [Math.max(0, pt[chave] * 0.955), pt[chave] * 1.018] as [number, number],
+          concBase: Math.max(0, pt[chave] * 0.925),
+          concDorso: pt[chave] * 1.035,
+          volume3d: [Math.max(0, pt[chave] * 0.925), pt[chave] * 1.035] as [number, number],
           bandaIC90: [getV(resultadoMC.p5, idx), getV(resultadoMC.p95, idx)] as [number, number],
           bandaIQ50: [getV(resultadoMC.p25, idx), getV(resultadoMC.p75, idx)] as [number, number],
         };
@@ -634,7 +634,7 @@ export default function Simulator() {
 
 
         {/* Área principal */}
-        <main className="flex flex-col rounded-xl border border-border/70 bg-background/55">
+        <main className="flex min-w-0 flex-col rounded-xl border border-border/70 bg-background/55">
           {/* Métricas clínicas */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 border-b border-border">
             {(() => {
@@ -750,7 +750,7 @@ export default function Simulator() {
               </TabsList>
 
               <TabsContent value="grafico" className="space-y-5">
-                <section className="overflow-visible rounded-lg border border-border/70 bg-card shadow-sm">
+                <section className="min-w-0 overflow-hidden rounded-lg border border-border/70 bg-card shadow-sm">
                   <div className="border-b border-border/70 px-4 py-4 sm:px-5">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                       <div>
@@ -833,17 +833,17 @@ export default function Simulator() {
                       </span>
                     </div>
 
-                    <div className="-mx-3 overflow-x-auto overflow-y-visible px-3 pb-3 [scrollbar-color:color-mix(in_oklab,var(--color-primary)_34%,transparent)_transparent] [scrollbar-gutter:stable] [scrollbar-width:thin] sm:-mx-5 sm:px-5 [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-primary/25 [&::-webkit-scrollbar-track]:bg-transparent">
-                      <div className="h-[500px] w-full min-w-[820px] rounded-lg border border-border bg-card p-4 sm:h-[540px] sm:p-5">
+                    <div className="min-w-0 overflow-visible pb-3">
+                      <div className="h-[420px] w-full rounded-lg border border-border bg-card p-2 sm:h-[520px] sm:p-5">
                         <ResponsiveContainer width="100%" height="100%">
 
                         <ComposedChart
                           data={dadosGrafico}
-                          margin={{ top: 28, right: 34, left: 4, bottom: 34 }}
+                          margin={{ top: 24, right: 12, left: 10, bottom: 28 }}
                         >
                           <defs>
                             <filter id="sombra3d" x="-12%" y="-12%" width="128%" height="136%">
-                              <feDropShadow dx="0" dy="7" stdDeviation="5" floodColor="var(--color-primary)" floodOpacity="0.22" />
+                              <feDropShadow dx="0" dy="9" stdDeviation="5" floodColor="var(--color-primary)" floodOpacity="0.24" />
                             </filter>
                             <linearGradient id="banda90" x1="0" y1="0" x2="0" y2="1">
                               <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.24} />
@@ -855,9 +855,9 @@ export default function Simulator() {
                               <stop offset="100%" stopColor="var(--color-chart-2)" stopOpacity={0.16} />
                             </linearGradient>
                             <linearGradient id="volume3d" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.34} />
-                              <stop offset="45%" stopColor="var(--color-chart-3)" stopOpacity={0.25} />
-                              <stop offset="100%" stopColor="var(--color-chart-1)" stopOpacity={0.22} />
+                              <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.44} />
+                              <stop offset="45%" stopColor="var(--color-chart-3)" stopOpacity={0.3} />
+                              <stop offset="100%" stopColor="var(--color-chart-1)" stopOpacity={0.26} />
                             </linearGradient>
                             <linearGradient id="linha3d" x1="0" y1="0" x2="1" y2="0">
                               <stop offset="0%" stopColor="var(--color-chart-2)" />
@@ -975,9 +975,9 @@ export default function Simulator() {
                           <Line
                             type="monotone"
                             dataKey="concBase"
-                            stroke="color-mix(in oklab, var(--color-chart-1) 62%, var(--color-primary))"
-                            strokeWidth={2.7}
-                            strokeOpacity={0.82}
+                            stroke="color-mix(in oklab, var(--color-chart-1) 70%, var(--color-primary))"
+                            strokeWidth={3.1}
+                            strokeOpacity={0.9}
                             dot={false}
                             activeDot={false}
                             isAnimationActive={false}
@@ -987,7 +987,7 @@ export default function Simulator() {
                             type="monotone"
                             dataKey="concDorso"
                             stroke="color-mix(in oklab, var(--color-chart-2) 72%, var(--color-background))"
-                            strokeWidth={2.2}
+                            strokeWidth={2.7}
                             strokeOpacity={0.95}
                             dot={false}
                             activeDot={false}
@@ -998,7 +998,7 @@ export default function Simulator() {
                             type="monotone"
                             dataKey="conc"
                             stroke="url(#linha3d)"
-                            strokeWidth={4.2}
+                            strokeWidth={4.6}
                             dot={false}
                             activeDot={{ r: 5, strokeWidth: 2.2, stroke: "var(--color-card)", fill: "var(--color-chart-3)" }}
                             isAnimationActive={false}
@@ -1026,11 +1026,11 @@ export default function Simulator() {
                       (k<sub>a,lento</sub> ≪ k<sub>e</sub>) o estado estacionário só é atingido
                       após ~4 × t<sub>½</sub> aparente.
                     </li>
-                    <li>
-                      <strong className="text-foreground">Faixa eugonádica:</strong>{" "}
-                      {EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL} ng/dL (referência laboratorial
-                      para homem adulto).
-                    </li>
+                      <li>
+                        <strong className="text-foreground">Faixa eugonádica:</strong>{" "}
+                        {EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL} ng/dL, referência operacional
+                        usada pelo modelo para classificação da curva.
+                      </li>
                     {config.mostrarMonteCarlo && (
                       <li>
                         <strong className="text-foreground">Bandas populacionais:</strong>{" "}
@@ -1439,11 +1439,11 @@ export default function Simulator() {
                                         </Badge>
                                       ) : a.status === "vale_baixo" ? (
                                         <Badge className="bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/30">
-                                          Cmin baixa
+                                          Cmin subeugonádica
                                         </Badge>
                                       ) : a.status === "pico_alto" ? (
                                         <Badge className="bg-rose-500/15 text-rose-700 dark:text-rose-400 border-rose-500/30">
-                                          Cmax alta
+                                          Cmax supraeugonádica
                                         </Badge>
                                       ) : (
                                         <Badge className="bg-rose-500/15 text-rose-700 dark:text-rose-400 border-rose-500/30">
@@ -1579,7 +1579,7 @@ export default function Simulator() {
                         <div className="w-3 h-3 rounded-full bg-amber-500 mt-1 flex-shrink-0" />
                         <span>
                           <strong className="text-foreground">
-                            Abaixo de {EUGONADAL_MIN_NGDL} ng/dL — Hipogonádico:
+                            Abaixo de {EUGONADAL_MIN_NGDL} ng/dL — Concentração subeugonádica:
                           </strong>{" "}
                           concentração sérica abaixo do limite inferior de referência.
                         </span>
@@ -1590,14 +1590,14 @@ export default function Simulator() {
                           <strong className="text-foreground">
                             Entre {EUGONADAL_MIN_NGDL} e {EUGONADAL_MAX_NGDL} ng/dL — Faixa eugonádica:
                           </strong>{" "}
-                          referência laboratorial para testosterona total em homem adulto.
+                          referência operacional usada pelo modelo para testosterona sérica total.
                         </span>
                       </div>
                       <div className="flex items-start gap-2">
                         <div className="w-3 h-3 rounded-full bg-rose-500 mt-1 flex-shrink-0" />
                         <span>
                           <strong className="text-foreground">
-                            Acima de {EUGONADAL_MAX_NGDL} ng/dL — Suprafisiológico:
+                            Acima de {EUGONADAL_MAX_NGDL} ng/dL — Concentração supraeugonádica:
                           </strong>{" "}
                           pode causar efeitos adversos como aumento de hematócrito, retenção,
                           alteração de humor.

@@ -19,7 +19,7 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "Calculadora PK de testosterona e cronologia de efeitos. Página educativa, não dosimétrica.",
+          "Calculadora PK de testosterona e cronologia de efeitos. Página educativa para apoio conceitual, sem finalidade prescritiva.",
       },
       { property: "og:url", content: "https://lodi-undet.lovable.app/" },
     ],
@@ -126,7 +126,7 @@ function Index() {
               <p className="animate-rise delay-200 mt-7 max-w-xl text-pretty text-base leading-relaxed text-muted-foreground md:text-lg">
                 Modelo farmacocinético do undecilato de testosterona para ajuste
                 individualizado dos intervalos posológicos, com cronologia de efeitos
-                descrita na literatura. Página educativa, não dosimétrica.
+                 descrita na literatura. Página educativa para apoio conceitual, sem finalidade prescritiva.
               </p>
 
               <div className="animate-rise delay-300 mt-9 flex flex-wrap items-center gap-3">
