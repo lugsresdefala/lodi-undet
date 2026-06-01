@@ -17,7 +17,7 @@ export const Route = createFileRoute("/calculadora")({
       {
         property: "og:description",
         content:
-          "Modelo PK do undecilato de testosterona. Página educativa, não dosimétrica.",
+          "Modelo PK do undecilato de testosterona. Página educativa para apoio conceitual, sem finalidade prescritiva.",
       },
     ],
     links: [{ rel: "canonical", href: "https://lodi-undet.lovable.app/calculadora" }],
