@@ -27,8 +27,8 @@
  *
  * REFERÊNCIAS DE CALIBRAÇÃO
  * -------------------------
- * • Nebido SmPC, secção 5.2  (formulação depot em óleo de rícino/benzilbenzoato)
- *     libertação IM caracterizada por meia-vida de 90±40 d
+ * • Nebido SmPC, seção 5.2  (formulação depot em óleo de mamona/benzilbenzoato)
+ *     liberação IM caracterizada por meia-vida de 90±40 d
  * • Behre HM et al. Eur J Endocrinol 1999;140:414–419  (PK 1ª dose 1000 mg)
  *     Cmax ≈ 14 nmol/L (~404 ng/dL), Tmax ≈ 7–11 d
  * • Schubert M et al. JCEM 2004;89(11):5429–5434  (PK no estado estacionário)
@@ -49,7 +49,7 @@
 export const NMOL_TO_NGDL = 28.84;
 export const NGDL_TO_NMOL = 1 / 28.84;
 
-// --- Faixas de referência clínica (testosterona total sérica, homem adulto) ---
+// --- Faixas de referência clínica (testosterona total sérica) ---
 export const EUGONADAL_MIN_NGDL = 264;   // limiar inferior consenso AUA/Endocrine Society
 export const EUGONADAL_MAX_NGDL = 916;   // limiar superior referência laboratorial
 export const EUGONADAL_MIN_NMOL = EUGONADAL_MIN_NGDL * NGDL_TO_NMOL;   // ~9.2 nmol/L
