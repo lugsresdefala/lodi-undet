@@ -820,16 +820,8 @@ export default function Simulator() {
                               <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.34} />
                               <stop offset="100%" stopColor="var(--color-chart-2)" stopOpacity={0.16} />
                             </linearGradient>
-                            <filter id="curvaSombra" x="-10%" y="-10%" width="120%" height="120%">
-                              <feDropShadow
-                                dx="0"
-                                dy="3"
-                                stdDeviation="2.4"
-                                floodColor="var(--color-primary)"
-                                floodOpacity="0.22"
-                              />
-                            </filter>
                           </defs>
+
                           <CartesianGrid
                             vertical={false}
                             strokeDasharray="2 8"
