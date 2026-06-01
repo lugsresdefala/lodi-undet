@@ -177,8 +177,10 @@ export function SiteFooter() {
           <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
             Fontes
           </p>
-          <p className="mt-2 text-foreground">WPATH SOC-8</p>
-          <p className="text-foreground">Endocrine Society 2017</p>
+          <p className="mt-2 text-foreground">Schubert et al., JCEM 2004 <span className="text-muted-foreground">— modelo PK</span></p>
+          <p className="text-foreground">Behre &amp; Nieschlag 1999 <span className="text-muted-foreground">— calibração PK</span></p>
+          <p className="text-foreground">Hembree et al. / Endocrine Society 2017 <span className="text-muted-foreground">— efeitos e cronologia</span></p>
+          <p className="text-foreground">Coleman et al. / WPATH SOC-8, 2022 <span className="text-muted-foreground">— manejo clínico</span></p>
           <a
             href="https://diversidadebarrafunda.org"
             target="_blank"

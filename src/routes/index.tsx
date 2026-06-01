@@ -10,7 +10,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Modelo farmacocinético da testosterona e cronologia de efeitos descritos na literatura (Endocrine Society 2017, WPATH SOC-8).",
+          "Modelo farmacocinético do undecilato de testosterona (Schubert 2004) e cronologia de efeitos descritos na literatura (Endocrine Society 2017, WPATH SOC-8).",
       },
       {
         property: "og:title",
@@ -40,7 +40,7 @@ export const Route = createFileRoute("/")({
           "@type": "MedicalWebPage",
           name: "lodi-t — Referência sobre hormonização com testosterona",
           description:
-            "Modelo farmacocinético do undecilato de testosterona e cronologia de efeitos descritos pela Endocrine Society 2017 e WPATH SOC-8.",
+            "Modelo farmacocinético do undecilato de testosterona (Schubert 2004; Behre & Nieschlag 1999) e cronologia de efeitos descritos pela Endocrine Society 2017 e WPATH SOC-8.",
           url: "https://lodi-undet.lovable.app/",
           inLanguage: "pt-BR",
         }),
@@ -96,6 +96,8 @@ function Index() {
               referência clínica
             </span>
             <span className="hidden h-px w-10 bg-border sm:inline-block" />
+            <span>Schubert 2004</span>
+            <span className="opacity-40">·</span>
             <span>Endocrine Society 2017</span>
             <span className="opacity-40">·</span>
             <span>WPATH SOC-8</span>
@@ -199,8 +201,9 @@ function Index() {
                   <span>○ janelas temporais aproximadas</span>
                   <span>● variação individual relevante</span>
                   <span>○ não substitui acompanhamento clínico</span>
-                  <span>● Endocrine Society 2017</span>
-                  <span>○ WPATH SOC-8</span>
+                  <span>● Schubert et al., JCEM 2004 — PK Nebido</span>
+                  <span>○ Endocrine Society 2017 — efeitos</span>
+                  <span>● WPATH SOC-8 — manejo clínico</span>
                 </span>
               ))}
             </div>
