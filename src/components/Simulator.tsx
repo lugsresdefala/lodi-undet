@@ -727,14 +727,14 @@ export default function Simulator() {
             <Tabs value={aba} onValueChange={setAba}>
               <TabsList className="mb-4">
                 <TabsTrigger value="grafico" data-testid="tab-grafico">
-                  Gráfico ao longo do tempo
+                  Perfil temporal
                 </TabsTrigger>
                 <TabsTrigger value="paciente" data-testid="tab-paciente">
                   <UserCog className="w-3.5 h-3.5 mr-1.5" />
-                  Ajustar para um paciente
+                  Calibração individual
                 </TabsTrigger>
                 <TabsTrigger value="info" data-testid="tab-info">
-                  Como funciona
+                  Modelo
                 </TabsTrigger>
               </TabsList>
 
@@ -747,7 +747,7 @@ export default function Simulator() {
                           Curva farmacocinética
                         </p>
                         <h3 className="mt-2 font-serif text-2xl font-medium tracking-tight text-foreground">
-                          Testosterona no sangue
+                          Testosterona sérica total
                         </h3>
                       </div>
                       <div className="flex flex-wrap gap-2 sm:justify-end">
@@ -756,8 +756,8 @@ export default function Simulator() {
                         </span>
                         <span className="rounded-full border border-border bg-background px-2.5 py-1 font-mono text-[10px] text-muted-foreground">
                           {config.cargaSchubert
-                            ? "Schubert 0/6/12 sem"
-                            : `a cada ${(config.intervaloDias / 7).toFixed(0)} sem`}
+                            ? "Schubert 0 / 6 / q12 sem"
+                            : `τ = ${(config.intervaloDias / 7).toFixed(0)} sem`}
                         </span>
                         <span className="rounded-full border border-border bg-background px-2.5 py-1 font-mono text-[10px] text-muted-foreground">
                           {unLabel}
@@ -765,52 +765,48 @@ export default function Simulator() {
                       </div>
                     </div>
                     <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-                      A curva mostra picos após cada injeção e queda progressiva até a próxima dose.
-                      A faixa verde marca {EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL} ng/dL.
+                      Concentração sérica prevista pelo modelo PK populacional. Faixa eugonádica
+                      sombreada: {EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL} ng/dL. Linhas verticais
+                      tracejadas marcam as administrações.
                     </p>
                   </div>
                   <div className="p-3 sm:p-5">
-                    {/* Legenda customizada do gráfico */}
+                    {/* Legenda */}
                     <div className="flex flex-wrap items-center gap-x-5 gap-y-2 pb-3 text-[11px] text-muted-foreground">
                       {config.mostrarMonteCarlo && resultadoMC ? (
                         <>
                           <span className="flex items-center gap-1.5">
                             <span className="inline-block h-2 w-4 rounded-sm bg-chart-5/15" />
-                            faixa onde caem 9 em cada 10 pacientes
+                            IC 90 % (p5–p95)
                           </span>
                           <span className="flex items-center gap-1.5">
                             <span className="inline-block h-2 w-4 rounded-sm bg-chart-5/30" />
-                            faixa onde caem 5 em cada 10 (a metade típica)
+                            IIQ 50 % (p25–p75)
                           </span>
                           <span className="flex items-center gap-1.5">
                             <span className="inline-block h-0.5 w-4 bg-chart-2" />
-                            paciente médio
+                            mediana populacional
                           </span>
                         </>
                       ) : (
                         <span className="flex items-center gap-1.5">
                           <span className="inline-block h-0.5 w-4 bg-chart-2" />
-                          concentração de testosterona
+                          concentração sérica (indivíduo típico)
                         </span>
                       )}
                       <span className="flex items-center gap-1.5">
                         <span className="inline-block h-2 w-4 rounded-sm bg-system-body/20" />
-                        faixa normal ({EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL} ng/dL)
+                        faixa eugonádica ({EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL} ng/dL)
                       </span>
                       <span className="flex items-center gap-1.5">
                         <span className="inline-block h-3 w-0.5 border-l border-dashed border-chart-4" />
-                        injeção
+                        dose
                       </span>
                     </div>
                     <div className="-mx-3 overflow-x-auto overflow-y-visible px-3 pb-3 [scrollbar-color:color-mix(in_oklab,var(--color-primary)_34%,transparent)_transparent] [scrollbar-gutter:stable] [scrollbar-width:thin] sm:-mx-5 sm:px-5 [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-primary/25 [&::-webkit-scrollbar-track]:bg-transparent">
-                      <div
-                        className="h-[480px] w-full min-w-[760px] rounded-lg border border-border/70 bg-card p-3 shadow-inner sm:h-[520px] sm:p-4"
-                        style={{
-                          background:
-                            "linear-gradient(180deg, color-mix(in oklab, var(--color-card) 93%, var(--color-chart-2)), var(--color-card) 54%, color-mix(in oklab, var(--color-card) 94%, var(--color-chart-1)))",
-                        }}
-                      >
+                      <div className="h-[480px] w-full min-w-[760px] rounded-lg border border-border/70 bg-card p-3 sm:h-[520px] sm:p-4">
                         <ResponsiveContainer width="100%" height="100%">
+
                         <ComposedChart
                           data={dadosGrafico}
                           margin={{ top: 24, right: 118, left: 6, bottom: 44 }}
