@@ -910,7 +910,7 @@ export default function Simulator() {
 
                           {config.mostrarMonteCarlo && resultadoMC && (
                             <Area
-                              type="monotone"
+                              type="linear"
                               dataKey="bandaIC90"
                               stroke="none"
                               fill="url(#banda90)"
@@ -923,7 +923,7 @@ export default function Simulator() {
                           )}
                           {config.mostrarMonteCarlo && resultadoMC && (
                             <Area
-                              type="monotone"
+                              type="linear"
                               dataKey="bandaIQ50"
                               stroke="none"
                               fill="url(#banda50)"
@@ -935,12 +935,12 @@ export default function Simulator() {
                             />
                           )}
                           <Line
-                            type="monotone"
+                            type="linear"
                             dataKey="conc"
-                            stroke="var(--color-primary)"
-                            strokeWidth={2.6}
+                            stroke="var(--color-foreground)"
+                            strokeWidth={2.4}
                             dot={false}
-                            activeDot={{ r: 4, strokeWidth: 2, stroke: "var(--color-card)", fill: "var(--color-primary)" }}
+                            activeDot={{ r: 4, strokeWidth: 2, stroke: "var(--color-card)", fill: "var(--color-foreground)" }}
                             isAnimationActive={false}
                             name={
                               config.mostrarMonteCarlo && resultadoMC
