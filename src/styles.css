@@ -266,7 +266,8 @@
   @media (prefers-reduced-motion: reduce) {
     .animate-marquee,
     .animate-float-slow,
-    .animate-drift { animation: none; }
+    .animate-drift,
+    .animate-ping { animation: none; }
     .animate-rise { animation: none; opacity: 1; transform: none; }
   }
 }
