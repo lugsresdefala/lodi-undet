@@ -624,7 +624,7 @@ export default function Simulator() {
 
         {/* Área principal */}
         <main className="flex flex-col rounded-xl border border-border/70 bg-background/55">
-          {/* Métricas clínicas — linguagem clara */}
+          {/* Métricas clínicas */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 border-b border-border">
             {(() => {
               const val =
@@ -634,9 +634,9 @@ export default function Simulator() {
               const st = statusEugonadal(val, config.unidade);
               return (
                 <MetricCard
-                  label="Pico após a 1ª injeção"
+                  label="Cmax (1ª dose)"
                   value={fmt(val, config.unidade)}
-                  sub={`atingido em ~${Math.round(metricasClinicas?.tmax1a ?? metricas.tmaxDias)} dias`}
+                  sub={`Tmax ≈ ${Math.round(metricasClinicas?.tmax1a ?? metricas.tmaxDias)} d`}
                   icon={<TrendingUp className="w-3 h-3" />}
                   statusClass={STATUS_COLOR[st]}
                 />
@@ -650,9 +650,9 @@ export default function Simulator() {
               const st = statusEugonadal(val, config.unidade);
               return (
                 <MetricCard
-                  label="Vale entre doses (estabilizado)"
+                  label="Cmin,SS"
                   value={fmt(val, config.unidade)}
-                  sub={`menor valor antes da próxima injeção · ${STATUS_LABEL[st]}`}
+                  sub={`vale no estado estacionário · ${STATUS_LABEL[st]}`}
                   icon={STATUS_ICON[st]}
                   statusClass={STATUS_COLOR[st]}
                 />
@@ -666,51 +666,51 @@ export default function Simulator() {
               const st = statusEugonadal(val, config.unidade);
               return (
                 <MetricCard
-                  label="Pico entre doses (estabilizado)"
+                  label="Cmax,SS"
                   value={fmt(val, config.unidade)}
-                  sub={`maior valor após injeções repetidas · ${STATUS_LABEL[st]}`}
+                  sub={`pico no estado estacionário · ${STATUS_LABEL[st]}`}
                   icon={<Activity className="w-3 h-3" />}
                   statusClass={STATUS_COLOR[st]}
                 />
               );
             })()}
             <MetricCard
-              label="Tempo até estabilizar"
-              value={`~${metricas.steadyStateSemana} semanas`}
-              sub={`a partir daí, picos e vales se repetem em padrão constante`}
+              label="Tempo até estado estacionário"
+              value={`~${metricas.steadyStateSemana} sem`}
+              sub={`≈ 4 × t½ aparente`}
               icon={<Clock className="w-3 h-3" />}
             />
           </div>
 
-          {/* Variação entre pacientes — métricas se disponível */}
+          {/* Métricas populacionais (Monte Carlo) */}
           {resultadoMC && config.mostrarMonteCarlo && (
             <div className="px-4 py-3 border-b border-border bg-muted/30">
               <div className="flex items-center justify-between mb-2">
                 <p className="text-xs font-medium text-foreground">
-                  Variação entre pacientes — {resultadoMC.nSimulacoes} pacientes simulados
+                  Variabilidade populacional — N = {resultadoMC.nSimulacoes}
                 </p>
-                <span className="text-[11px] text-muted-foreground">média ± desvio</span>
+                <span className="text-[11px] text-muted-foreground">média ± DP</span>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <MetricCard
-                  label="Pico SS (Cmax)"
+                  label="Cmax,SS"
                   value={`${Math.round(resultadoMC.metricasPopulacionais.cmaxSSMediaNgdl)} ± ${Math.round(resultadoMC.metricasPopulacionais.cmaxSSDpNgdl)} ng/dL`}
                   sub={`Schubert 2004: ~${ALVOS_CALIBRACAO.cmaxSSNgdl} ng/dL · CV ${((resultadoMC.metricasPopulacionais.cmaxSSDpNgdl / Math.max(1, resultadoMC.metricasPopulacionais.cmaxSSMediaNgdl)) * 100).toFixed(0)}%`}
                 />
                 <MetricCard
-                  label="Vale SS (Cmin)"
+                  label="Cmin,SS"
                   value={`${Math.round(resultadoMC.metricasPopulacionais.cminSSMediaNgdl)} ± ${Math.round(resultadoMC.metricasPopulacionais.cminSSDpNgdl)} ng/dL`}
-                  sub={`Schubert 2004: ~${ALVOS_CALIBRACAO.cminSSNgdl} ng/dL · antes da próxima dose`}
+                  sub={`Schubert 2004: ~${ALVOS_CALIBRACAO.cminSSNgdl} ng/dL`}
                 />
                 <MetricCard
-                  label="Cmédio SS (Cavg)"
+                  label="Cmédia,SS"
                   value={`${Math.round(resultadoMC.metricasPopulacionais.cavgSSMediaNgdl)} ± ${Math.round(resultadoMC.metricasPopulacionais.cavgSSDpNgdl)} ng/dL`}
-                  sub="exposição média entre doses no estado estacionário"
+                  sub="exposição média no intervalo τ"
                 />
                 <MetricCard
-                  label="% tempo na faixa normal"
+                  label="% tempo eugonádico"
                   value={`${resultadoMC.metricasPopulacionais.percentEugonadal.toFixed(0)}%`}
-                  sub={`entre ${EUGONADAL_MIN_NGDL}–${EUGONADAL_MAX_NGDL} ng/dL no estado estacionário`}
+                  sub={`${EUGONADAL_MIN_NGDL}–${EUGONADAL_MAX_NGDL} ng/dL no τ`}
                   statusClass={
                     resultadoMC.metricasPopulacionais.percentEugonadal >= 70
                       ? STATUS_COLOR.normal
@@ -720,6 +720,7 @@ export default function Simulator() {
               </div>
             </div>
           )}
+
 
           {/* Gráficos */}
           <div className="flex-1 p-4">
