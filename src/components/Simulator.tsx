@@ -833,13 +833,13 @@ export default function Simulator() {
                       </span>
                     </div>
 
-                    <div className="overflow-visible pb-3">
+                    <div className="min-w-0 overflow-visible pb-3">
                       <div className="h-[420px] w-full rounded-lg border border-border bg-card p-2 sm:h-[520px] sm:p-5">
                         <ResponsiveContainer width="100%" height="100%">
 
                         <ComposedChart
                           data={dadosGrafico}
-                          margin={{ top: 28, right: 34, left: 4, bottom: 34 }}
+                          margin={{ top: 24, right: 10, left: -20, bottom: 28 }}
                         >
                           <defs>
                             <filter id="sombra3d" x="-12%" y="-12%" width="128%" height="136%">
