@@ -92,7 +92,7 @@ function SobrePage() {
             modelada como log-normal sobre cada parâmetro estrutural e propagada por
             Monte Carlo. A partir do perfil simulado, o motor recomenda um intervalo
             posológico individualizado que aproxima uma meta de concentração média
-            (C<sub>média</sub>) dentro da faixa eugonádica masculina.
+            (C<sub>média</sub>) dentro da faixa eugonádica usada como referência operacional.
           </p>
         </Block>
 
@@ -234,9 +234,9 @@ CV(S = F/V)      = 0,22`}</Eq>
             </li>
             <li>
               Parâmetros populacionais derivados de coortes predominantemente
-              masculinas cisgênero adultas. Aplicação a pessoas em hormonização
-              transmasculina assume mesma farmacocinética da formulação — premissa
-              razoável mas não validada formalmente.
+              homens cisgênero adultos. Aplicação a pessoas em hormonização
+              transmasculina assume farmacocinética semelhante da formulação — premissa
+              razoável, mas não validada formalmente.
             </li>
             <li>
               Sem covariáveis (peso, SHBG, idade) na versão atual; toda
