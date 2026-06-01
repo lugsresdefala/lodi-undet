@@ -1443,7 +1443,7 @@ export default function Simulator() {
                                         </Badge>
                                       ) : a.status === "pico_alto" ? (
                                         <Badge className="bg-rose-500/15 text-rose-700 dark:text-rose-400 border-rose-500/30">
-                                          Cmax alta
+                                          Cmax supraeugonádica
                                         </Badge>
                                       ) : (
                                         <Badge className="bg-rose-500/15 text-rose-700 dark:text-rose-400 border-rose-500/30">
