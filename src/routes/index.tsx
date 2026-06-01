@@ -93,7 +93,7 @@ function Index() {
                 <span className="absolute inset-0 animate-ping rounded-full bg-foreground/40" />
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-foreground" />
               </span>
-              referência viva
+              referência clínica
             </span>
             <span className="hidden h-px w-10 bg-border sm:inline-block" />
             <span>Endocrine Society 2017</span>
