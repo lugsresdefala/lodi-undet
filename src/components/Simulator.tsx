@@ -571,7 +571,7 @@ export default function Simulator() {
                   <div className="pt-2 space-y-2 border-t border-border">
                     <div className="flex justify-between">
                       <Label className="text-[11px] text-muted-foreground">
-                        N de simulações
+                        Replicações Monte Carlo (N)
                       </Label>
                       <span className="text-[11px] font-mono font-medium">
                         {config.nSimulacoesMC}
@@ -590,10 +590,10 @@ export default function Simulator() {
                       {isCalculating ? (
                         <span className="flex items-center gap-1 text-primary">
                           <span className="inline-block w-2 h-2 rounded-full border border-primary border-t-transparent animate-spin" />
-                          calculando…
+                          simulando…
                         </span>
                       ) : mcConcluido ? (
-                        <span className="text-emerald-600 dark:text-emerald-400">pronto</span>
+                        <span className="text-emerald-600 dark:text-emerald-400">concluído</span>
                       ) : null}
                       <span>500</span>
                     </div>
@@ -607,11 +607,11 @@ export default function Simulator() {
 
           {/* Cronograma de doses */}
           <div>
-            <h2 className="text-sm font-semibold mb-2">Cronograma de doses</h2>
+            <h2 className="text-sm font-semibold mb-2">Cronograma posológico</h2>
             <div className="space-y-1 max-h-40 overflow-y-auto">
               {doses.map((d, i) => (
                 <div key={i} className="flex justify-between text-xs py-0.5">
-                  <span className="text-muted-foreground">Dose {i + 1}</span>
+                  <span className="text-muted-foreground">Administração {i + 1}</span>
                   <span className="font-mono text-foreground">
                     semana {(d.diaDose / 7).toFixed(0)}
                   </span>
@@ -818,7 +818,7 @@ export default function Simulator() {
                           className="inline-block h-3 w-0.5 border-l border-dashed"
                           style={{ borderColor: "var(--color-chart-4)" }}
                         />
-                        dose
+                        administração
                       </span>
                     </div>
 
