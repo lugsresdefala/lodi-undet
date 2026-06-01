@@ -112,7 +112,7 @@ export function SiteHeader() {
       <div
         id="mobile-nav"
         className={
-          "overflow-hidden border-t border-border/60 md:hidden " +
+          "overflow-hidden border-t border-border/60 lg:hidden " +
           (open ? "max-h-[80vh]" : "max-h-0")
         }
         style={{ transition: "max-height 240ms ease" }}
