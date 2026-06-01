@@ -10,7 +10,6 @@ import {
   ReferenceLine,
   ResponsiveContainer,
   ReferenceArea,
-  Brush,
 } from "recharts";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
@@ -373,8 +372,8 @@ export default function Simulator() {
   const yTickFormatter = (v: number) =>
     config.unidade === "nmol" ? v.toFixed(1) : Math.round(v).toLocaleString("pt-BR");
   const eixoTick = {
-    fontSize: 11,
-    fill: "var(--color-muted-foreground)",
+    fontSize: 12,
+    fill: "color-mix(in oklab, var(--color-foreground) 74%, transparent)",
     fontFamily: "var(--font-mono)",
   };
 
@@ -386,7 +385,7 @@ export default function Simulator() {
       return [p.conc, ...bandas];
     });
     const max = Math.max(eugMax, ...valores);
-    return Math.ceil((max * 1.06) / 100) * 100;
+    return Math.ceil((max * 1.04) / 100) * 100;
   }, [dadosGrafico, eugMax]);
 
   // Ticks de eixo X: a cada 12 semanas (≈ 3 meses) para legibilidade
@@ -772,26 +771,26 @@ export default function Simulator() {
                   </div>
                   <div className="p-3 sm:p-5">
                     {/* Legenda */}
-                    <div className="flex flex-wrap items-center gap-x-5 gap-y-2 pb-3 text-[11px] text-muted-foreground">
+                    <div className="flex flex-wrap items-center gap-x-5 gap-y-2 pb-3 text-xs font-medium text-foreground/75">
                       {config.mostrarMonteCarlo && resultadoMC ? (
                         <>
                           <span className="flex items-center gap-1.5">
                             <span
-                              className="inline-block h-2.5 w-5 rounded-sm border border-border/60"
-                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-5) 28%, transparent)" }}
+                              className="inline-block h-3 w-6 rounded-sm border border-border"
+                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-5) 18%, transparent)" }}
                             />
                             IC 90 % (p5–p95)
                           </span>
                           <span className="flex items-center gap-1.5">
                             <span
-                              className="inline-block h-2.5 w-5 rounded-sm border border-border/60"
-                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-2) 42%, transparent)" }}
+                              className="inline-block h-3 w-6 rounded-sm border border-border"
+                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-2) 30%, transparent)" }}
                             />
                             IIQ 50 % (p25–p75)
                           </span>
                           <span className="flex items-center gap-1.5">
                             <span
-                              className="inline-block h-[2px] w-5"
+                              className="inline-block h-[3px] w-6 rounded-full"
                               style={{ backgroundColor: "var(--color-primary)" }}
                             />
                             mediana populacional
@@ -808,8 +807,8 @@ export default function Simulator() {
                       )}
                       <span className="flex items-center gap-1.5">
                         <span
-                            className="inline-block h-2.5 w-5 rounded-sm border border-border/60"
-                            style={{ backgroundColor: "color-mix(in oklab, var(--color-system-body) 24%, transparent)" }}
+                            className="inline-block h-3 w-6 rounded-sm border border-border"
+                            style={{ backgroundColor: "color-mix(in oklab, var(--color-system-body) 14%, transparent)" }}
                         />
                         faixa eugonádica ({EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL} ng/dL)
                       </span>
@@ -823,29 +822,29 @@ export default function Simulator() {
                     </div>
 
                     <div className="-mx-3 overflow-x-auto overflow-y-visible px-3 pb-3 [scrollbar-color:color-mix(in_oklab,var(--color-primary)_34%,transparent)_transparent] [scrollbar-gutter:stable] [scrollbar-width:thin] sm:-mx-5 sm:px-5 [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-primary/25 [&::-webkit-scrollbar-track]:bg-transparent">
-                      <div className="h-[480px] w-full min-w-[760px] rounded-lg border border-border/70 bg-card p-3 sm:h-[520px] sm:p-4">
+                      <div className="h-[500px] w-full min-w-[820px] rounded-lg border border-border bg-card p-4 sm:h-[540px] sm:p-5">
                         <ResponsiveContainer width="100%" height="100%">
 
                         <ComposedChart
                           data={dadosGrafico}
-                          margin={{ top: 24, right: 118, left: 6, bottom: 44 }}
+                          margin={{ top: 18, right: 30, left: 4, bottom: 30 }}
                         >
                           <defs>
                             <linearGradient id="banda90" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="var(--color-chart-5)" stopOpacity={0.32} />
-                              <stop offset="100%" stopColor="var(--color-chart-5)" stopOpacity={0.14} />
+                              <stop offset="0%" stopColor="var(--color-chart-5)" stopOpacity={0.16} />
+                              <stop offset="100%" stopColor="var(--color-chart-5)" stopOpacity={0.06} />
                             </linearGradient>
                             <linearGradient id="banda50" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.46} />
-                              <stop offset="100%" stopColor="var(--color-chart-2)" stopOpacity={0.24} />
+                              <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.32} />
+                              <stop offset="100%" stopColor="var(--color-chart-2)" stopOpacity={0.12} />
                             </linearGradient>
                           </defs>
 
                           <CartesianGrid
                             vertical={false}
-                            strokeDasharray="2 8"
+                            strokeDasharray="3 6"
                             stroke="var(--color-border)"
-                            strokeOpacity={0.72}
+                            strokeOpacity={0.62}
                           />
                           <XAxis
                             dataKey="semana"
@@ -855,7 +854,7 @@ export default function Simulator() {
                             minTickGap={12}
                             tick={eixoTick}
                             tickMargin={12}
-                            axisLine={false}
+                            axisLine={{ stroke: "var(--color-border)", strokeOpacity: 0.8 }}
                             tickLine={false}
                           />
                           <YAxis
@@ -864,7 +863,7 @@ export default function Simulator() {
                             tickFormatter={yTickFormatter}
                             tick={eixoTick}
                             tickMargin={12}
-                            axisLine={false}
+                            axisLine={{ stroke: "var(--color-border)", strokeOpacity: 0.8 }}
                             tickLine={false}
                             width={64}
                           />
@@ -880,21 +879,21 @@ export default function Simulator() {
                             y1={eugMin}
                             y2={eugMax}
                             fill="var(--color-system-body)"
-                            fillOpacity={0.22}
+                            fillOpacity={0.12}
                           />
                           <ReferenceLine
                             y={eugMin}
                             stroke="var(--color-system-body)"
                             strokeDasharray="6 6"
                             strokeWidth={1.2}
-                            opacity={0.82}
+                            opacity={0.55}
                           />
                           <ReferenceLine
                             y={eugMax}
                             stroke="var(--color-system-body)"
                             strokeDasharray="6 6"
                             strokeWidth={1.2}
-                            opacity={0.82}
+                            opacity={0.55}
                           />
 
                           {/* Marcadores de doses */}
@@ -903,9 +902,9 @@ export default function Simulator() {
                               key={i}
                               x={d.diaDose / 7}
                               stroke="var(--color-chart-4)"
-                              strokeWidth={1.35}
+                              strokeWidth={1.25}
                               strokeDasharray="2 4"
-                              opacity={0.5}
+                              opacity={0.24}
                             />
                           ))}
 
@@ -939,9 +938,9 @@ export default function Simulator() {
                             type="monotone"
                             dataKey="conc"
                             stroke="var(--color-primary)"
-                            strokeWidth={2.6}
+                            strokeWidth={3.4}
                             dot={false}
-                            activeDot={{ r: 4, strokeWidth: 2, stroke: "var(--color-card)", fill: "var(--color-primary)" }}
+                            activeDot={{ r: 4.5, strokeWidth: 2, stroke: "var(--color-card)", fill: "var(--color-primary)" }}
                             isAnimationActive={false}
                             name={
                               config.mostrarMonteCarlo && resultadoMC
@@ -951,14 +950,6 @@ export default function Simulator() {
                           />
 
 
-                          <Brush
-                            dataKey="semana"
-                            height={20}
-                            fill="var(--color-card)"
-                            stroke="var(--color-border)"
-                            tickFormatter={() => ""}
-                            travellerWidth={8}
-                          />
                         </ComposedChart>
                         </ResponsiveContainer>
                       </div>
