@@ -960,13 +960,47 @@ export default function Simulator() {
                               activeDot={false}
                             />
                           )}
+                          <Area
+                            type="monotone"
+                            dataKey="volume3d"
+                            stroke="none"
+                            fill="url(#volume3d)"
+                            fillOpacity={1}
+                            name="__volume tridimensional"
+                            isAnimationActive={false}
+                            dot={false}
+                            activeDot={false}
+                            filter="url(#sombra3d)"
+                          />
+                          <Line
+                            type="monotone"
+                            dataKey="concBase"
+                            stroke="color-mix(in oklab, var(--color-chart-1) 62%, var(--color-primary))"
+                            strokeWidth={2.7}
+                            strokeOpacity={0.82}
+                            dot={false}
+                            activeDot={false}
+                            isAnimationActive={false}
+                            name="__base tridimensional"
+                          />
+                          <Line
+                            type="monotone"
+                            dataKey="concDorso"
+                            stroke="color-mix(in oklab, var(--color-chart-2) 72%, var(--color-background))"
+                            strokeWidth={2.2}
+                            strokeOpacity={0.95}
+                            dot={false}
+                            activeDot={false}
+                            isAnimationActive={false}
+                            name="__dorso tridimensional"
+                          />
                           <Line
                             type="monotone"
                             dataKey="conc"
-                            stroke="var(--color-primary)"
-                            strokeWidth={3.4}
+                            stroke="url(#linha3d)"
+                            strokeWidth={4.2}
                             dot={false}
-                            activeDot={{ r: 4.5, strokeWidth: 2, stroke: "var(--color-card)", fill: "var(--color-primary)" }}
+                            activeDot={{ r: 5, strokeWidth: 2.2, stroke: "var(--color-card)", fill: "var(--color-chart-3)" }}
                             isAnimationActive={false}
                             name={
                               config.mostrarMonteCarlo && resultadoMC
