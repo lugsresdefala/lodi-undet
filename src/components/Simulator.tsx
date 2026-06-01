@@ -789,21 +789,21 @@ export default function Simulator() {
                           <span className="flex items-center gap-1.5">
                             <span
                               className="inline-block h-3 w-6 rounded-sm border border-border"
-                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-5) 18%, transparent)" }}
+                              style={{ background: "linear-gradient(180deg, color-mix(in oklab, var(--color-chart-2) 24%, transparent), color-mix(in oklab, var(--color-chart-1) 14%, transparent))" }}
                             />
                             IC 90 % (p5–p95)
                           </span>
                           <span className="flex items-center gap-1.5">
                             <span
                               className="inline-block h-3 w-6 rounded-sm border border-border"
-                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-2) 30%, transparent)" }}
+                              style={{ background: "linear-gradient(180deg, color-mix(in oklab, var(--color-chart-3) 34%, transparent), color-mix(in oklab, var(--color-chart-2) 18%, transparent))" }}
                             />
                             IIQ 50 % (p25–p75)
                           </span>
                           <span className="flex items-center gap-1.5">
                             <span
                               className="inline-block h-[3px] w-6 rounded-full"
-                              style={{ backgroundColor: "var(--color-primary)" }}
+                              style={{ background: "linear-gradient(90deg, var(--color-chart-2), var(--color-chart-3), var(--color-chart-1))" }}
                             />
                             mediana populacional
                           </span>
