@@ -373,7 +373,7 @@ export default function Simulator() {
     config.unidade === "nmol" ? v.toFixed(1) : Math.round(v).toLocaleString("pt-BR");
   const eixoTick = {
     fontSize: 11,
-    fill: "var(--color-muted-foreground)",
+    fill: "color-mix(in oklab, var(--color-foreground) 62%, transparent)",
     fontFamily: "var(--font-mono)",
   };
 
@@ -777,14 +777,14 @@ export default function Simulator() {
                           <span className="flex items-center gap-1.5">
                             <span
                               className="inline-block h-2.5 w-5 rounded-sm border border-border/80"
-                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-5) 18%, transparent)" }}
+                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-5) 14%, transparent)" }}
                             />
                             IC 90 % (p5–p95)
                           </span>
                           <span className="flex items-center gap-1.5">
                             <span
                               className="inline-block h-2.5 w-5 rounded-sm border border-border/80"
-                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-2) 32%, transparent)" }}
+                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-2) 26%, transparent)" }}
                             />
                             IIQ 50 % (p25–p75)
                           </span>
