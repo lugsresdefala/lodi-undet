@@ -96,6 +96,8 @@ function Index() {
               referência clínica
             </span>
             <span className="hidden h-px w-10 bg-border sm:inline-block" />
+            <span>Schubert 2004</span>
+            <span className="opacity-40">·</span>
             <span>Endocrine Society 2017</span>
             <span className="opacity-40">·</span>
             <span>WPATH SOC-8</span>
