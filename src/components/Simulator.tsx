@@ -10,7 +10,6 @@ import {
   ReferenceLine,
   ResponsiveContainer,
   ReferenceArea,
-  Brush,
 } from "recharts";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
@@ -386,7 +385,7 @@ export default function Simulator() {
       return [p.conc, ...bandas];
     });
     const max = Math.max(eugMax, ...valores);
-    return Math.ceil((max * 1.06) / 100) * 100;
+    return Math.ceil((max * 1.04) / 100) * 100;
   }, [dadosGrafico, eugMax]);
 
   // Ticks de eixo X: a cada 12 semanas (≈ 3 meses) para legibilidade
@@ -772,20 +771,20 @@ export default function Simulator() {
                   </div>
                   <div className="p-3 sm:p-5">
                     {/* Legenda */}
-                    <div className="flex flex-wrap items-center gap-x-5 gap-y-2 pb-3 text-[11px] text-muted-foreground">
+                    <div className="flex flex-wrap items-center gap-x-5 gap-y-2 pb-3 font-mono text-[10px] text-muted-foreground">
                       {config.mostrarMonteCarlo && resultadoMC ? (
                         <>
                           <span className="flex items-center gap-1.5">
                             <span
-                              className="inline-block h-2.5 w-5 rounded-sm border border-border/60"
-                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-5) 28%, transparent)" }}
+                              className="inline-block h-2.5 w-5 rounded-sm border border-border/80"
+                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-5) 18%, transparent)" }}
                             />
                             IC 90 % (p5–p95)
                           </span>
                           <span className="flex items-center gap-1.5">
                             <span
-                              className="inline-block h-2.5 w-5 rounded-sm border border-border/60"
-                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-2) 42%, transparent)" }}
+                              className="inline-block h-2.5 w-5 rounded-sm border border-border/80"
+                              style={{ backgroundColor: "color-mix(in oklab, var(--color-chart-2) 32%, transparent)" }}
                             />
                             IIQ 50 % (p25–p75)
                           </span>
@@ -808,8 +807,8 @@ export default function Simulator() {
                       )}
                       <span className="flex items-center gap-1.5">
                         <span
-                            className="inline-block h-2.5 w-5 rounded-sm border border-border/60"
-                            style={{ backgroundColor: "color-mix(in oklab, var(--color-system-body) 24%, transparent)" }}
+                            className="inline-block h-2.5 w-5 rounded-sm border border-border/80"
+                            style={{ backgroundColor: "color-mix(in oklab, var(--color-system-body) 16%, transparent)" }}
                         />
                         faixa eugonádica ({EUGONADAL_MIN_NGDL}–{EUGONADAL_MAX_NGDL} ng/dL)
                       </span>
@@ -823,21 +822,21 @@ export default function Simulator() {
                     </div>
 
                     <div className="-mx-3 overflow-x-auto overflow-y-visible px-3 pb-3 [scrollbar-color:color-mix(in_oklab,var(--color-primary)_34%,transparent)_transparent] [scrollbar-gutter:stable] [scrollbar-width:thin] sm:-mx-5 sm:px-5 [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-primary/25 [&::-webkit-scrollbar-track]:bg-transparent">
-                      <div className="h-[480px] w-full min-w-[760px] rounded-lg border border-border/70 bg-card p-3 sm:h-[520px] sm:p-4">
+                      <div className="h-[480px] w-full min-w-[760px] rounded-lg border border-border/70 bg-background p-4 sm:h-[520px] sm:p-5">
                         <ResponsiveContainer width="100%" height="100%">
 
                         <ComposedChart
                           data={dadosGrafico}
-                          margin={{ top: 24, right: 118, left: 6, bottom: 44 }}
+                          margin={{ top: 22, right: 28, left: 2, bottom: 28 }}
                         >
                           <defs>
                             <linearGradient id="banda90" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="var(--color-chart-5)" stopOpacity={0.32} />
-                              <stop offset="100%" stopColor="var(--color-chart-5)" stopOpacity={0.14} />
+                              <stop offset="0%" stopColor="var(--color-chart-5)" stopOpacity={0.2} />
+                              <stop offset="100%" stopColor="var(--color-chart-5)" stopOpacity={0.08} />
                             </linearGradient>
                             <linearGradient id="banda50" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.46} />
-                              <stop offset="100%" stopColor="var(--color-chart-2)" stopOpacity={0.24} />
+                              <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.34} />
+                              <stop offset="100%" stopColor="var(--color-chart-2)" stopOpacity={0.14} />
                             </linearGradient>
                           </defs>
 
