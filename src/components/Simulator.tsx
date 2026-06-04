@@ -988,13 +988,24 @@ export default function Simulator() {
                             activeDot={false}
                             filter="url(#sombra3d)"
                           />
+                          <Area
+                            type="monotone"
+                            dataKey="volume3d"
+                            stroke="none"
+                            fill="url(#brilhoTopo)"
+                            fillOpacity={1}
+                            name="__brilho topo"
+                            isAnimationActive={false}
+                            dot={false}
+                            activeDot={false}
+                          />
                           <Line
                             type="monotone"
                             dataKey="conc"
                             stroke="url(#linha3d)"
                             strokeWidth={4.2}
                             dot={false}
-                            activeDot={{ r: 5, strokeWidth: 2.2, stroke: "var(--color-card)", fill: "var(--color-chart-3)" }}
+                            activeDot={{ r: 5, strokeWidth: 2.2, stroke: "var(--color-card)", fill: "var(--color-trans-pink)" }}
                             isAnimationActive={false}
                             name={
                               config.mostrarMonteCarlo && resultadoMC
