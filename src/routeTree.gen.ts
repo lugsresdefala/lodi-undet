@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as ReferenciasRouteImport } from './routes/referencias'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as EfeitosRouteImport } from './routes/efeitos'
 import { Route as CronologiaRouteImport } from './routes/cronologia'
@@ -33,6 +34,11 @@ const SobreRoute = SobreRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReferenciasRoute = ReferenciasRouteImport.update({
+  id: '/referencias',
+  path: '/referencias',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/cronologia': typeof CronologiaRoute
   '/efeitos': typeof EfeitosRoute
   '/login': typeof LoginRoute
+  '/referencias': typeof ReferenciasRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/conta': typeof AuthenticatedContaRoute
@@ -125,6 +132,7 @@ export interface FileRoutesByTo {
   '/cronologia': typeof CronologiaRoute
   '/efeitos': typeof EfeitosRoute
   '/login': typeof LoginRoute
+  '/referencias': typeof ReferenciasRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/conta': typeof AuthenticatedContaRoute
@@ -143,6 +151,7 @@ export interface FileRoutesById {
   '/cronologia': typeof CronologiaRoute
   '/efeitos': typeof EfeitosRoute
   '/login': typeof LoginRoute
+  '/referencias': typeof ReferenciasRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/_authenticated/conta': typeof AuthenticatedContaRoute
@@ -161,6 +170,7 @@ export interface FileRouteTypes {
     | '/cronologia'
     | '/efeitos'
     | '/login'
+    | '/referencias'
     | '/sitemap.xml'
     | '/sobre'
     | '/conta'
@@ -177,6 +187,7 @@ export interface FileRouteTypes {
     | '/cronologia'
     | '/efeitos'
     | '/login'
+    | '/referencias'
     | '/sitemap.xml'
     | '/sobre'
     | '/conta'
@@ -194,6 +205,7 @@ export interface FileRouteTypes {
     | '/cronologia'
     | '/efeitos'
     | '/login'
+    | '/referencias'
     | '/sitemap.xml'
     | '/sobre'
     | '/_authenticated/conta'
@@ -212,6 +224,7 @@ export interface RootRouteChildren {
   CronologiaRoute: typeof CronologiaRoute
   EfeitosRoute: typeof EfeitosRoute
   LoginRoute: typeof LoginRoute
+  ReferenciasRoute: typeof ReferenciasRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
@@ -235,6 +248,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/referencias': {
+      id: '/referencias'
+      path: '/referencias'
+      fullPath: '/referencias'
+      preLoaderRoute: typeof ReferenciasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -351,6 +371,7 @@ const rootRouteChildren: RootRouteChildren = {
   CronologiaRoute: CronologiaRoute,
   EfeitosRoute: EfeitosRoute,
   LoginRoute: LoginRoute,
+  ReferenciasRoute: ReferenciasRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
