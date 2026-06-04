@@ -842,27 +842,43 @@ export default function Simulator() {
                           margin={{ top: 20, right: 10, left: 4, bottom: 24 }}
                         >
                           <defs>
-                            <filter id="sombra3d" x="-10%" y="-10%" width="124%" height="130%">
-                              <feDropShadow dx="0" dy="7" stdDeviation="4" floodColor="#1d4ed8" floodOpacity="0.2" />
+                            <filter id="sombra3d" x="-15%" y="-15%" width="130%" height="140%">
+                              <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur1" />
+                              <feOffset in="blur1" dx="0" dy="8" result="off1" />
+                              <feComponentTransfer in="off1" result="shadow">
+                                <feFuncA type="linear" slope="0.4" />
+                              </feComponentTransfer>
+                              <feMerge>
+                                <feMergeNode in="shadow" />
+                                <feMergeNode in="SourceGraphic" />
+                              </feMerge>
                             </filter>
+                            {/* Paleta aquarelada do logo L.O.D.I: trans-pink → trans-blue → system-body */}
                             <linearGradient id="banda90" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.24} />
-                              <stop offset="58%" stopColor="var(--color-chart-3)" stopOpacity={0.13} />
-                              <stop offset="100%" stopColor="var(--color-chart-1)" stopOpacity={0.08} />
+                              <stop offset="0%" stopColor="var(--color-trans-pink)" stopOpacity={0.38} />
+                              <stop offset="55%" stopColor="var(--color-trans-blue)" stopOpacity={0.22} />
+                              <stop offset="100%" stopColor="var(--color-system-body)" stopOpacity={0.08} />
                             </linearGradient>
                             <linearGradient id="banda50" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="var(--color-chart-3)" stopOpacity={0.34} />
-                              <stop offset="100%" stopColor="var(--color-chart-2)" stopOpacity={0.16} />
+                              <stop offset="0%" stopColor="var(--color-trans-pink)" stopOpacity={0.55} />
+                              <stop offset="60%" stopColor="var(--color-trans-blue)" stopOpacity={0.32} />
+                              <stop offset="100%" stopColor="var(--color-system-body)" stopOpacity={0.14} />
                             </linearGradient>
                             <linearGradient id="volume3d" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.36} />
-                              <stop offset="45%" stopColor="var(--color-chart-3)" stopOpacity={0.24} />
-                              <stop offset="100%" stopColor="var(--color-chart-1)" stopOpacity={0.2} />
+                              <stop offset="0%" stopColor="var(--color-trans-pink)" stopOpacity={0.78} />
+                              <stop offset="22%" stopColor="var(--color-trans-pink)" stopOpacity={0.55} />
+                              <stop offset="55%" stopColor="var(--color-trans-blue)" stopOpacity={0.42} />
+                              <stop offset="100%" stopColor="var(--color-system-body)" stopOpacity={0.18} />
+                            </linearGradient>
+                            <linearGradient id="brilhoTopo" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="#ffffff" stopOpacity={0.55} />
+                              <stop offset="45%" stopColor="#ffffff" stopOpacity={0.1} />
+                              <stop offset="100%" stopColor="#ffffff" stopOpacity={0} />
                             </linearGradient>
                             <linearGradient id="linha3d" x1="0" y1="0" x2="1" y2="0">
-                              <stop offset="0%" stopColor="var(--color-chart-2)" />
-                              <stop offset="52%" stopColor="var(--color-chart-3)" />
-                              <stop offset="100%" stopColor="var(--color-chart-1)" />
+                              <stop offset="0%" stopColor="var(--color-trans-pink)" />
+                              <stop offset="50%" stopColor="var(--color-clay)" />
+                              <stop offset="100%" stopColor="var(--color-trans-blue)" />
                             </linearGradient>
                           </defs>
 
@@ -972,13 +988,24 @@ export default function Simulator() {
                             activeDot={false}
                             filter="url(#sombra3d)"
                           />
+                          <Area
+                            type="monotone"
+                            dataKey="volume3d"
+                            stroke="none"
+                            fill="url(#brilhoTopo)"
+                            fillOpacity={1}
+                            name="__brilho topo"
+                            isAnimationActive={false}
+                            dot={false}
+                            activeDot={false}
+                          />
                           <Line
                             type="monotone"
                             dataKey="conc"
                             stroke="url(#linha3d)"
                             strokeWidth={4.2}
                             dot={false}
-                            activeDot={{ r: 5, strokeWidth: 2.2, stroke: "var(--color-card)", fill: "var(--color-chart-3)" }}
+                            activeDot={{ r: 5, strokeWidth: 2.2, stroke: "var(--color-card)", fill: "var(--color-trans-pink)" }}
                             isAnimationActive={false}
                             name={
                               config.mostrarMonteCarlo && resultadoMC
