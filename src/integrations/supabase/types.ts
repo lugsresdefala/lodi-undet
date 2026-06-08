@@ -85,6 +85,33 @@ export type Database = {
           },
         ]
       }
+      asipt_grants: {
+        Row: {
+          asipt_subject: string
+          created_at: string
+          expires_at: string
+          id: string
+          jwt_jti: string
+          user_id: string
+        }
+        Insert: {
+          asipt_subject: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          jwt_jti: string
+          user_id: string
+        }
+        Update: {
+          asipt_subject?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          jwt_jti?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           cancel_at_period_end: boolean | null
@@ -142,6 +169,7 @@ export type Database = {
         Args: { check_env?: string; user_uuid: string }
         Returns: boolean
       }
+      has_asipt_grant: { Args: { user_uuid: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
