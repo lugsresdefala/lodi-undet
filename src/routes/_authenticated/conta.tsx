@@ -118,16 +118,24 @@ function ContaPage() {
               Gerenciar assinatura
             </button>
           ) : (
-            <button onClick={onSubscribe} disabled={busy}
-              className="rounded-md bg-foreground px-4 py-2 text-sm text-background disabled:opacity-50">
-              Assinar (R$ 49/mês)
-            </button>
+            <div className="flex flex-wrap gap-3">
+              <button onClick={onSubscribe} disabled={busy}
+                className="rounded-md bg-foreground px-4 py-2 text-sm text-background disabled:opacity-50">
+                Assinar (R$ 13,90/mês)
+              </button>
+              <a
+                href="https://diversidadebarrafunda.org/lodi/conectar?redirect_uri=https://lodi-undet.lovable.app/calculadora"
+                className="rounded-md border border-border px-4 py-2 text-sm hover:bg-accent"
+              >
+                Sou paciente da Diversidade Barra Funda
+              </a>
+            </div>
           )}
         </div>
         {checkoutOpen && !isActive && (
           <div className="mt-6">
             <StripeEmbeddedCheckout
-              priceId="api_pro_monthly"
+              priceId="lodi_calc_monthly"
               returnUrl={window.location.origin + "/conta"}
             />
             <button

@@ -15,11 +15,11 @@ import { Route as ReferenciasRouteImport } from './routes/referencias'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as EfeitosRouteImport } from './routes/efeitos'
 import { Route as CronologiaRouteImport } from './routes/cronologia'
-import { Route as CalculadoraRouteImport } from './routes/calculadora'
 import { Route as ApiDocsRouteImport } from './routes/api-docs'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedContaRouteImport } from './routes/_authenticated/conta'
+import { Route as AuthenticatedCalculadoraRouteImport } from './routes/_authenticated/calculadora'
 import { Route as ApiPublicV1SimulateRouteImport } from './routes/api/public/v1/simulate'
 import { Route as ApiPublicV1RecommendIntervalRouteImport } from './routes/api/public/v1/recommend-interval'
 import { Route as ApiPublicV1MontecarloRouteImport } from './routes/api/public/v1/montecarlo'
@@ -56,11 +56,6 @@ const CronologiaRoute = CronologiaRouteImport.update({
   path: '/cronologia',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CalculadoraRoute = CalculadoraRouteImport.update({
-  id: '/calculadora',
-  path: '/calculadora',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiDocsRoute = ApiDocsRouteImport.update({
   id: '/api-docs',
   path: '/api-docs',
@@ -80,6 +75,12 @@ const AuthenticatedContaRoute = AuthenticatedContaRouteImport.update({
   path: '/conta',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedCalculadoraRoute =
+  AuthenticatedCalculadoraRouteImport.update({
+    id: '/calculadora',
+    path: '/calculadora',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const ApiPublicV1SimulateRoute = ApiPublicV1SimulateRouteImport.update({
   id: '/api/public/v1/simulate',
   path: '/api/public/v1/simulate',
@@ -111,13 +112,13 @@ const ApiPublicPaymentsWebhookRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api-docs': typeof ApiDocsRoute
-  '/calculadora': typeof CalculadoraRoute
   '/cronologia': typeof CronologiaRoute
   '/efeitos': typeof EfeitosRoute
   '/login': typeof LoginRoute
   '/referencias': typeof ReferenciasRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/calculadora': typeof AuthenticatedCalculadoraRoute
   '/conta': typeof AuthenticatedContaRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/v1/health': typeof ApiPublicV1HealthRoute
@@ -128,13 +129,13 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api-docs': typeof ApiDocsRoute
-  '/calculadora': typeof CalculadoraRoute
   '/cronologia': typeof CronologiaRoute
   '/efeitos': typeof EfeitosRoute
   '/login': typeof LoginRoute
   '/referencias': typeof ReferenciasRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/calculadora': typeof AuthenticatedCalculadoraRoute
   '/conta': typeof AuthenticatedContaRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/v1/health': typeof ApiPublicV1HealthRoute
@@ -147,13 +148,13 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/api-docs': typeof ApiDocsRoute
-  '/calculadora': typeof CalculadoraRoute
   '/cronologia': typeof CronologiaRoute
   '/efeitos': typeof EfeitosRoute
   '/login': typeof LoginRoute
   '/referencias': typeof ReferenciasRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/_authenticated/calculadora': typeof AuthenticatedCalculadoraRoute
   '/_authenticated/conta': typeof AuthenticatedContaRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/v1/health': typeof ApiPublicV1HealthRoute
@@ -166,13 +167,13 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/api-docs'
-    | '/calculadora'
     | '/cronologia'
     | '/efeitos'
     | '/login'
     | '/referencias'
     | '/sitemap.xml'
     | '/sobre'
+    | '/calculadora'
     | '/conta'
     | '/api/public/payments/webhook'
     | '/api/public/v1/health'
@@ -183,13 +184,13 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/api-docs'
-    | '/calculadora'
     | '/cronologia'
     | '/efeitos'
     | '/login'
     | '/referencias'
     | '/sitemap.xml'
     | '/sobre'
+    | '/calculadora'
     | '/conta'
     | '/api/public/payments/webhook'
     | '/api/public/v1/health'
@@ -201,13 +202,13 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/api-docs'
-    | '/calculadora'
     | '/cronologia'
     | '/efeitos'
     | '/login'
     | '/referencias'
     | '/sitemap.xml'
     | '/sobre'
+    | '/_authenticated/calculadora'
     | '/_authenticated/conta'
     | '/api/public/payments/webhook'
     | '/api/public/v1/health'
@@ -220,7 +221,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   ApiDocsRoute: typeof ApiDocsRoute
-  CalculadoraRoute: typeof CalculadoraRoute
   CronologiaRoute: typeof CronologiaRoute
   EfeitosRoute: typeof EfeitosRoute
   LoginRoute: typeof LoginRoute
@@ -278,13 +278,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CronologiaRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/calculadora': {
-      id: '/calculadora'
-      path: '/calculadora'
-      fullPath: '/calculadora'
-      preLoaderRoute: typeof CalculadoraRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api-docs': {
       id: '/api-docs'
       path: '/api-docs'
@@ -311,6 +304,13 @@ declare module '@tanstack/react-router' {
       path: '/conta'
       fullPath: '/conta'
       preLoaderRoute: typeof AuthenticatedContaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/calculadora': {
+      id: '/_authenticated/calculadora'
+      path: '/calculadora'
+      fullPath: '/calculadora'
+      preLoaderRoute: typeof AuthenticatedCalculadoraRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/api/public/v1/simulate': {
@@ -352,10 +352,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedCalculadoraRoute: typeof AuthenticatedCalculadoraRoute
   AuthenticatedContaRoute: typeof AuthenticatedContaRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedCalculadoraRoute: AuthenticatedCalculadoraRoute,
   AuthenticatedContaRoute: AuthenticatedContaRoute,
 }
 
@@ -367,7 +369,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   ApiDocsRoute: ApiDocsRoute,
-  CalculadoraRoute: CalculadoraRoute,
   CronologiaRoute: CronologiaRoute,
   EfeitosRoute: EfeitosRoute,
   LoginRoute: LoginRoute,
@@ -383,13 +384,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
