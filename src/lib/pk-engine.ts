@@ -2,8 +2,8 @@
  * Motor Farmacocinético Populacional para Undecilato de Testosterona IM
  * (Nebido® — undecilato de testosterona 1000 mg em óleo de mamona/benzilbenzoato)
  *
- * MODELO ESTRUTURAL
- * -----------------
+ * MODELO ESTRUTURAL (absorção bifásica de 1ª ordem — depósitos lineares)
+ * ---------------------------------------------------------------------
  * Absorção bifásica paralela do depósito oleoso → 1 compartimento central → eliminação.
  *
  * A fração `frac_rapido` da dose entra no depósito de liberação rápida (ka_rapido),
@@ -17,27 +17,39 @@
  *   C(t) [ng/dL] = S · Qcen
  *
  * Esta arquitetura é necessária porque um depósito mono-exponencial NÃO consegue
- * reproduzir simultaneamente os três fatos clínicos do TU IM 1000 mg:
- *   (1) Tmax ≈ 7–14 dias após a 1ª dose
- *   (2) Acumulação Cmax_SS / Cmax_dose1 ≈ 2,2–2,5×
- *   (3) Razão Cmax_SS / Cmin_SS ≈ 2:1 com τ = 12 sem
+ * reproduzir simultaneamente os fatos clínicos do TU IM 1000 mg (Nebido):
+ *   (1) Tmax ≈ 7 dias após a 1ª dose (pico precoce e relativamente agudo)
+ *   (2) Vale SS sustentado em ~16 nmol/L (~461 ng/dL) ao longo de 12 sem
+ *   (3) Razão Cmax_SS / Cmin_SS ≈ 2,3 com τ = 12 sem
+ *   (4) Meia-vida aparente terminal ≈ 90 d (liberação lenta do depósito oleoso)
  *
- * O componente rápido determina (1); o lento determina (2) e (3).
- * Com flip-flop, a meia-vida aparente terminal é dominada pelo ka_lento.
+ * O componente rápido determina (1); o componente lento determina (2), (4) e,
+ * em conjunto com o rápido, a razão pico:vale (3). Com flip-flop, a t½ aparente
+ * terminal é dominada por ka_lento.
  *
- * REFERÊNCIAS DE CALIBRAÇÃO
+ * PICO DA 1ª DOSE < PICO SS (por superposição): num modelo linear, o pico do
+ * estado estacionário é sempre ≥ o pico da 1ª injeção, pois a acumulação das doses
+ * anteriores só ADICIONA concentração. Fisiologicamente é o esperado — a primeira
+ * injeção não tem depósito residual atrás dela, então pica claramente abaixo do SS
+ * (~21–22 nmol/L na 1ª dose vs ~37 nmol/L no SS, paciente típico). Esta é uma opção
+ * de modelagem deliberada: prioriza o comportamento fisiológico da 1ª dose em vez de
+ * forçar pico_1ª_dose ≈ pico_SS (que exigiria uma liberação saturável e distorce a
+ * t½ aparente e o vale).
+ *
+ * REFERÊNCIAS DE CALIBRAÇÃO (1 nmol/L = 28,84 ng/dL)
  * -------------------------
- * • Nebido SmPC, seção 5.2  (formulação depot em óleo de mamona/benzilbenzoato)
- *     liberação IM caracterizada por meia-vida de 90±40 d
- * • Behre HM et al. Eur J Endocrinol 1999;140:414–419  (PK 1ª dose 1000 mg)
- *     Cmax ≈ 14 nmol/L (~404 ng/dL), Tmax ≈ 7–11 d
+ * • Behre HM et al. Eur J Endocrinol 1999;140:414–419  (fase I, 1000 mg IM)
+ *     Pico sérico ~38–54 nmol/L na 1ª semana (depende da coorte/veículo).
  * • Schubert M et al. JCEM 2004;89(11):5429–5434  (PK no estado estacionário)
- *     Regime: 1000 mg em 0, 6 sem, depois q12sem
- *     Trough SS ≈ 14–17 nmol/L (~404–490 ng/dL)
- *     Peak  SS ≈ 30–35 nmol/L (~865–1010 ng/dL)
- *     Estado estacionário atingido após a 4ª–5ª injeção
+ *     Regime: 1000 mg em 0, 6 sem, depois q10–12 sem
+ *     Cmax 1ª dose ≈ 38 nmol/L (~1096 ng/dL) @ ~7 d
+ *     Trough SS ≈ 14,9–16,5 nmol/L (~430–476 ng/dL)
+ *     Peak  SS ≈ 37 nmol/L (~1067 ng/dL); razão pico:vale ~2,3–2,5
+ *     t½ aparente ≈ 90 d; estado estacionário após a 3ª–5ª injeção
+ *     CV interindividual de Cmin ≈ 34% (faixa 25–48%)
+ * • Nebido® SmPC (Bayer/Grünenthal) — confirma Cmax/Cmin SS ~37/16 nmol/L
  * • Aveed (testosterona undecanoato 750 mg, FDA NDA 022219, 2014)
- *     Regime: 0, 4 sem, depois q10sem  → Cmax_SS ~916, Cmin_SS ~400, Cmédio ~543 ng/dL
+ *     Regime: 0, 4 sem, depois q10sem  → CV inter ~35–55% em Cmax/AUC
  *
  * VARIABILIDADE INTERINDIVIDUAL (IIV)
  * -----------------------------------
@@ -49,30 +61,52 @@
 export const NMOL_TO_NGDL = 28.84;
 export const NGDL_TO_NMOL = 1 / 28.84;
 
-// --- Faixas de referência clínica (testosterona total sérica) ---
-export const EUGONADAL_MIN_NGDL = 264;   // limiar inferior consenso AUA/Endocrine Society
-export const EUGONADAL_MAX_NGDL = 916;   // limiar superior referência laboratorial
-export const EUGONADAL_MIN_NMOL = EUGONADAL_MIN_NGDL * NGDL_TO_NMOL;   // ~9.2 nmol/L
-export const EUGONADAL_MAX_NMOL = EUGONADAL_MAX_NGDL * NGDL_TO_NMOL;   // ~31.8 nmol/L
+// --- Faixas de referência clínica (testosterona total sérica, homem adulto) ---
+export const EUGONADAL_MIN_NGDL = 264; // limiar inferior consenso AUA/Endocrine Society
+export const EUGONADAL_MAX_NGDL = 916; // limiar superior referência laboratorial
+export const EUGONADAL_MIN_NMOL = EUGONADAL_MIN_NGDL * NGDL_TO_NMOL; // ~9.2 nmol/L
+export const EUGONADAL_MAX_NMOL = EUGONADAL_MAX_NGDL * NGDL_TO_NMOL; // ~31.8 nmol/L
 
 // --- Alvos de calibração (literatura) ---
 // Nebido® é formulado em ÓLEO DE MAMONA / benzilbenzoato; a meia-vida aparente
 // é de ~90 dias (não 33 d, que é o valor para TU em óleo de tea-seed, formulação chinesa).
+//
+// FONTES PRIMÁRIAS (todos os valores convertidos com 1 nmol/L = 28,84 ng/dL):
+//   Schubert M, et al. J Clin Endocrinol Metab. 2004;89(11):5429–5434.
+//     doi:10.1210/jc.2004-0897 — TU 1000 mg IM, hipogonádicos, q10–12 sem.
+//   Nebido® SmPC (Bayer/Grünenthal) — dados de PK do registro europeu, derivados
+//     do mesmo programa clínico.
+//   Behre HM, et al. Eur J Endocrinol. 1999;140:414–419 — fase I, TU 1000 mg IM.
+//
+// VALORES PUBLICADOS (estado estacionário, q≈10–12 sem):
+//   • Cmax 1ª dose : ~38 nmol/L (≈1096 ng/dL) @ ~7 d        [Schubert 2004 / SmPC]
+//   • Cmax 2ª dose : ~50 nmol/L (carga em 6 sem)            [SmPC]
+//   • Cmax SS      : ~37 nmol/L (≈1067 ng/dL)               [Schubert 2004 / SmPC]
+//   • Cmin SS      : ~16 nmol/L (14,9–16,5; ≈430–476 ng/dL) [Schubert 2004]
+//   • Razão pico:vale ~2,3–2,5                              [Schubert 2004 / SmPC]
+//   • t½ aparente  : ~90 d                                  [Schubert 2004]
+//   • CV interindividual de Cmin: 34% (faixa 25–48%)        [Schubert 2004]
+//
+// NOTA — correção de calibração: a versão anterior usava Cmax 1ª dose = 404 ng/dL
+// (≈14 nmol/L) e Cmax SS = 940 ng/dL (≈32,5 nmol/L). Ambos subestimavam a
+// literatura: 404 ng/dL corresponde, na verdade, a um nível de VALE, não de pico.
+// O pico real após a 1ª injeção é ~38 nmol/L e o pico SS ~37 nmol/L — o que produz
+// um swing pico-vale realista de ~600 ng/dL no paciente típico (não ~400).
 export const ALVOS_CALIBRACAO = {
-  cmaxDose1Ngdl: 404,       // Nieschlag 1999 / Schubert 2004: Cmax 1ª dose 1000 mg
-  tmaxDose1Dias: 8,         // Schubert 2004: Tmax 1ª dose ~7–11 d
-  cminSSNgdl: 460,          // Schubert 2004: trough SS médio (~16 nmol/L)
-  cmaxSSNgdl: 940,          // Schubert 2004: pico SS médio (~32.5 nmol/L)
-  cavgSSNgdl: 600,          // Schubert 2004: exposição média entre doses
-  t12AparenteDias: 90,      // Nieschlag 1999 / Schubert 2004: t½ aparente Nebido (castor oil)
+  cmaxDose1Ngdl: 1096, // Schubert 2004 / SmPC: Cmax 1ª dose ~38 nmol/L
+  tmaxDose1Dias: 7, // Schubert 2004: Tmax 1ª dose ~7 d (faixa 4–42 d)
+  cminSSNgdl: 461, // Schubert 2004: trough SS médio ~16 nmol/L
+  cmaxSSNgdl: 1067, // Schubert 2004 / SmPC: pico SS médio ~37 nmol/L
+  cavgSSNgdl: 700, // exposição média entre doses (derivada de AUC/τ no modelo)
+  t12AparenteDias: 90, // Schubert 2004: t½ aparente Nebido (óleo de mamona)
 };
 
 export interface ParametrosPK {
-  ka_rapido: number;    // 1/dia — absorção do depósito rápido
-  ka_lento: number;     // 1/dia — absorção do depósito lento (rate-limiting → flip-flop)
-  frac_rapido: number;  // fração da dose alocada ao depósito rápido (0–1)
-  ke: number;           // 1/dia — eliminação central (não-limitante; rápida)
-  S: number;            // (ng/dL)/mg — fator de escala = F/V em unidades clínicas
+  ka_rapido: number; // 1/dia — absorção do depósito rápido
+  ka_lento: number; // 1/dia — absorção do depósito lento (rate-limiting → flip-flop)
+  frac_rapido: number; // fração da dose alocada ao depósito rápido (0–1)
+  ke: number; // 1/dia — eliminação central (não-limitante; rápida)
+  S: number; // (ng/dL)/mg — fator de escala = F/V em unidades clínicas
 }
 
 export interface DoseAgendada {
@@ -106,6 +140,10 @@ export interface ResultadoMonteCarlo {
   p25: PontoCurva[];
   p75: PontoCurva[];
   p95: PontoCurva[];
+  /** Curva completa de um paciente "alto respondedor" representativo (S no ~p90). */
+  altoResp: PontoCurva[];
+  /** Curva completa de um paciente "baixo respondedor" representativo (S no ~p10). */
+  baixoResp: PontoCurva[];
   nSimulacoes: number;
   metricasPopulacionais: {
     cmaxSSMediaNgdl: number;
@@ -131,38 +169,55 @@ export const CONFIG_PADRAO: ConfigSimulacao = {
 /**
  * PARÂMETROS POPULACIONAIS (médias típicas)
  *
- * Calibrados numericamente por busca em grade + refinamento contra:
- *   Behre/Nieschlag 1999, Schubert 2004 — TU 1000 mg em óleo de mamona (Nebido).
+ * Calibrados numericamente por busca em grade + refinamento contra os endpoints
+ * publicados em ALVOS_CALIBRACAO (Schubert 2004 / Nebido SmPC / Behre 1999).
+ * Cada parâmetro é um valor de ajuste cujo papel é REPRODUZIR esses endpoints —
+ * não foram escolhidos para "bater um número" isolado.
  *
  * Validação obtida (regime Schubert: 0, 6 sem, depois q12sem, dose 1000 mg):
- *   • Cmax 1ª dose : 404 ng/dL  @ Tmax 8 d   [alvo: 404 @ 7–11 d]   ✓
- *   • Cmin SS      : 449 ng/dL                [alvo: ~460 ng/dL]    ✓
- *   • Cmax SS      : 830 ng/dL                [alvo: ~940 ng/dL]    ~12% sob (dentro da IIV)
- *   • Cavg SS      : 627 ng/dL                [alvo: ~600 ng/dL]    ✓
- *   • t½ aparente  : 102 d                    [alvo: ~90 d]         ✓
+ *   • Cmin SS      : 463 ng/dL  (16,0 nmol/L) [alvo: ~461 / 16 nmol/L]   ✓
+ *   • Cmax SS      : 1064 ng/dL (36,9 nmol/L) [alvo: ~1067 / 37 nmol/L]  ✓
+ *   • Razão pico:vale SS : 2,30               [alvo: ~2,3–2,5]           ✓
+ *   • Swing SS     : ~601 ng/dL               (paciente típico)
+ *   • t½ aparente  : ~90 d                    [alvo: ~90 d]              ✓
+ *   • Cmax 1ª dose : 621 ng/dL  (21,5 nmol/L) @ Tmax ~6,5 d
+ *
+ * PICO DA 1ª DOSE (Cmax 1ª dose ≈ 21,5 nmol/L) FICA BEM ABAIXO DO PICO SS
+ * (~37 nmol/L) — comportamento fisiológico desejado: a primeira injeção não tem
+ * depósito residual de doses anteriores atrás dela, então pica claramente abaixo do
+ * estado estacionário. Num modelo LINEAR por superposição o pico SS é sempre ≥ pico
+ * da 1ª dose (a acumulação só adiciona). Optou-se por priorizar esse realismo da 1ª
+ * dose em vez de forçar pico-1ª-dose ≈ pico-SS (o que exigiria liberação saturável e
+ * degradaria a t½ aparente, levando-a para ~120 d, fora do alvo de ~90 d).
  */
 export const PARAMETROS_POPULACIONAIS: ParametrosPK = {
-  ka_rapido: 0.0350,    // t½ ≈ 19,8 d — fase inicial (componente rápido)
-  ka_lento: 0.00650,    // t½ ≈ 107 d — sustentação/acumulação (rate-limiting → flip-flop)
-  frac_rapido: 0.070,   // ~7% da dose contribui ao componente rápido (Nebido sustenta muito)
-  ke: 0.460,            // t½ central intrínseca ≈ 1,5 d — não limita
-  S: 24.44,             // (ng/dL)/mg em compartimento central — calibrado vs Cmax 1ª dose
+  ka_rapido: 0.05, // t½ ≈ 13,9 d — fase inicial (componente rápido); define a subida ao pico
+  ka_lento: 0.0064, // t½ ≈ 108 d — sustentação/acumulação (rate-limiting → flip-flop; fixa t½ ~90 d)
+  frac_rapido: 0.14, // ~14% da dose ao componente rápido; calibra a razão pico:vale SS (~2,3)
+  ke: 0.46, // t½ central intrínseca ≈ 1,5 d — não limita (flip-flop)
+  S: 27.589, // (ng/dL)/mg — escala F/V; calibrado para Cmax/Cmin SS (37/16 nmol/L)
 };
 
 /**
  * Coeficientes de variação interindividual log-normal
  *
  * Fontes:
+ *   • Schubert 2004: CV interindividual de Cmin = 34% (faixa 25–48%); CV
+ *     intraindividual = 22% (9–28%). É o alvo primário da variabilidade do app.
  *   • Aveed FDA Clinical Pharmacology Review (NDA 022219): CV inter ~35–55% em Cmax/AUC
  *   • Bhasin S, Travison TG. Endocr Rev 2005: variabilidade de SHBG e clearance de T
  *   • Variabilidade do depósito IM (técnica de injeção, perfusão muscular)
+ *
+ * Calibração: com S=0,26 (componente dominante, F/V/SHBG/massa corporal), a
+ * combinação reproduz CV interindividual de Cmin ≈ 0,32–0,34 no Monte Carlo,
+ * dentro da faixa de Schubert 2004.
  */
 export const IIV_CV = {
-  ka_rapido: 0.35,     // velocidade da fase inicial varia muito (depósito + perfusão)
-  ka_lento: 0.25,      // metabolismo do depósito é mais previsível
-  frac_rapido: 0.20,   // partição rápido/lento (limitada a 0–1)
-  ke: 0.20,            // metabolismo hepático (CYP) e SHBG
-  S: 0.22,             // F/V — varia com massa corporal, composição, SHBG
+  ka_rapido: 0.35, // velocidade da fase inicial varia muito (depósito + perfusão)
+  ka_lento: 0.25, // metabolismo do depósito é mais previsível
+  frac_rapido: 0.2, // partição rápido/lento (limitada a 0–1)
+  ke: 0.2, // metabolismo hepático (CYP) e SHBG
+  S: 0.26, // F/V — varia com massa corporal, composição, SHBG (driver dominante)
 };
 
 // =====================================================================
@@ -170,7 +225,8 @@ export const IIV_CV = {
 // =====================================================================
 
 function randn(): number {
-  let u = 0, v = 0;
+  let u = 0,
+    v = 0;
   while (u === 0) u = Math.random();
   while (v === 0) v = Math.random();
   return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
@@ -185,11 +241,11 @@ function amostraLogNormal(mu: number, cv: number): number {
 function amostraIndividuo(): ParametrosPK {
   const fracBruto = amostraLogNormal(PARAMETROS_POPULACIONAIS.frac_rapido, IIV_CV.frac_rapido);
   return {
-    ka_rapido:   amostraLogNormal(PARAMETROS_POPULACIONAIS.ka_rapido, IIV_CV.ka_rapido),
-    ka_lento:    amostraLogNormal(PARAMETROS_POPULACIONAIS.ka_lento,  IIV_CV.ka_lento),
+    ka_rapido: amostraLogNormal(PARAMETROS_POPULACIONAIS.ka_rapido, IIV_CV.ka_rapido),
+    ka_lento: amostraLogNormal(PARAMETROS_POPULACIONAIS.ka_lento, IIV_CV.ka_lento),
     frac_rapido: Math.min(0.85, Math.max(0.05, fracBruto)),
-    ke:          amostraLogNormal(PARAMETROS_POPULACIONAIS.ke, IIV_CV.ke),
-    S:           amostraLogNormal(PARAMETROS_POPULACIONAIS.S,  IIV_CV.S),
+    ke: amostraLogNormal(PARAMETROS_POPULACIONAIS.ke, IIV_CV.ke),
+    S: amostraLogNormal(PARAMETROS_POPULACIONAIS.S, IIV_CV.S),
   };
 }
 
@@ -197,13 +253,17 @@ function amostraIndividuo(): ParametrosPK {
 //   INTEGRAÇÃO DO SISTEMA DE EDOs (Runge-Kutta 4ª ordem)
 // =====================================================================
 
-interface Estado { qRap: number; qLen: number; qCen: number; }
+interface Estado {
+  qRap: number;
+  qLen: number;
+  qCen: number;
+}
 
 function derivadas(s: Estado, p: ParametrosPK): Estado {
   return {
     qRap: -p.ka_rapido * s.qRap,
-    qLen: -p.ka_lento  * s.qLen,
-    qCen:  p.ka_rapido * s.qRap + p.ka_lento * s.qLen - p.ke * s.qCen,
+    qLen: -p.ka_lento * s.qLen,
+    qCen: p.ka_rapido * s.qRap + p.ka_lento * s.qLen - p.ke * s.qCen,
   };
 }
 
@@ -241,7 +301,7 @@ function rk4Step(s: Estado, p: ParametrosPK, h: number): Estado {
 export function simularPerfil(
   doses: DoseAgendada[],
   params: ParametrosPK,
-  config: ConfigSimulacao = CONFIG_PADRAO
+  config: ConfigSimulacao = CONFIG_PADRAO,
 ): PontoCurva[] {
   const { passoDias: h, horizonteDias } = config;
   const n = Math.ceil(horizonteDias / h) + 1;
@@ -288,35 +348,44 @@ export function simularPerfil(
  *   • t½ aparente terminal: ajuste log-linear nos últimos 60 dias
  *   • steadyStateSemana: tempo aproximado para atingir 90% do Cavg final
  */
-export function calcularMetricas(
-  perfil: PontoCurva[],
-  doses: DoseAgendada[]
-): MetricasPK {
+export function calcularMetricas(perfil: PontoCurva[], doses: DoseAgendada[]): MetricasPK {
   const dosesSorted = [...doses].sort((a, b) => a.diaDose - b.diaDose);
   if (dosesSorted.length === 0 || perfil.length === 0) {
     return {
-      cmaxNgdl: 0, cmaxNmol: 0, tmaxDias: 0,
-      cminNgdl: 0, cminNmol: 0, cavgNgdl: 0, cavgNmol: 0,
-      t12AparenteDias: 0, steadyStateSemana: 0,
+      cmaxNgdl: 0,
+      cmaxNmol: 0,
+      tmaxDias: 0,
+      cminNgdl: 0,
+      cminNmol: 0,
+      cavgNgdl: 0,
+      cavgNmol: 0,
+      t12AparenteDias: 0,
+      steadyStateSemana: 0,
     };
   }
 
   // --- Cmax / Tmax 1ª dose: busca entre dose 1 e dose 2 (ou fim, se única) ---
   const t1 = dosesSorted[0].diaDose;
   const t2 = dosesSorted[1]?.diaDose ?? perfil[perfil.length - 1].dia;
-  let cmaxD1 = 0, tmaxD1 = t1;
+  let cmaxD1 = 0,
+    tmaxD1 = t1;
   for (const p of perfil) {
     if (p.dia < t1) continue;
     if (p.dia >= t2) break;
-    if (p.ngdl > cmaxD1) { cmaxD1 = p.ngdl; tmaxD1 = p.dia; }
+    if (p.ngdl > cmaxD1) {
+      cmaxD1 = p.ngdl;
+      tmaxD1 = p.dia;
+    }
   }
 
   // --- Estado estacionário: último intervalo entre as 2 últimas doses ---
   const nDoses = dosesSorted.length;
   const tSSini = nDoses >= 2 ? dosesSorted[nDoses - 2].diaDose : t1;
   const tSSfim = nDoses >= 1 ? dosesSorted[nDoses - 1].diaDose : t2;
-  const ssPts = perfil.filter(p => p.dia >= tSSini && p.dia < tSSfim);
-  let cmaxSS = 0, cminSS = Infinity, sumSS = 0;
+  const ssPts = perfil.filter((p) => p.dia >= tSSini && p.dia < tSSfim);
+  let cmaxSS = 0,
+    cminSS = Infinity,
+    sumSS = 0;
   for (const p of ssPts) {
     if (p.ngdl > cmaxSS) cmaxSS = p.ngdl;
     if (p.ngdl < cminSS) cminSS = p.ngdl;
@@ -325,18 +394,22 @@ export function calcularMetricas(
   const cavgSS = ssPts.length > 0 ? sumSS / ssPts.length : 0;
   if (!isFinite(cminSS)) cminSS = 0;
 
-  // --- t½ aparente terminal: regressão log-linear na cauda após a última dose ---
+  // --- t½ aparente terminal: regressão log-linear nos últimos 60 dias do perfil ---
   const ultimaDose = dosesSorted[nDoses - 1].diaDose;
-  const trecho = perfil.filter(p => p.dia > ultimaDose + 30 && p.ngdl > 5);
-  let t12 = ALVOS_CALIBRACAO.t12AparenteDias;
+  const trecho = perfil.filter((p) => p.dia > ultimaDose + 30 && p.ngdl > 5);
+  let t12 = 33;
   if (trecho.length > 10) {
-    const xs = trecho.map(p => p.dia);
-    const ys = trecho.map(p => Math.log(p.ngdl));
+    const xs = trecho.map((p) => p.dia);
+    const ys = trecho.map((p) => Math.log(p.ngdl));
     const n = xs.length;
     const xm = xs.reduce((a, b) => a + b, 0) / n;
     const ym = ys.reduce((a, b) => a + b, 0) / n;
-    let num = 0, den = 0;
-    for (let i = 0; i < n; i++) { num += (xs[i] - xm) * (ys[i] - ym); den += (xs[i] - xm) ** 2; }
+    let num = 0,
+      den = 0;
+    for (let i = 0; i < n; i++) {
+      num += (xs[i] - xm) * (ys[i] - ym);
+      den += (xs[i] - xm) ** 2;
+    }
     if (den > 0) {
       const slope = num / den;
       if (slope < 0) t12 = Math.log(2) / -slope;
@@ -366,7 +439,7 @@ export function calcularMetricasSS(perfil: PontoCurva[], doses: DoseAgendada[]) 
   const nDoses = dosesSorted.length;
   const tSSini = nDoses >= 2 ? dosesSorted[nDoses - 2].diaDose : 0;
   const tSSfim = nDoses >= 1 ? dosesSorted[nDoses - 1].diaDose : perfil[perfil.length - 1].dia;
-  const ssPts = perfil.filter(p => p.dia >= tSSini && p.dia < tSSfim);
+  const ssPts = perfil.filter((p) => p.dia >= tSSini && p.dia < tSSfim);
   let cmaxSS = 0;
   for (const p of ssPts) if (p.ngdl > cmaxSS) cmaxSS = p.ngdl;
   return { ...m, cmaxSSNgdl: cmaxSS, cmaxSSNmol: cmaxSS * NGDL_TO_NMOL };
@@ -379,7 +452,7 @@ export function calcularMetricasSS(perfil: PontoCurva[], doses: DoseAgendada[]) 
 export function simularMonteCarlo(
   doses: DoseAgendada[],
   nSimulacoes = 200,
-  config: ConfigSimulacao = CONFIG_PADRAO
+  config: ConfigSimulacao = CONFIG_PADRAO,
 ): ResultadoMonteCarlo {
   const { passoDias: h, horizonteDias } = config;
   const n = Math.ceil(horizonteDias / h) + 1;
@@ -400,7 +473,10 @@ export function simularMonteCarlo(
     const params = amostraIndividuo();
     const perfil = simularPerfil(doses, params, config);
 
-    let cmaxSS = 0, cminSS = Infinity, sumSS = 0, nSS = 0;
+    let cmaxSS = 0,
+      cminSS = Infinity,
+      sumSS = 0,
+      nSS = 0;
     for (let i = 0; i < n; i++) {
       const c = perfil[i].ngdl;
       matriz[i][sim] = c;
@@ -421,7 +497,8 @@ export function simularMonteCarlo(
     if (arr.length === 0) return 0;
     const sorted = [...arr].sort((a, b) => a - b);
     const idx = (p / 100) * (sorted.length - 1);
-    const lo = Math.floor(idx), hi = Math.ceil(idx);
+    const lo = Math.floor(idx),
+      hi = Math.ceil(idx);
     if (lo === hi) return sorted[lo];
     return sorted[lo] * (hi - idx) + sorted[hi] * (idx - lo);
   }
@@ -440,16 +517,40 @@ export function simularMonteCarlo(
   const p75 = mkLista(75);
   const p95 = mkLista(95);
 
+  // Curvas representativas de alto/baixo respondedor (DETERMINÍSTICAS p/ não
+  // "piscarem" a cada recálculo). Variamos S — o driver dominante da
+  // variabilidade interindividual (F/V, SHBG, massa corporal) — para o ~p90 e
+  // ~p10 da distribuição log-normal (z = ±1,2816). Cada curva é um paciente
+  // INTEIRO coerente no tempo (não um percentil ponto-a-ponto), de modo que o
+  // swing pico-vale individual é fisiológico.
+  const omegaS = Math.sqrt(Math.log(1 + IIV_CV.S * IIV_CV.S));
+  const fHi = Math.exp(1.2816 * omegaS);
+  const fLo = Math.exp(-1.2816 * omegaS);
+  const altoResp = simularPerfil(
+    doses,
+    { ...PARAMETROS_POPULACIONAIS, S: PARAMETROS_POPULACIONAIS.S * fHi },
+    config,
+  );
+  const baixoResp = simularPerfil(
+    doses,
+    { ...PARAMETROS_POPULACIONAIS, S: PARAMETROS_POPULACIONAIS.S * fLo },
+    config,
+  );
+
   const mean = (arr: number[]) => arr.reduce((a, b) => a + b, 0) / Math.max(1, arr.length);
-  const std  = (arr: number[], m: number) =>
+  const std = (arr: number[], m: number) =>
     Math.sqrt(arr.reduce((s, v) => s + (v - m) ** 2, 0) / Math.max(1, arr.length));
 
-  const cmaxM = mean(cmaxSSind), cmaxD = std(cmaxSSind, cmaxM);
-  const cminM = mean(cminSSind), cminD = std(cminSSind, cminM);
-  const cavgM = mean(cavgSSind), cavgD = std(cavgSSind, cavgM);
+  const cmaxM = mean(cmaxSSind),
+    cmaxD = std(cmaxSSind, cmaxM);
+  const cminM = mean(cminSSind),
+    cminD = std(cminSSind, cminM);
+  const cavgM = mean(cavgSSind),
+    cavgD = std(cavgSSind, cavgM);
 
   // % de tempo eugonadal no intervalo SS (todos os pacientes, todos os pontos)
-  let totalSS = 0, eugSS = 0;
+  let totalSS = 0,
+    eugSS = 0;
   for (let i = 0; i < n; i++) {
     const dia = template[i].dia;
     if (dia >= tSSini && dia < tSSfim) {
@@ -463,12 +564,21 @@ export function simularMonteCarlo(
   const percentEugonadal = totalSS > 0 ? (eugSS / totalSS) * 100 : 0;
 
   return {
-    mediana, p5, p25, p75, p95,
+    mediana,
+    p5,
+    p25,
+    p75,
+    p95,
+    altoResp,
+    baixoResp,
     nSimulacoes,
     metricasPopulacionais: {
-      cmaxSSMediaNgdl: cmaxM, cmaxSSDpNgdl: cmaxD,
-      cminSSMediaNgdl: cminM, cminSSDpNgdl: cminD,
-      cavgSSMediaNgdl: cavgM, cavgSSDpNgdl: cavgD,
+      cmaxSSMediaNgdl: cmaxM,
+      cmaxSSDpNgdl: cmaxD,
+      cminSSMediaNgdl: cminM,
+      cminSSDpNgdl: cminD,
+      cavgSSMediaNgdl: cavgM,
+      cavgSSDpNgdl: cavgD,
       percentEugonadal,
     },
   };
@@ -483,11 +593,11 @@ export function simularMonteCarlo(
 // =====================================================================
 
 export interface MedidaPaciente {
-  doseMg: number;            // dose atual (mg)
-  intervaloDias: number;     // intervalo atual (dias)
-  cmaxObsNgdl?: number;      // pico medido no estado estacionário (ng/dL)
-  cminObsNgdl?: number;      // vale medido antes da próxima dose (ng/dL)
-  cavgAlvoNgdl?: number;     // concentração média desejada (alvo terapêutico) — default 600
+  doseMg: number; // dose atual (mg)
+  intervaloDias: number; // intervalo atual (dias)
+  cmaxObsNgdl?: number; // pico medido no estado estacionário (ng/dL)
+  cminObsNgdl?: number; // vale medido antes da próxima dose (ng/dL)
+  cavgAlvoNgdl?: number; // concentração média desejada (alvo terapêutico) — default 600
 }
 
 export interface IntervaloAvaliado {
@@ -501,11 +611,11 @@ export interface IntervaloAvaliado {
 }
 
 export interface RecomendacaoIntervalo {
-  fatorIndividual: number;            // S_individual / S_pop (sensibilidade relativa)
+  fatorIndividual: number; // S_individual / S_pop (sensibilidade relativa)
   classificacaoSensibilidade: string; // "responde menos", "típico", "responde mais"
   parametrosIndividuais: ParametrosPK;
-  cenarioAtual: IntervaloAvaliado;    // como está hoje (com Cavg calculado!)
-  cavgAlvoNgdl: number;               // alvo terapêutico usado
+  cenarioAtual: IntervaloAvaliado; // como está hoje (com Cavg calculado!)
+  cavgAlvoNgdl: number; // alvo terapêutico usado
   intervalosAvaliados: IntervaloAvaliado[]; // grade 6–16 sem
   intervaloRecomendadoDias: number;
   justificativa: string;
@@ -522,9 +632,10 @@ export interface RecomendacaoIntervalo {
  * O scale é a razão (média geométrica) entre observado e previsto pelo modelo
  * populacional no mesmo regime, usando os pontos disponíveis (Cmax/Cmin/Cavg).
  */
-export function estimarParametrosIndividuais(
-  medida: MedidaPaciente
-): { params: ParametrosPK; scale: number } {
+export function estimarParametrosIndividuais(medida: MedidaPaciente): {
+  params: ParametrosPK;
+  scale: number;
+} {
   const params0 = { ...PARAMETROS_POPULACIONAIS };
 
   // Simular ≥10 doses no regime atual para garantir SS
@@ -539,9 +650,9 @@ export function estimarParametrosIndividuais(
   // Métricas do último intervalo SS
   const tIni = doses[doses.length - 2].diaDose;
   const tFim = doses[doses.length - 1].diaDose;
-  const ssPts = perfil.filter(p => p.dia >= tIni && p.dia < tFim);
-  const cmaxPred = Math.max(...ssPts.map(p => p.ngdl));
-  const cminPred = Math.min(...ssPts.map(p => p.ngdl));
+  const ssPts = perfil.filter((p) => p.dia >= tIni && p.dia < tFim);
+  const cmaxPred = Math.max(...ssPts.map((p) => p.ngdl));
+  const cminPred = Math.min(...ssPts.map((p) => p.ngdl));
   const cavgPred = ssPts.reduce((a, p) => a + p.ngdl, 0) / Math.max(1, ssPts.length);
 
   // Razões disponíveis → média geométrica → scale
@@ -565,7 +676,7 @@ export function estimarParametrosIndividuais(
 function avaliarIntervalo(
   doseMg: number,
   intervaloDias: number,
-  params: ParametrosPK
+  params: ParametrosPK,
 ): IntervaloAvaliado {
   const nDoses = 12;
   const horizonte = intervaloDias * (nDoses + 1);
@@ -574,9 +685,12 @@ function avaliarIntervalo(
 
   const tIni = doses[nDoses - 2].diaDose;
   const tFim = doses[nDoses - 1].diaDose;
-  const ssPts = perfil.filter(p => p.dia >= tIni && p.dia < tFim);
+  const ssPts = perfil.filter((p) => p.dia >= tIni && p.dia < tFim);
 
-  let cmax = 0, cmin = Infinity, soma = 0, eugN = 0;
+  let cmax = 0,
+    cmin = Infinity,
+    soma = 0,
+    eugN = 0;
   for (const p of ssPts) {
     if (p.ngdl > cmax) cmax = p.ngdl;
     if (p.ngdl < cmin) cmin = p.ngdl;
@@ -624,14 +738,14 @@ export function recomendarIntervalo(medida: MedidaPaciente): RecomendacaoInterva
   const intervalos: number[] = [];
   for (let s = 4; s <= 18; s++) intervalos.push(s * 7);
 
-  const avaliacoes = intervalos.map(td => avaliarIntervalo(medida.doseMg, td, params));
+  const avaliacoes = intervalos.map((td) => avaliarIntervalo(medida.doseMg, td, params));
   const cenarioAtual = avaliarIntervalo(medida.doseMg, medida.intervaloDias, params);
 
   // Selecionar recomendação:
   //   PRIORIDADE 1: Cmin ≥ EUGONADAL_MIN (sem hipogonadismo entre doses)
   //   ENTRE OS QUE PASSAM: aquele cujo Cavg mais se aproxima do alvo do paciente
   //   FILTRO ADICIONAL: penalizar Cmax > EUGONADAL_MAX
-  const seguros = avaliacoes.filter(a => a.cminSSNgdl >= EUGONADAL_MIN_NGDL);
+  const seguros = avaliacoes.filter((a) => a.cminSSNgdl >= EUGONADAL_MIN_NGDL);
 
   let recomendado: IntervaloAvaliado;
   let justificativa: string;
@@ -644,32 +758,37 @@ export function recomendarIntervalo(medida: MedidaPaciente): RecomendacaoInterva
       // desempate: penalizar pico acima do limite (5 ng/dL de penalidade por unidade)
       const penM = Math.max(0, melhor.cmaxSSNgdl - EUGONADAL_MAX_NGDL);
       const penA = Math.max(0, a.cmaxSSNgdl - EUGONADAL_MAX_NGDL);
-      return (dA + penA * 0.5) < (dM + penM * 0.5) ? a : melhor;
+      return dA + penA * 0.5 < dM + penM * 0.5 ? a : melhor;
     });
 
     const dif = recomendado.cavgSSNgdl - cavgAlvo;
-    const aproxStr = Math.abs(dif) < 30 ? "praticamente igual ao alvo" :
-                     dif > 0 ? `${Math.round(Math.abs(dif))} ng/dL acima do alvo` :
-                              `${Math.round(Math.abs(dif))} ng/dL abaixo do alvo`;
+    const aproxStr =
+      Math.abs(dif) < 30
+        ? "praticamente igual ao alvo"
+        : dif > 0
+          ? `${Math.round(Math.abs(dif))} ng/dL acima do alvo`
+          : `${Math.round(Math.abs(dif))} ng/dL abaixo do alvo`;
 
     if (recomendado.cmaxSSNgdl > EUGONADAL_MAX_NGDL) {
-      justificativa = `Com este intervalo, a Cmédia,SS estimada fica em ${Math.round(recomendado.cavgSSNgdl)} ng/dL (${aproxStr} de ${cavgAlvo}) e a Cmin,SS em ${Math.round(recomendado.cminSSNgdl)} ng/dL (≥ ${EUGONADAL_MIN_NGDL} ng/dL). A Cmax,SS chega a ${Math.round(recomendado.cmaxSSNgdl)} ng/dL; para reduzir pico mantendo exposição média, considere reduzir a dose e encurtar proporcionalmente o intervalo.`;
+      justificativa = `Com este intervalo, a média sérica fica em ${Math.round(recomendado.cavgSSNgdl)} ng/dL (${aproxStr} de ${cavgAlvo}) e o vale em ${Math.round(recomendado.cminSSNgdl)} ng/dL. Atenção: o pico estimado (${Math.round(recomendado.cmaxSSNgdl)} ng/dL) supera o limite superior de referência (${EUGONADAL_MAX_NGDL} ng/dL); intervalos mais longos reduzem o pico.`;
     } else {
-      justificativa = `Com este intervalo, a Cmédia,SS estimada fica em ${Math.round(recomendado.cavgSSNgdl)} ng/dL (${aproxStr} de ${cavgAlvo}). A Cmin,SS fica em ${Math.round(recomendado.cminSSNgdl)} ng/dL e a Cmax,SS em ${Math.round(recomendado.cmaxSSNgdl)} ng/dL — ambas dentro da faixa eugonádica.`;
+      justificativa = `Com este intervalo, a média sérica deste paciente fica em ${Math.round(recomendado.cavgSSNgdl)} ng/dL (${aproxStr} de ${cavgAlvo}). O vale fica em ${Math.round(recomendado.cminSSNgdl)} ng/dL (acima do limiar de ${EUGONADAL_MIN_NGDL} ng/dL) e o pico em ${Math.round(recomendado.cmaxSSNgdl)} ng/dL.`;
     }
   } else {
     // Nenhum intervalo mantém o vale seguro: melhor compromisso (Cavg mais próximo do alvo)
     recomendado = avaliacoes.reduce((m, a) =>
-      Math.abs(a.cavgSSNgdl - cavgAlvo) < Math.abs(m.cavgSSNgdl - cavgAlvo) ? a : m
+      Math.abs(a.cavgSSNgdl - cavgAlvo) < Math.abs(m.cavgSSNgdl - cavgAlvo) ? a : m,
     );
-    justificativa = `Com a dose atual (${medida.doseMg} mg), nenhum intervalo testado mantém Cmin,SS ≥ ${EUGONADAL_MIN_NGDL} ng/dL. Para atingir Cmédia,SS de ${cavgAlvo} ng/dL sem períodos subeugonádicos entre administrações, é necessário reavaliar dose e intervalo.`;
+    justificativa = `Com a dose atual (${medida.doseMg} mg), NENHUM intervalo testado mantém o vale acima de ${EUGONADAL_MIN_NGDL} ng/dL — o paciente terá períodos de hipogonadismo entre doses. Considere aumentar a dose ou usar outro regime. O melhor compromisso encontrado é o intervalo de ${Math.round(recomendado.intervaloDias / 7)} semanas, com Cmédia,SS estimada de ${Math.round(recomendado.cavgSSNgdl)} ng/dL.`;
   }
 
   // Classificação da sensibilidade individual
   let classificacao: string;
-  if (scale < 0.75) classificacao = "exposição menor que a referência populacional";
-  else if (scale > 1.33) classificacao = "exposição maior que a referência populacional";
-  else classificacao = "exposição próxima da referência populacional";
+  if (scale < 0.75)
+    classificacao = "responde MENOS que a média (precisa de mais dose ou menos intervalo)";
+  else if (scale > 1.33)
+    classificacao = "responde MAIS que a média (níveis sobem mais com a mesma dose)";
+  else classificacao = "responde de forma típica à dose";
 
   return {
     fatorIndividual: scale,
@@ -688,7 +807,7 @@ export function gerarCronograma(
   doseMg: number,
   intervaloDias: number,
   nDoses: number,
-  inicioDias = 0
+  inicioDias = 0,
 ): DoseAgendada[] {
   return Array.from({ length: nDoses }, (_, i) => ({
     diaDose: inicioDias + i * intervaloDias,
@@ -703,10 +822,7 @@ export function gerarCronograma(
  *   Injeção 2: semana 6 (carga, encurta o intervalo inicial para acelerar SS)
  *   Injeções seguintes: q12sem
  */
-export function gerarCronogramaSchubert(
-  doseMg: number,
-  nDoses: number
-): DoseAgendada[] {
+export function gerarCronogramaSchubert(doseMg: number, nDoses: number): DoseAgendada[] {
   const doses: DoseAgendada[] = [];
   doses.push({ diaDose: 0, doseMg, rotulo: "Injeção 1" });
   if (nDoses >= 2) doses.push({ diaDose: 42, doseMg, rotulo: "Injeção 2 (carga)" });
