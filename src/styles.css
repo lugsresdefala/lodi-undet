@@ -189,21 +189,8 @@
     min-height: 100vh;
   }
 
-  /* Atmosphere: grão + vinheta. Tuning agora segue a nova paleta:
-     :root é o tema escuro → grão denso em screen + vinheta profunda.
-     .dark é o tema claro → grão sutil em multiply + vinheta leve. */
+  /* Atmosphere: grão + vinheta. Tuning por tema. */
   body {
-    --bg-grain-frequency: 0.85;
-    --bg-grain-octaves: 2;
-    --bg-grain-opacity: 0.12;
-    --bg-grain-contrast: 160%;
-    --bg-grain-blend: screen;
-    --bg-vignette-color: oklch(0.08 0.02 50 / 0.65);
-    --bg-vignette-size: 90% 80%;
-    --bg-vignette-center: 50% 40%;
-  }
-
-  .dark body {
     --bg-grain-frequency: 0.65;
     --bg-grain-octaves: 3;
     --bg-grain-opacity: 0.035;
@@ -212,6 +199,17 @@
     --bg-vignette-color: color-mix(in oklab, var(--foreground) 5%, transparent);
     --bg-vignette-size: 75% 65%;
     --bg-vignette-center: 50% 45%;
+  }
+
+  .dark body {
+    --bg-grain-frequency: 0.85;
+    --bg-grain-octaves: 2;
+    --bg-grain-opacity: 0.12;
+    --bg-grain-contrast: 160%;
+    --bg-grain-blend: screen;
+    --bg-vignette-color: oklch(0.08 0.02 50 / 0.65);
+    --bg-vignette-size: 90% 80%;
+    --bg-vignette-center: 50% 40%;
   }
 
   body::before {
