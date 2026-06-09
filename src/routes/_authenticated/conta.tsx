@@ -157,7 +157,7 @@ function ContaPage() {
           <div className="mt-6">
             <StripeEmbeddedCheckout
               priceId="lodi_calc_monthly"
-              returnUrl={window.location.origin + "/conta"}
+              returnUrl={window.location.origin + "/conta?session_id={CHECKOUT_SESSION_ID}"}
             />
             <button
               onClick={() => setCheckoutOpen(false)}
