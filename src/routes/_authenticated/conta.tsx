@@ -43,6 +43,27 @@ function ContaPage() {
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? ""));
     refresh();
+
+    // Após retorno do Stripe (?session_id=...), aguarda o webhook ativar a
+    // assinatura: faz polling curto de até ~20s até o status virar active/trialing.
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("session_id")) {
+      setCheckoutOpen(false);
+      let tries = 0;
+      const iv = setInterval(async () => {
+        tries += 1;
+        const s: any = await fetchSub({ data: { environment: env } });
+        if (s && ["active", "trialing"].includes(s.status)) {
+          setSub(s);
+          clearInterval(iv);
+          history.replaceState(null, "", window.location.pathname);
+        } else if (tries >= 10) {
+          clearInterval(iv);
+          history.replaceState(null, "", window.location.pathname);
+        }
+      }, 2000);
+      return () => clearInterval(iv);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -136,7 +157,7 @@ function ContaPage() {
           <div className="mt-6">
             <StripeEmbeddedCheckout
               priceId="lodi_calc_monthly"
-              returnUrl={window.location.origin + "/conta"}
+              returnUrl={window.location.origin + "/conta?session_id={CHECKOUT_SESSION_ID}"}
             />
             <button
               onClick={() => setCheckoutOpen(false)}
