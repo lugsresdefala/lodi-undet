@@ -189,17 +189,40 @@
     min-height: 100vh;
   }
 
-  /* Subtle paper grain + radial light falloff — atmosphere only, no layout shift */
+  /* Atmosphere: paper grain + radial vignette. Per-theme tuning via custom props. */
+  body {
+    --bg-grain-frequency: 0.65;
+    --bg-grain-octaves: 3;
+    --bg-grain-opacity: 0.035;
+    --bg-grain-contrast: 125%;
+    --bg-grain-blend: multiply;
+    --bg-vignette-color: color-mix(in oklab, var(--foreground) 5%, transparent);
+    --bg-vignette-size: 75% 65%;
+    --bg-vignette-center: 50% 45%;
+  }
+
+  .dark body {
+    /* Mais grão e vinheta mais profunda no tema escuro */
+    --bg-grain-frequency: 0.85;
+    --bg-grain-octaves: 2;
+    --bg-grain-opacity: 0.12;
+    --bg-grain-contrast: 160%;
+    --bg-grain-blend: screen;
+    --bg-vignette-color: oklch(0.08 0.02 50 / 0.65);
+    --bg-vignette-size: 90% 80%;
+    --bg-vignette-center: 50% 40%;
+  }
+
   body::before {
     content: "";
     position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 0;
-    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-    opacity: 0.035;
-    filter: contrast(125%);
-    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    opacity: var(--bg-grain-opacity);
+    filter: contrast(var(--bg-grain-contrast));
+    mix-blend-mode: var(--bg-grain-blend);
   }
 
   body::after {
@@ -208,13 +231,9 @@
     inset: 0;
     pointer-events: none;
     z-index: 0;
-    background: radial-gradient(ellipse 75% 65% at 50% 45%, transparent 0%, color-mix(in oklab, var(--foreground) 5%, transparent) 100%);
+    background: radial-gradient(ellipse var(--bg-vignette-size) at var(--bg-vignette-center), transparent 0%, var(--bg-vignette-color) 100%);
   }
 
-  .dark body::before {
-    opacity: 0.06;
-    mix-blend-mode: screen;
-  }
 
   body > * {
     position: relative;
