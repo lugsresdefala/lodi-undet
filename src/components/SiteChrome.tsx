@@ -39,7 +39,7 @@ export function SiteHeader() {
           <img
             src={lodiLogo}
             alt="lodi-t"
-            className="h-9 w-9 shrink-0 select-none object-contain md:h-10 md:w-10"
+            className="h-9 w-9 shrink-0 select-none object-contain mix-blend-multiply dark:mix-blend-screen md:h-10 md:w-10"
             draggable={false}
           />
 
