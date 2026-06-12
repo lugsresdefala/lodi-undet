@@ -1,23 +1,14 @@
-import { createFileRoute, redirect, Outlet } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated")({
+  ssr: false,
   beforeLoad: async ({ location }) => {
-    if (typeof window === "undefined") return;
-    const { data } = await supabase.auth.getUser();
-    if (!data.user) {
+    const { data, error } = await supabase.auth.getUser();
+    if (error || !data.user) {
       throw redirect({ to: "/login", search: { redirect: location.href } });
     }
+    return { user: data.user };
   },
-  component: AuthLayout,
+  component: () => <Outlet />,
 });
-
-function AuthLayout() {
-  const [ready, setReady] = useState(false);
-  useEffect(() => {
-    supabase.auth.getUser().then(() => setReady(true));
-  }, []);
-  if (!ready) return <div className="p-8 text-sm text-muted-foreground">Carregando…</div>;
-  return <Outlet />;
-}
