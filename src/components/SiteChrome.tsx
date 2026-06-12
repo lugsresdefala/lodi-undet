@@ -13,37 +13,9 @@ const nav = [
 
 function HeaderLodiMark() {
   return (
-    <svg
-      viewBox="0 0 64 64"
-      className="h-11 w-11 shrink-0 select-none text-foreground md:h-12 md:w-12"
-      role="img"
-      aria-label="L.O.D.I"
-    >
-      <circle cx="32" cy="32" r="21" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.18" />
-      <circle cx="32" cy="32" r="15" fill="none" stroke="currentColor" strokeWidth="1.2" opacity="0.26" />
-      <line x1="32" y1="5" x2="32" y2="59" stroke="currentColor" strokeWidth="0.8" opacity="0.18" />
-      <line x1="5" y1="32" x2="59" y2="32" stroke="currentColor" strokeWidth="0.8" opacity="0.18" />
-      <path
-        d="M32 11a21 21 0 0 1 21 21"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="4"
-        strokeLinecap="round"
-        opacity="0.1"
-      />
-      <text
-        x="32"
-        y="35"
-        textAnchor="middle"
-        dominantBaseline="middle"
-        fill="currentColor"
-        fontSize="11"
-        fontWeight="700"
-        letterSpacing="0"
-      >
-        L.O.D.I
-      </text>
-    </svg>
+    <span className="shrink-0 font-serif text-[1.7rem] font-semibold leading-none tracking-tight text-foreground md:text-[1.9rem]">
+      L.O.D.I
+    </span>
   );
 }
 
@@ -69,10 +41,10 @@ export function SiteHeader() {
         <Link
           to="/"
           onClick={() => setOpen(false)}
-          className="group flex min-w-0 items-center gap-2.5 md:gap-3"
+          className="group flex min-w-0 items-baseline gap-2.5 md:gap-3"
         >
           <HeaderLodiMark />
-          <span className="whitespace-nowrap font-serif text-lg font-medium tracking-tight md:text-xl">
+          <span className="whitespace-nowrap font-serif text-base font-medium tracking-tight text-muted-foreground md:text-lg">
             lodi-t
           </span>
           <span className="hidden whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground xl:inline">
