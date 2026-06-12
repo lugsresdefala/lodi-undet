@@ -143,7 +143,7 @@ function Paywall({ redeemMsg }: { redeemMsg: string | null }) {
           <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
             Gratuito
           </p>
-          <p className="mt-2 font-serif text-xl">Sou paciente da Diversidade Barra Funda</p>
+          <p className="mt-2 font-serif text-xl">Sou paciente do ASIPT diversidadebarrafunda.org</p>
           <p className="mt-2 text-sm text-muted-foreground">
             Conecte sua conta do ASIPT. Se houver consulta concluída no seu histórico, o
             acesso é liberado automaticamente.
