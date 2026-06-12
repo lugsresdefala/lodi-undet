@@ -97,7 +97,7 @@ function CalculadoraPage() {
         <p className="mt-3 text-xs font-mono uppercase tracking-[0.18em] text-muted-foreground">
           acesso:{" "}
           <span className="text-foreground">
-            {access.source === "asipt" ? "ASIPT · Diversidade Barra Funda" : "assinatura"}
+            {access.source === "asipt" ? "ASIPT · diversidadebarrafunda.org" : "assinatura"}
           </span>
           {access.expiresAt && (
             <> · até {new Date(access.expiresAt).toLocaleDateString("pt-BR")}</>
