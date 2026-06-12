@@ -148,7 +148,7 @@ function ContaPage() {
                 href="https://diversidadebarrafunda.org/lodi/conectar?redirect_uri=https://lodi-undet.lovable.app/calculadora"
                 className="rounded-md border border-border px-4 py-2 text-sm hover:bg-accent"
               >
-                Sou paciente da Diversidade Barra Funda
+                Sou paciente do ASIPT diversidadebarrafunda.org
               </a>
             </div>
           )}
