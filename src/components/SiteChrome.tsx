@@ -30,7 +30,7 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 glass">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 md:px-8 md:py-4">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-2 md:px-8 md:py-2">
         <Link
           to="/"
           onClick={() => setOpen(false)}
@@ -39,7 +39,7 @@ export function SiteHeader() {
           <img
             src={lodiLogo}
             alt="lodi-t"
-            className="h-12 w-12 shrink-0 select-none object-contain md:h-14 md:w-14"
+            className="h-16 w-16 shrink-0 select-none object-contain md:h-20 md:w-20"
             draggable={false}
           />
 
