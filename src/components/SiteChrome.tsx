@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import lodiLogo from "@/assets/lodi-logo.png";
 import { InstrumentRing, RingGlyph } from "./InstrumentRing";
 
 const nav = [
@@ -11,6 +10,14 @@ const nav = [
   { to: "/sobre", label: "Sobre" },
   { to: "/api-docs", label: "API" },
 ] as const;
+
+function HeaderLodiMark() {
+  return (
+    <span className="shrink-0 font-serif text-[1.7rem] font-semibold leading-none tracking-tight text-foreground md:text-[1.9rem]">
+      L.O.D.I
+    </span>
+  );
+}
 
 export function SiteBackdrop() {
   return (
@@ -30,20 +37,14 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 glass">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-2 md:px-8 md:py-2">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-1.5 md:px-8">
         <Link
           to="/"
           onClick={() => setOpen(false)}
-          className="group flex min-w-0 items-center gap-2 md:gap-3"
+          className="group flex min-w-0 items-baseline gap-2.5 md:gap-3"
         >
-          <img
-            src={lodiLogo}
-            alt="lodi-t"
-            className="h-16 w-16 shrink-0 select-none object-contain md:h-20 md:w-20"
-            draggable={false}
-          />
-
-          <span className="whitespace-nowrap font-serif text-lg font-medium tracking-tight md:text-xl">
+          <HeaderLodiMark />
+          <span className="whitespace-nowrap font-serif text-base font-medium tracking-tight text-muted-foreground md:text-lg">
             lodi-t
           </span>
           <span className="hidden whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground xl:inline">
