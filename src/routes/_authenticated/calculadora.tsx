@@ -121,46 +121,93 @@ function CalculadoraPage() {
 function Paywall({ redeemMsg }: { redeemMsg: string | null }) {
   const navigate = useNavigate();
   return (
-    <main className="mx-auto max-w-2xl px-4 py-20 md:px-8">
+    <main className="relative mx-auto max-w-4xl px-4 py-16 md:px-8 md:py-24">
       <SectionEyebrow n="01" label="Acesso restrito" />
-      <h1 className="font-serif text-4xl font-medium tracking-tight">Calculadora PK</h1>
-      <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-        O simulador farmacocinético requer assinatura. Pacientes do ASIPT (diversidadebarrafunda.org)
-        com consultas concluídas têm liberação gratuita.
+      <h1 className="font-serif text-4xl font-medium tracking-tight md:text-5xl">
+        Calculadora PK
+      </h1>
+      <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground">
+        O simulador farmacocinético do undecilato de testosterona requer assinatura.
+        Pacientes do ASIPT (diversidadebarrafunda.org) com consultas concluídas
+        têm liberação gratuita automática.
       </p>
 
       {redeemMsg && (
-        <p className="mt-4 rounded-md border border-border bg-card/40 px-3 py-2 text-sm">
+        <div className="mt-6 rounded-lg border border-border bg-card/60 px-4 py-3 text-sm">
           {redeemMsg}
-        </p>
+        </div>
       )}
 
       <div className="mt-10 grid gap-4 md:grid-cols-2">
         <a
           href={ASIPT_AUTHORIZE_URL}
-          className="rounded-lg border border-border bg-card/40 p-6 hover:bg-accent"
+          className="ring-soft group relative overflow-hidden rounded-2xl border border-border/70 bg-card/60 p-6 backdrop-blur-sm transition-colors hover:border-foreground/40"
         >
-          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-            Gratuito
+          <div className="flex items-center justify-between">
+            <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+              Gratuito
+            </span>
+            <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.18em] text-emerald-700 dark:text-emerald-300">
+              ASIPT
+            </span>
+          </div>
+          <p className="mt-3 font-serif text-2xl font-medium tracking-tight">
+            Sou paciente do ASIPT
           </p>
-          <p className="mt-2 font-serif text-xl">Sou paciente do ASIPT diversidadebarrafunda.org</p>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Conecte sua conta do ASIPT. Se houver consulta concluída no seu histórico, o
-            acesso é liberado automaticamente.
+          <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+            diversidadebarrafunda.org
           </p>
+          <ul className="mt-4 space-y-1.5 text-sm text-foreground/85">
+            <li className="flex items-start gap-2">
+              <span aria-hidden className="mt-1.5 inline-block h-1 w-3 shrink-0 bg-foreground/60" />
+              Liberação automática via histórico do ASIPT
+            </li>
+            <li className="flex items-start gap-2">
+              <span aria-hidden className="mt-1.5 inline-block h-1 w-3 shrink-0 bg-foreground/60" />
+              Sem cartão, sem cobrança
+            </li>
+          </ul>
+          <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-foreground">
+            Conectar conta
+            <span aria-hidden className="transition-transform group-hover:translate-x-0.5">↗</span>
+          </span>
         </a>
 
         <button
           onClick={() => navigate({ to: "/conta" })}
-          className="rounded-lg border border-border bg-card/40 p-6 text-left hover:bg-accent"
+          className="ring-soft group relative overflow-hidden rounded-2xl border border-border/70 bg-card/60 p-6 text-left backdrop-blur-sm transition-colors hover:border-foreground/40"
         >
-          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-            Assinatura
+          <div className="absolute -inset-8 -z-10 bg-aurora opacity-50 blur-2xl" />
+          <div className="flex items-center justify-between">
+            <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+              Assinatura
+            </span>
+            <span className="rounded-full border border-border bg-background px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
+              Stripe
+            </span>
+          </div>
+          <p className="mt-3 font-serif text-3xl font-medium tracking-tight">
+            R$ 13,90
+            <span className="ml-1 text-sm font-normal text-muted-foreground">/ mês</span>
           </p>
-          <p className="mt-2 font-serif text-xl">R$ 13,90 / mês</p>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Cancelamento a qualquer momento. Pagamento pelo Stripe.
-          </p>
+          <ul className="mt-4 space-y-1.5 text-sm text-foreground/85">
+            <li className="flex items-start gap-2">
+              <span aria-hidden className="mt-1.5 inline-block h-1 w-3 shrink-0 bg-foreground/60" />
+              Acesso completo à calculadora PK
+            </li>
+            <li className="flex items-start gap-2">
+              <span aria-hidden className="mt-1.5 inline-block h-1 w-3 shrink-0 bg-foreground/60" />
+              Monte Carlo e recomendação de intervalo
+            </li>
+            <li className="flex items-start gap-2">
+              <span aria-hidden className="mt-1.5 inline-block h-1 w-3 shrink-0 bg-foreground/60" />
+              Cancelamento a qualquer momento
+            </li>
+          </ul>
+          <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-foreground">
+            Ir para assinatura
+            <span aria-hidden className="transition-transform group-hover:translate-x-0.5">→</span>
+          </span>
         </button>
       </div>
     </main>
