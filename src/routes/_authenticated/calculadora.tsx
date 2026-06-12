@@ -125,7 +125,7 @@ function Paywall({ redeemMsg }: { redeemMsg: string | null }) {
       <SectionEyebrow n="01" label="Acesso restrito" />
       <h1 className="font-serif text-4xl font-medium tracking-tight">Calculadora PK</h1>
       <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-        O simulador farmacocinético requer assinatura. Pacientes da Diversidade Barra Funda
+        O simulador farmacocinético requer assinatura. Pacientes do ASIPT (diversidadebarrafunda.org)
         com consultas concluídas têm liberação gratuita.
       </p>
 
