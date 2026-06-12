@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import lodiLogo from "@/assets/lodi-logo.png";
 import { InstrumentRing, RingGlyph } from "./InstrumentRing";
 
 const nav = [
@@ -11,6 +10,42 @@ const nav = [
   { to: "/sobre", label: "Sobre" },
   { to: "/api-docs", label: "API" },
 ] as const;
+
+function HeaderLodiMark() {
+  return (
+    <svg
+      viewBox="0 0 64 64"
+      className="h-11 w-11 shrink-0 select-none text-foreground md:h-12 md:w-12"
+      role="img"
+      aria-label="L.O.D.I"
+    >
+      <circle cx="32" cy="32" r="21" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.18" />
+      <circle cx="32" cy="32" r="15" fill="none" stroke="currentColor" strokeWidth="1.2" opacity="0.26" />
+      <line x1="32" y1="5" x2="32" y2="59" stroke="currentColor" strokeWidth="0.8" opacity="0.18" />
+      <line x1="5" y1="32" x2="59" y2="32" stroke="currentColor" strokeWidth="0.8" opacity="0.18" />
+      <path
+        d="M32 11a21 21 0 0 1 21 21"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinecap="round"
+        opacity="0.1"
+      />
+      <text
+        x="32"
+        y="35"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        fill="currentColor"
+        fontSize="11"
+        fontWeight="700"
+        letterSpacing="0"
+      >
+        L.O.D.I
+      </text>
+    </svg>
+  );
+}
 
 export function SiteBackdrop() {
   return (
@@ -30,19 +65,13 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 glass">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-2 md:px-8 md:py-2">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-1.5 md:px-8">
         <Link
           to="/"
           onClick={() => setOpen(false)}
-          className="group flex min-w-0 items-center gap-2 md:gap-3"
+          className="group flex min-w-0 items-center gap-2.5 md:gap-3"
         >
-          <img
-            src={lodiLogo}
-            alt="lodi-t"
-            className="h-16 w-16 shrink-0 select-none object-contain md:h-20 md:w-20"
-            draggable={false}
-          />
-
+          <HeaderLodiMark />
           <span className="whitespace-nowrap font-serif text-lg font-medium tracking-tight md:text-xl">
             lodi-t
           </span>
