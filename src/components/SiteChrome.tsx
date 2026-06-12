@@ -11,10 +11,18 @@ const nav = [
   { to: "/api-docs", label: "API" },
 ] as const;
 
-function HeaderLodiMark() {
+function HeaderMark() {
   return (
-    <span className="shrink-0 font-serif text-[1.7rem] font-semibold leading-none tracking-tight text-foreground md:text-[1.9rem]">
-      L.O.D.I
+    <span className="relative inline-flex h-9 w-9 shrink-0 items-center justify-center md:h-10 md:w-10">
+      <InstrumentRing className="absolute inset-0 h-full w-full opacity-90" />
+      <span
+        aria-hidden
+        className="absolute inset-[22%] rounded-full"
+        style={{
+          background:
+            "radial-gradient(circle at 35% 30%, color-mix(in oklab, var(--trans-pink) 70%, transparent), color-mix(in oklab, var(--trans-blue) 55%, transparent) 70%, transparent 78%)",
+        }}
+      />
     </span>
   );
 }
@@ -37,20 +45,24 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 glass">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-1.5 md:px-8">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-2.5 md:px-8 md:py-3">
         <Link
           to="/"
           onClick={() => setOpen(false)}
-          className="group flex min-w-0 items-baseline gap-2.5 md:gap-3"
+          className="group flex min-w-0 items-center gap-3"
         >
-          <HeaderLodiMark />
-          <span className="whitespace-nowrap font-serif text-base font-medium tracking-tight text-muted-foreground md:text-lg">
-            lodi-t
-          </span>
-          <span className="hidden whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground xl:inline">
-            v2 · referência clínica
+          <HeaderMark />
+          <span className="flex min-w-0 items-baseline gap-2.5">
+            <span className="font-serif text-[1.35rem] font-medium leading-none tracking-tight text-foreground md:text-[1.5rem]">
+              lodi<span className="text-muted-foreground">·</span>t
+            </span>
+            <span className="hidden h-3.5 w-px bg-border sm:inline-block" />
+            <span className="hidden whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground sm:inline">
+              referência clínica
+            </span>
           </span>
         </Link>
+
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-1 lg:flex">
