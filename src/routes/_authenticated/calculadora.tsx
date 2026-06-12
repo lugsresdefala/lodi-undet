@@ -97,7 +97,7 @@ function CalculadoraPage() {
         <p className="mt-3 text-xs font-mono uppercase tracking-[0.18em] text-muted-foreground">
           acesso:{" "}
           <span className="text-foreground">
-            {access.source === "asipt" ? "ASIPT · Diversidade Barra Funda" : "assinatura"}
+            {access.source === "asipt" ? "ASIPT · diversidadebarrafunda.org" : "assinatura"}
           </span>
           {access.expiresAt && (
             <> · até {new Date(access.expiresAt).toLocaleDateString("pt-BR")}</>
@@ -125,7 +125,7 @@ function Paywall({ redeemMsg }: { redeemMsg: string | null }) {
       <SectionEyebrow n="01" label="Acesso restrito" />
       <h1 className="font-serif text-4xl font-medium tracking-tight">Calculadora PK</h1>
       <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-        O simulador farmacocinético requer assinatura. Pacientes da Diversidade Barra Funda
+        O simulador farmacocinético requer assinatura. Pacientes do ASIPT (diversidadebarrafunda.org)
         com consultas concluídas têm liberação gratuita.
       </p>
 
@@ -143,7 +143,7 @@ function Paywall({ redeemMsg }: { redeemMsg: string | null }) {
           <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
             Gratuito
           </p>
-          <p className="mt-2 font-serif text-xl">Sou paciente da Diversidade Barra Funda</p>
+          <p className="mt-2 font-serif text-xl">Sou paciente do ASIPT diversidadebarrafunda.org</p>
           <p className="mt-2 text-sm text-muted-foreground">
             Conecte sua conta do ASIPT. Se houver consulta concluída no seu histórico, o
             acesso é liberado automaticamente.
